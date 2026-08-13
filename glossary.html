@@ -1597,13 +1597,17 @@ function layoutLabels(force){
   items.sort(function(a,b){return Math.hypot(b.sx-cx,b.sy-cy)-Math.hypot(a.sx-cx,a.sy-cy);});
   for(var k=0;k<items.length;k++){
     var item=items[k],best=-1,bestScore=Infinity,ivx=item.sx-cx,ivy=item.sy-cy,il=Math.max(1,Math.hypot(ivx,ivy));ivx/=il;ivy/=il;
-  for(var q=0;q<slots.length;q++){
-    if(used[q])continue;
-    var blocked=false;for(var ba=0;ba<assigned.length;ba++)if(slotsOverlap(slots[q],assigned[ba].slot)){blocked=true;break;}
-    var e=endpoint(slots[q],item),svx=e.x-cx,svy=e.y-cy,sl=Math.max(1,Math.hypot(svx,svy));svx/=sl;svy/=sl;
-    var score=Math.hypot(item.sx-e.x,item.sy-e.y)+(1-(ivx*svx+ivy*svy))*1100+(slots[q].modelPenalty||0)+(blocked?500000:0);
-    for(var a=0;a<assigned.length;a++)if(cross({x:item.sx,y:item.sy},e,{x:assigned[a].item.sx,y:assigned[a].item.sy},assigned[a].end))score+=100000;
-    if(score<bestScore){bestScore=score;best=q;}
+  for(var pass2=0;pass2<2;pass2++){
+      for(var q=0;q<slots.length;q++){
+        if(used[q])continue;
+        var blocked=false;for(var ba=0;ba<assigned.length;ba++)if(slotsOverlap(slots[q],assigned[ba].slot)){blocked=true;break;}
+        if(pass2===0&&blocked)continue;
+        var e=endpoint(slots[q],item),svx=e.x-cx,svy=e.y-cy,sl=Math.max(1,Math.hypot(svx,svy));svx/=sl;svy/=sl;
+        var score=Math.hypot(item.sx-e.x,item.sy-e.y)+(1-(ivx*svx+ivy*svy))*1100+(slots[q].modelPenalty||0)+(blocked?5000000:0);
+        for(var a=0;a<assigned.length;a++)if(cross({x:item.sx,y:item.sy},e,{x:assigned[a].item.sx,y:assigned[a].item.sy},assigned[a].end))score+=100000;
+        if(score<bestScore){bestScore=score;best=q;}
+      }
+      if(best>=0)break;
   }
     if(best<0)continue;used[best]=true;assigned.push({item:item,slot:slots[best],end:endpoint(slots[best],item)});
   }
@@ -1617,7 +1621,7 @@ function layoutLabels(force){
       for(var j=i+1;j<arr.length;j++){
         var aj=arr[j].item,je=endpoint(arr[j].slot,aj);
         if(cross({x:ai.sx,y:ai.sy},ae,{x:aj.sx,y:aj.sy},je))total+=140000;
-        if(slotsOverlap(arr[i].slot,arr[j].slot))total+=400000;
+        if(slotsOverlap(arr[i].slot,arr[j].slot))total+=8000000;
       }
     }
     return total;
