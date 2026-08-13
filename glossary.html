@@ -1617,6 +1617,7 @@ function layoutLabels(force){
       for(var j=i+1;j<arr.length;j++){
         var aj=arr[j].item,je=endpoint(arr[j].slot,aj);
         if(cross({x:ai.sx,y:ai.sy},ae,{x:aj.sx,y:aj.sy},je))total+=140000;
+        if(slotsOverlap(arr[i].slot,arr[j].slot))total+=400000;
       }
     }
     return total;
