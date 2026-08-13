@@ -1693,19 +1693,34 @@ function setHover(term){
 }
 var selected=null, xraySaved=[], focusSaved=[];
 function restoreFocus(){
-  for(var i=0;i<focusSaved.length;i++)focusSaved[i].material.color.copy(focusSaved[i].color);
+  for(var i=0;i<focusSaved.length;i++){
+    var f=focusSaved[i];
+    f.material.color.copy(f.color);
+    if(f.emissive)f.material.emissive.copy(f.emissive);
+    if(f.hadVC){f.material.vertexColors=true;f.material.needsUpdate=true;}
+  }
   focusSaved=[];
 }
 function applyFocus(term){
   restoreFocus();
   var keep=groupReg[term];
+  var grayTarget=new THREE.Color('#d2d4d6');
   scene.traverse(function(o){
     if(!o.material||!o.material.color||o.userData.selectionOutline)return;
     for(var p=o;p;p=p.parent)if(p===keep)return;
     for(var k=0;k<focusSaved.length;k++)if(focusSaved[k].material===o.material)return;
-    focusSaved.push({material:o.material,color:o.material.color.clone()});
-    var hsl={h:0,s:0,l:0};o.material.color.getHSL(hsl);
-    o.material.color.setHSL(hsl.h,hsl.s*.1,hsl.l);
+    var entry={material:o.material,color:o.material.color.clone()};
+    if(o.material.emissive)entry.emissive=o.material.emissive.clone();
+    if(o.material.vertexColors){
+      entry.hadVC=true;
+      o.material.vertexColors=false;
+      o.material.needsUpdate=true;
+      o.material.color.set('#c4c7ca');
+    }else{
+      o.material.color.lerp(grayTarget,.78);
+    }
+    if(o.material.emissive)o.material.emissive.setHex(0x000000);
+    focusSaved.push(entry);
   });
 }
 var selectionOutline=[];
@@ -1960,11 +1975,11 @@ function syncFlowUI(){
 (function(){
   var btns=document.querySelectorAll('.flow-chip');
   for(var i=0;i<btns.length;i++)(function(btn){
-    btn.onclick=function(){var key=btn.getAttribute('data-flow');flowState[key]=!flowState[key];syncFlowUI();};
+    btn.onclick=function(){var key=btn.getAttribute('data-flow');flowState[key]=!flowState[key];syncFlowUI();if(selected)applyFocus(selected);};
   })(btns[i]);
   document.getElementById('flowMaster').onclick=function(){
-    flowOn=!flowOn;syncFlowUI();
-  };
+  flowOn=!flowOn;syncFlowUI();if(selected)applyFocus(selected);
+};
 })();
 document.getElementById('resetBtn').onclick=function(){
   sph.az=HOME.az;sph.pol=HOME.pol;sph.dist=HOME.dist;target.set(HOME.tx,HOME.ty,HOME.tz);updateCam();
