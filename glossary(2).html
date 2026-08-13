@@ -1529,6 +1529,7 @@ function layoutLabels(force){
   }
   addHorizontal(topCount,frame.t,'top');addHorizontal(bottomCount,frame.b-labelH,'bottom');
   addVertical(leftCount,frame.l,'left');addVertical(rightCount,frame.r-labelW,'right');
+  var baseSlots=slots.slice();   /* ← 추가: 촘촘한 회피 후보가 섞이기 전 스냅샷 */
   /* Extra aligned perimeter candidates let occupied model areas remain unused. */
   (function addAvoidanceCandidates(){
     var maxX=frame.r-labelW,yTop=frame.t,yBottom=frame.b-labelH;
@@ -1596,10 +1597,10 @@ function layoutLabels(force){
   var cx=w/2,cy=h/2;
 
 /* 슬롯을 화면 둘레를 따라 시계방향 하나의 링(ring)으로 정렬 */
-var topSlots=slots.filter(function(s){return s.side==='top';}).sort(function(a,b){return a.x-b.x;});
-var rightSlots=slots.filter(function(s){return s.side==='right';}).sort(function(a,b){return a.y-b.y;});
-var bottomSlots=slots.filter(function(s){return s.side==='bottom';}).sort(function(a,b){return b.x-a.x;});
-var leftSlots=slots.filter(function(s){return s.side==='left';}).sort(function(a,b){return b.y-a.y;});
+var topSlots=baseSlots.filter(function(s){return s.side==='top';}).sort(function(a,b){return a.x-b.x;});
+var rightSlots=baseSlots.filter(function(s){return s.side==='right';}).sort(function(a,b){return a.y-b.y;});
+var bottomSlots=baseSlots.filter(function(s){return s.side==='bottom';}).sort(function(a,b){return b.x-a.x;});
+var leftSlots=baseSlots.filter(function(s){return s.side==='left';}).sort(function(a,b){return b.y-a.y;});
 var ringSlots=topSlots.concat(rightSlots,bottomSlots,leftSlots);
 
 /* 아이템도 중심 기준 시계방향 각도로 정렬 (위쪽=0도 시작) */
