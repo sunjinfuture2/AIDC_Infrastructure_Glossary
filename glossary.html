@@ -1910,7 +1910,7 @@ function syncSel(){
     labelObjs[j].div.classList.toggle('sel',same);
     labelObjs[j].div.classList.toggle('dim',!!selected&&!same);
     labelObjs[j].line.setAttribute('stroke',same?'#000':'#929497');
-    labelObjs[j].line.setAttribute('stroke-dasharray',same?'none':'0.1 7');
+    labelObjs[j].line.setAttribute('stroke-dasharray',same?'5 4':'0.1 7');
     labelObjs[j].line.setAttribute('stroke-width',same?'1.65':'1.6');
     labelObjs[j].dot.setAttribute('fill',same?'#000':'#929497');labelObjs[j].dot.setAttribute('r',same?'2.24':'1.25');labelObjs[j].dot.setAttribute('stroke',same?'#000':'#929497');labelObjs[j].dot.setAttribute('stroke-opacity',same?'1':'.88');labelObjs[j].line.setAttribute('stroke-opacity',same?'1':'.88');
     labelObjs[j].line.setAttribute('opacity',same?'1':(selected?'.6':'.78'));labelObjs[j].dot.setAttribute('opacity',same?'1':(selected?'.6':'.78'));
