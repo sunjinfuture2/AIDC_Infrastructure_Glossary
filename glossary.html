@@ -1600,9 +1600,8 @@ function layoutLabels(force){
     for(var q=0;q<slots.length;q++){
       if(used[q])continue;
       var blocked=false;for(var ba=0;ba<assigned.length;ba++)if(slotsOverlap(slots[q],assigned[ba].slot)){blocked=true;break;}
-      if(blocked)continue;
       var e=endpoint(slots[q],item),svx=e.x-cx,svy=e.y-cy,sl=Math.max(1,Math.hypot(svx,svy));svx/=sl;svy/=sl;
-      var score=Math.hypot(item.sx-e.x,item.sy-e.y)+(1-(ivx*svx+ivy*svy))*1100+(slots[q].modelPenalty||0);
+      var score=Math.hypot(item.sx-e.x,item.sy-e.y)+(1-(ivx*svx+ivy*svy))*1100+(slots[q].modelPenalty||0)+(blocked?500000:0);
       for(var a=0;a<assigned.length;a++)if(cross({x:item.sx,y:item.sy},e,{x:assigned[a].item.sx,y:assigned[a].item.sy},assigned[a].end))score+=100000;
       if(score<bestScore){bestScore=score;best=q;}
     }
