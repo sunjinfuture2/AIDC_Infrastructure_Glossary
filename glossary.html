@@ -1589,7 +1589,8 @@ function layoutLabels(force){
   }
   function endpoint(slot,item){
     var half=((item.div&&item.div.offsetHeight)||labelH)/2;
-    var top={x:slot.x,y:slot.y-half},bottom={x:slot.x,y:slot.y+half},anchor={x:item.sx,y:item.sy};
+    var halfW=((item.div&&item.div.offsetWidth)||labelW)/2;
+    var top={x:slot.x-halfW,y:slot.y-half},bottom={x:slot.x-halfW,y:slot.y+half},anchor={x:item.sx,y:item.sy};
     var topScore=(segmentHitsText(anchor,top,slot)?1000000:0)+Math.hypot(anchor.x-top.x,anchor.y-top.y);
     var bottomScore=(segmentHitsText(anchor,bottom,slot)?1000000:0)+Math.hypot(anchor.x-bottom.x,anchor.y-bottom.y);
     return topScore<=bottomScore?top:bottom;
@@ -1662,7 +1663,8 @@ function refreshSelectedLeader(){
     var lx=parseFloat(L.div.style.left),ly=parseFloat(L.div.style.top);
     if(isFinite(lx)&&isFinite(ly)){
       var half=(L.div.offsetHeight||31)/2;
-      x2=lx; y2=(y2<=ly)?(ly-half):(ly+half);
+      var halfW=(L.div.offsetWidth||104)/2;
+      x2=lx-halfW; y2=(y2<=ly)?(ly-half):(ly+half);
       L.line.setAttribute('x2',x2);L.line.setAttribute('y2',y2);
     }
     var hit=(L.id===selected)?selectedOutlinePoint(L,x2,y2,w,h):{x:L.sx,y:L.sy};
