@@ -1520,13 +1520,36 @@ function layoutLabels(force){
   }
   var slots=[];
   function addHorizontal(count,y,side){
-    if(!count)return;var space=innerW-labelW;
-    for(var n=0;n<count;n++)slots.push({x:frame.l+(count===1?space/2:space*n/(count-1)),y:y,side:side});
+  if(!count)return;
+  var step=labelW+gapX, space=innerW-labelW;
+  var naturalWidth=(count-1)*step;
+  var startX;
+  if(count===1){ startX=frame.l+space/2; }
+  else if(naturalWidth<=space){
+    /* 여유가 있으면 균등 분산 */
+    startX=frame.l;
+    for(var n=0;n<count;n++)slots.push({x:startX+space*n/(count-1),y:y,side:side});
+    return;
+  } else {
+    /* 여유가 없으면 최소 간격(step)으로 순차 배치 (겹침 방지 최우선) */
+    startX=frame.l;
   }
-  function addVertical(count,x,side){
-    if(!count)return;var y0=frame.t+labelH+gapY,y1=frame.b-labelH*2-gapY;
-    for(var n=0;n<count;n++)slots.push({x:x,y:count===1?(y0+y1)/2:y0+(y1-y0)*n/(count-1),side:side});
+  for(var n=0;n<count;n++)slots.push({x:startX+n*step,y:y,side:side});
+}
+function addVertical(count,x,side){
+  if(!count)return;
+  var step=labelH+gapY;
+  var y0=frame.t+labelH+gapY, y1=frame.b-labelH*2-gapY;
+  var naturalHeight=(count-1)*step;
+  if(count===1){ slots.push({x:x,y:(y0+y1)/2,side:side}); return; }
+  if(naturalHeight<=(y1-y0)){
+    /* 여유가 있으면 균등 분산 */
+    for(var n=0;n<count;n++)slots.push({x:x,y:y0+(y1-y0)*n/(count-1),side:side});
+  } else {
+    /* 여유가 없으면 최소 간격(step)으로 순차 배치 (겹침 방지 최우선) */
+    for(var n=0;n<count;n++)slots.push({x:x,y:y0+n*step,side:side});
   }
+}
   addHorizontal(topCount,frame.t,'top');addHorizontal(bottomCount,frame.b-labelH,'bottom');
   addVertical(leftCount,frame.l,'left');addVertical(rightCount,frame.r-labelW,'right');
   var baseSlots=slots.slice();   /* ← 추가: 촘촘한 회피 후보가 섞이기 전 스냅샷 */
