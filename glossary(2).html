@@ -1593,21 +1593,30 @@ function layoutLabels(force){
   function slotsOverlap(a,b){
     return !(a.x+labelW+gapX<=b.x||b.x+labelW+gapX<=a.x||a.y+labelH+gapY<=b.y||b.y+labelH+gapY<=a.y);
   }
-  var cx=w/2,cy=h/2,used={},assigned=[];
-  items.sort(function(a,b){return Math.hypot(b.sx-cx,b.sy-cy)-Math.hypot(a.sx-cx,a.sy-cy);});
-  for(var k=0;k<items.length;k++){
-    var item=items[k],best=-1,bestScore=Infinity,ivx=item.sx-cx,ivy=item.sy-cy,il=Math.max(1,Math.hypot(ivx,ivy));ivx/=il;ivy/=il;
-    for(var q=0;q<slots.length;q++){
-      if(used[q])continue;
-      var blocked=false;for(var ba=0;ba<assigned.length;ba++)if(slotsOverlap(slots[q],assigned[ba].slot)){blocked=true;break;}
-      if(blocked)continue;
-      var e=endpoint(slots[q],item),svx=e.x-cx,svy=e.y-cy,sl=Math.max(1,Math.hypot(svx,svy));svx/=sl;svy/=sl;
-      var score=Math.hypot(item.sx-e.x,item.sy-e.y)+(1-(ivx*svx+ivy*svy))*1100+(slots[q].modelPenalty||0);
-      for(var a=0;a<assigned.length;a++)if(cross({x:item.sx,y:item.sy},e,{x:assigned[a].item.sx,y:assigned[a].item.sy},assigned[a].end))score+=100000;
-      if(score<bestScore){bestScore=score;best=q;}
-    }
-    if(best<0)continue;used[best]=true;assigned.push({item:item,slot:slots[best],end:endpoint(slots[best],item)});
-  }
+  var cx=w/2,cy=h/2;
+
+/* 슬롯을 화면 둘레를 따라 시계방향 하나의 링(ring)으로 정렬 */
+var topSlots=slots.filter(function(s){return s.side==='top';}).sort(function(a,b){return a.x-b.x;});
+var rightSlots=slots.filter(function(s){return s.side==='right';}).sort(function(a,b){return a.y-b.y;});
+var bottomSlots=slots.filter(function(s){return s.side==='bottom';}).sort(function(a,b){return b.x-a.x;});
+var leftSlots=slots.filter(function(s){return s.side==='left';}).sort(function(a,b){return b.y-a.y;});
+var ringSlots=topSlots.concat(rightSlots,bottomSlots,leftSlots);
+
+/* 아이템도 중심 기준 시계방향 각도로 정렬 (위쪽=0도 시작) */
+function ringAngle(x,y){
+  var a=Math.atan2(y-cy,x-cx)+Math.PI/2;
+  if(a<0)a+=Math.PI*2;
+  return a;
+}
+items.sort(function(a,b){return ringAngle(a.sx,a.sy)-ringAngle(b.sx,b.sy);});
+
+/* 같은 순환 순서로 슬롯을 균등 배정 → 선 교차가 발생하지 않음 */
+var assigned=[];
+for(var k=0;k<items.length;k++){
+  var idx=Math.floor(k*ringSlots.length/items.length);
+  var slot=ringSlots[Math.min(idx,ringSlots.length-1)];
+  assigned.push({item:items[k],slot:slot,end:endpoint(slot,items[k])});
+}
   function assignmentScore(arr){
     var total=0;
     for(var i=0;i<arr.length;i++){
@@ -1621,21 +1630,6 @@ function layoutLabels(force){
       }
     }
     return total;
-  }
-  var currentScore=assignmentScore(assigned);
-  for(var pass=0;pass<18;pass++){
-    var bestSwapI=-1,bestSwapJ=-1,bestSwapScore=currentScore;
-    for(var si=0;si<assigned.length-1;si++)for(var sj=si+1;sj<assigned.length;sj++){
-      var hold=assigned[si].slot;assigned[si].slot=assigned[sj].slot;assigned[sj].slot=hold;
-      var trial=assignmentScore(assigned);
-      hold=assigned[si].slot;assigned[si].slot=assigned[sj].slot;assigned[sj].slot=hold;
-      if(trial<bestSwapScore-0.5){bestSwapScore=trial;bestSwapI=si;bestSwapJ=sj;}
-    }
-    if(bestSwapI<0)break;
-    var finalHold=assigned[bestSwapI].slot;assigned[bestSwapI].slot=assigned[bestSwapJ].slot;assigned[bestSwapJ].slot=finalHold;
-    assigned[bestSwapI].end=endpoint(assigned[bestSwapI].slot,assigned[bestSwapI].item);
-    assigned[bestSwapJ].end=endpoint(assigned[bestSwapJ].slot,assigned[bestSwapJ].item);
-    currentScore=bestSwapScore;
   }
   for(var z=0;z<assigned.length;z++){
     var A=assigned[z],item=A.item,x=A.slot.x,y=A.slot.y;
