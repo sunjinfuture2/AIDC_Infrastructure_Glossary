@@ -95,43 +95,44 @@ aside{border-left:1px solid var(--line);background:#FFF;display:flex;flex-direct
 @media(max-width:1px){.wrap{grid-template-columns:1fr}aside{display:none}}
 
 /* ============ 인트로 랜딩 & 줌인 트랜지션 ============ */
-@keyframes introDrift{from{transform:scale(1.08)}to{transform:scale(1)}}
-@keyframes introRise{from{opacity:0;transform:translate(-50%,26px)}to{opacity:1;transform:translate(-50%,0)}}
-#intro{position:fixed;inset:0;z-index:9999;overflow:hidden;background:#0b0e13;
-  font-family:'SUIT','Pretendard','Apple SD Gothic Neo',sans-serif;
+@keyframes introFadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes introVisualIn{from{opacity:0}to{opacity:1}}
+#intro{position:fixed;inset:0;z-index:9999;overflow:hidden;
+  background:linear-gradient(180deg,#dcdee0 0%,#cacccf 52%,#aeb0b3 100%);
+  font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
   transition:opacity 1.5s cubic-bezier(.55,0,.35,1) .35s}
-#intro .intro-bg{position:absolute;inset:0;transform-origin:50% 40%;
-  animation:introDrift 2.6s cubic-bezier(.22,.61,.36,1) both;
+/* 줌 대상 스테이지: 이미지·배너를 함께 담아 건물 방향으로 확대 */
+#intro .intro-stage{position:absolute;inset:0;transform-origin:74% 44%;
   transition:transform 1.9s cubic-bezier(.6,.04,.28,1);will-change:transform}
-#intro .intro-bg img{width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
-#intro.noimg .intro-bg{background:radial-gradient(120% 90% at 50% 30%,#2a3547 0%,#141a24 55%,#0b0e13 100%)}
-#intro.noimg .intro-bg img{display:none}
-#intro .intro-shade{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(8,11,16,.18) 0%,rgba(8,11,16,0) 30%,rgba(8,11,16,0) 52%,rgba(8,11,16,.62) 100%)}
-#intro .intro-content{position:absolute;left:50%;bottom:8.5vh;transform:translate(-50%,0);
-  display:flex;flex-direction:column;align-items:center;text-align:center;color:#fff;
-  animation:introRise 1.1s cubic-bezier(.22,.61,.36,1) .3s both;
-  transition:opacity .8s ease,transform .8s ease}
-#intro .intro-eyebrow{font-size:11px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;opacity:.82;margin-bottom:12px}
-#intro .intro-title{font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1.2;text-shadow:0 2px 22px rgba(0,0,0,.45)}
-#intro .intro-sub{font-size:13.5px;font-weight:400;letter-spacing:-.01em;line-height:1.7;opacity:.85;margin-top:10px;text-shadow:0 1px 12px rgba(0,0,0,.4)}
-#intro .intro-start{margin-top:30px;padding:15px 52px;border-radius:999px;cursor:pointer;
-  border:1px solid rgba(255,255,255,.5);background:rgba(13,17,23,.38);color:#fff;
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  font-family:inherit;font-size:14.5px;font-weight:700;letter-spacing:.22em;text-indent:.22em;
-  transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s ease,box-shadow .25s ease}
-#intro .intro-start:hover,#intro .intro-start:focus-visible{background:#fff;color:#101114;border-color:#fff;
-  transform:translateY(-2px);box-shadow:0 14px 38px rgba(0,0,0,.38);outline:none}
-#intro .intro-start:active{transform:translateY(0)}
-/* 줌인(카메라 진입) + 페이드아웃 */
+/* 우측 건물 이미지: 원본 비율 유지(contain) → 확대·잘림 없음 */
+#intro .intro-visual{position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;
+  animation:introVisualIn 1.2s ease .1s backwards}
+#intro .intro-visual img{height:100%;max-width:62vw;object-fit:contain;object-position:right center;display:block;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 9%);
+  user-select:none;-webkit-user-drag:none}
+#intro.noimg .intro-visual{display:none}
+/* 좌측 텍스트 배너 (Pretendard, 글씨만) */
+#intro .intro-banner{position:absolute;inset:0;z-index:2;display:flex;align-items:center;
+  padding-left:8vw;pointer-events:none}
+#intro .intro-link{pointer-events:auto;display:block;border:0;background:none;padding:0;cursor:pointer;text-align:left;
+  font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-weight:800;
+  font-size:clamp(42px,4.6vw,74px);letter-spacing:-.05em;line-height:1.12;color:#17191c;
+  animation:introFadeUp 1.1s cubic-bezier(.22,.61,.36,1) .35s backwards;
+  transition:color .25s ease,transform .3s ease,opacity .7s ease}
+#intro .intro-link::after{content:'';display:block;width:0;height:3px;margin-top:14px;background:currentColor;
+  transition:width .4s cubic-bezier(.22,.61,.36,1)}
+#intro .intro-link:hover,#intro .intro-link:focus-visible{color:#000;transform:translateX(6px);outline:none}
+#intro .intro-link:hover::after,#intro .intro-link:focus-visible::after{width:100%}
+/* 줌인(건물 내부 진입) + 페이드아웃 */
 #intro.zooming{opacity:0;pointer-events:none}
-#intro.zooming .intro-bg{animation:none;transform:scale(3.35)}
-#intro.zooming .intro-content{animation:none;opacity:0;transform:translate(-50%,24px)}
+#intro.zooming .intro-stage{transform:scale(3.4)}
+#intro.zooming .intro-link{animation:none;opacity:0}
 #intro.gone{display:none}
 @media (prefers-reduced-motion:reduce){
   #intro{transition-duration:.5s;transition-delay:0s}
-  #intro .intro-bg,#intro .intro-content{animation:none;transition:none}
-  #intro.zooming .intro-bg{transform:none}
+  #intro .intro-stage,#intro .intro-visual,#intro .intro-link{animation:none;transition:none}
+  #intro.zooming .intro-stage{transform:none}
 }
 /* 2026 learning experience redesign */
 :root{--ink:#101114;--muted:#a7a9ae;--soft:#f6f7f8;--line:#d7d9dd;--cooling:#1268ff;--power:#f3b81c;--it:#d936e7;--mgmt:#30353c;--water:#42aee8;--heat:#ef9d76;--tcs:#57c7bd;--electric:#f0c744}
@@ -658,16 +659,14 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 </head>
 <body>
 <!-- ============ 인트로 랜딩 스크린 ============ -->
-<div id="intro" role="dialog" aria-modal="true" aria-label="AI 데이터센터 인터랙티브 인프라 용어사전 인트로">
-  <div class="intro-bg">
-    <img id="introBgImg" src="images/Gemini_Generated_Image_5mtca45mtca45mtc.png" alt="SUNJIN AI 데이터센터 조감도" loading="eager" fetchpriority="high" draggable="false">
-  </div>
-  <div class="intro-shade"></div>
-  <div class="intro-content">
-    <div class="intro-eyebrow">AI Data Center · Infrastructure</div>
-    <h1 class="intro-title">인터랙티브 인프라 용어사전</h1>
-    <p class="intro-sub">AI 데이터센터를 구성하는 냉각 · 전력 · IT 인프라를<br>3D 공간에서 직접 탐색하며 학습해 보세요.</p>
-    <button id="introStart" class="intro-start" type="button">시작하기</button>
+<div id="intro" role="dialog" aria-modal="true" aria-label="AIDC 용어사전 인트로">
+  <div class="intro-stage">
+    <div class="intro-visual">
+      <img id="introBgImg" src="images/Gemini_Generated_Image_5mtca45mtca45mtc.png" alt="SUNJIN 사옥" loading="eager" fetchpriority="high" draggable="false">
+    </div>
+    <div class="intro-banner">
+      <button id="introStart" class="intro-link" type="button">AIDC 용어사전</button>
+    </div>
   </div>
 </div>
 
@@ -2207,8 +2206,6 @@ if (document.fonts && document.fonts.ready) {
     if(bgImg.complete&&bgImg.naturalWidth===0)markNoImg();
     else bgImg.addEventListener('error',markNoImg);
   }
-  try{startBtn.focus({preventScroll:true});}catch(e){}
-
   /* 3D 씬 등장 모션: 홈 시점보다 살짝 멀고 비껴간 지점에서 목표물을 향해 전진 */
   var camRaf=null;
   function cancelEntrance(){
