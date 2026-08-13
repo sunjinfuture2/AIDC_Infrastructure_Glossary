@@ -557,6 +557,8 @@ header.top-header{height:96.6976px;min-height:88px;max-height:120px;padding:48.2
 #leaders{z-index:2}
 #labels{z-index:3}
 #selectedLeader{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+#selectedLeader{transition:opacity .18s}
+#viewport.labels-moving #selectedLeader{opacity:0}
 /* coordinate-safe fixed guide frame */
 .lbl,.lbl:hover,.lbl.sel{transform:none!important;height:31px!important;min-height:31px!important}
 .lbl::before{top:0!important;bottom:2px!important}
