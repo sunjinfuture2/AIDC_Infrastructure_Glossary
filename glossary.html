@@ -1,4 +1,5 @@
-<html lang="ko" style="--design-scale: 0.8747379454926625;"><head>
+<html lang="ko">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Data Center · Interactive Learning 3D</title>
@@ -556,6 +557,8 @@ header.top-header{height:96.6976px;min-height:88px;max-height:120px;padding:48.2
 #leaders{z-index:2}
 #labels{z-index:3}
 #selectedLeader{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+#selectedLeader{transition:opacity .18s}
+#viewport.labels-moving #selectedLeader{opacity:0}
 /* coordinate-safe fixed guide frame */
 .lbl,.lbl:hover,.lbl.sel{transform:none!important;height:31px!important;min-height:31px!important}
 .lbl::before{top:0!important;bottom:2px!important}
@@ -613,7 +616,7 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 #tip{position:absolute!important}
 </style>
 </head>
-<body style="left: 0px; top: 66.6216px; transform: scale(0.874738);">
+<body>
 <header class="top-header">
   <div class="h-title">
     <h1>인터랙티브 인프라 용어사전</h1>
@@ -633,8 +636,8 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
       </button>
     </div>
     <div class="side-body">
-      <div class="detail" id="detail" style="--cat: #1111FF;"></div>
-      <div id="list"><div class="group-lbl"><span class="dot" style="background:#1111FF"></span>냉각 계통</div><div class="term-item" data-term="cooling-tower" style="--cat: #1111FF; opacity: 1;"><span class="tn">냉각탑</span><span class="te">Cooling Tower</span></div><div class="term-item" data-term="dry-cooler" style="--cat: #1111FF; opacity: 1;"><span class="tn">드라이쿨러 · 유체냉각기</span><span class="te">Dry Cooler / Fluid Cooler</span></div><div class="term-item" data-term="chiller" style="--cat: #1111FF; opacity: 1;"><span class="tn">칠러 (냉동기)</span><span class="te">Chiller</span></div><div class="term-item" data-term="pumps" style="--cat: #1111FF; opacity: 1;"><span class="tn">순환 펌프</span><span class="te">FWS Circulation Pumps</span></div><div class="term-item" data-term="tes" style="--cat: #1111FF; opacity: 1;"><span class="tn">축열조</span><span class="te">Thermal Energy Storage Tank</span></div><div class="term-item" data-term="water-treatment" style="--cat: #1111FF; opacity: 1;"><span class="tn">수처리 설비</span><span class="te">Water Treatment / Chemical Dosing</span></div><div class="term-item" data-term="cdu" style="--cat: #1111FF; opacity: 1;"><span class="tn">CDU</span><span class="te">Coolant Distribution Unit</span></div><div class="term-item" data-term="manifold" style="--cat: #1111FF; opacity: 1;"><span class="tn">매니폴드</span><span class="te">Coolant Manifold</span></div><div class="term-item" data-term="cold-plate" style="--cat: #1111FF; opacity: 1;"><span class="tn">콜드플레이트</span><span class="te">Cold Plate (Direct-to-Chip)</span></div><div class="term-item" data-term="tcs" style="--cat: #1111FF; opacity: 1;"><span class="tn">TCS 루프</span><span class="te">Technology Cooling System</span></div><div class="term-item" data-term="fws" style="--cat: #1111FF; opacity: 1;"><span class="tn">FWS 루프</span><span class="te">Facility Water System</span></div><div class="term-item" data-term="crah" style="--cat: #1111FF; opacity: 1;"><span class="tn">팬월 · CRAH</span><span class="te">Fan Wall / Computer Room Air Handler</span></div><div class="term-item" data-term="containment" style="--cat: #1111FF; opacity: 1;"><span class="tn">열통로 격리</span><span class="te">Hot / Cold Aisle Containment</span></div><div class="group-lbl"><span class="dot" style="background:#F3B81C"></span>전력 계통</div><div class="term-item" data-term="transformer" style="--cat: #F3B81C; opacity: 1;"><span class="tn">변압기 · 수전설비</span><span class="te">Transformer / Utility Intake</span></div><div class="term-item" data-term="switchgear" style="--cat: #F3B81C; opacity: 1;"><span class="tn">수배전반 · 스위치기어</span><span class="te">Switchgear</span></div><div class="term-item" data-term="generator" style="--cat: #F3B81C; opacity: 1;"><span class="tn">비상 발전기</span><span class="te">Backup Generator</span></div><div class="term-item" data-term="ups" style="--cat: #F3B81C; opacity: 1;"><span class="tn">UPS (무정전 전원장치)</span><span class="te">Uninterruptible Power Supply</span></div><div class="term-item" data-term="battery" style="--cat: #F3B81C; opacity: 1;"><span class="tn">배터리 (에너지 저장)</span><span class="te">Battery / Energy Storage</span></div><div class="term-item" data-term="busway" style="--cat: #F3B81C; opacity: 1;"><span class="tn">버스웨이</span><span class="te">Busway / Busduct</span></div><div class="term-item" data-term="pdu" style="--cat: #F3B81C; opacity: 1;"><span class="tn">PDU (분전반)</span><span class="te">Power Distribution Unit</span></div><div class="group-lbl"><span class="dot" style="background:#D936E7"></span>IT · 컴퓨트</div><div class="term-item" data-term="gpu-rack" style="--cat: #D936E7; opacity: 1;"><span class="tn">GPU 랙</span><span class="te">AI Compute Rack (e.g. NVL72)</span></div><div class="term-item" data-term="network" style="--cat: #D936E7; opacity: 1;"><span class="tn">네트워크 패브릭</span><span class="te">Network Fabric (InfiniBand / Ethernet)</span></div><div class="term-item" data-term="storage" style="--cat: #D936E7; opacity: 1;"><span class="tn">고성능 스토리지</span><span class="te">High-Performance Storage</span></div><div class="group-lbl"><span class="dot" style="background:#30353C"></span>감시 · 제어</div><div class="term-item" data-term="bms" style="--cat: #30353C; opacity: 1;"><span class="tn">DCIM · BMS</span><span class="te">DC Infrastructure Mgmt / Building Mgmt System</span></div></div>
+      <div class="detail" id="detail"></div>
+      <div id="list"></div>
     </div>
     <div class="scroll-edge scroll-edge-top" id="scrollTopFade"></div>
     <div class="scroll-edge scroll-edge-bottom" id="scrollBottomFade"></div>
@@ -661,18 +664,18 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
       </div>
     </div>
     <div id="viewport" class="">
-      <canvas id="gl" width="1149" height="659" style="cursor: default;"></canvas>
-      <svg id="leaders" width="1314" height="754" viewBox="0 0 1314 754"><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="376.3647945528417" y1="189.0033118733546" x2="631.5469999999999" y2="97.85"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="376.3647945528417" cy="189.0033118733546"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="346.10296779382935" y1="241.89247404242406" x2="421.58450000000005" y2="97.85"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="346.10296779382935" cy="241.89247404242406"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="546.2110772931911" y1="279.4120715438256" x2="295.607" y2="664.15"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="546.2110772931911" cy="279.4120715438256"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="643.6615436320368" y1="336.16817998081956" x2="1009.4794999999995" y2="97.85"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="643.6615436320368" cy="336.16817998081956"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="744.7548336835217" y1="299.5618447788507" x2="1132.378" y2="177.38600000000002"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="744.7548336835217" cy="299.5618447788507"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="950.1314387254527" y1="278.1670520215965" x2="1132.378" y2="237.03800000000007"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="950.1314387254527" cy="278.1670520215965"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="920.0734851293188" y1="278.97934947152163" x2="1132.378" y2="386.9940000000002"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="920.0734851293188" cy="278.97934947152163"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="867.4532334694298" y1="264.31447039867095" x2="1132.378" y2="446.64600000000024"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="867.4532334694298" cy="264.31447039867095"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="326.5425259500674" y1="290.4177012482054" x2="43.652" y2="256.9220000000001"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="326.5425259500674" cy="290.4177012482054"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="446.3799058933546" y1="287.1996913565049" x2="43.652" y2="197.27000000000004"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="446.3799058933546" cy="287.1996913565049"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="322.428387510623" y1="339.2504970366496" x2="43.652" y2="327.34200000000016"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="322.428387510623" cy="339.2504970366496"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="312.0883797430085" y1="258.85272685199664" x2="253.61450000000002" y2="97.85"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="312.0883797430085" cy="258.85272685199664"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="331.0300642468302" y1="398.2634008771767" x2="43.652" y2="406.8780000000002"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="331.0300642468302" cy="398.2634008771767"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="463.8978606243838" y1="375.9168590437571" x2="85.6445" y2="97.85"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="463.8978606243838" cy="375.9168590437571"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="398.4068799800489" y1="426.28034278613364" x2="43.652" y2="565.9500000000003"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="398.4068799800489" cy="426.28034278613364"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="434.5853032684605" y1="441.50710045652835" x2="127.637" y2="664.15"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="434.5853032684605" cy="441.50710045652835"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="647.2525597384551" y1="371.06166563416843" x2="43.652" y2="466.53000000000026"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="647.2525597384551" cy="371.06166563416843"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="837.796846944454" y1="408.18377778347093" x2="1132.378" y2="585.8340000000003"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="837.796846944454" cy="408.18377778347093"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="794.2053014019801" y1="416.42092304579785" x2="841.5094999999997" y2="664.15"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="794.2053014019801" cy="416.42092304579785"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="886.3426330325309" y1="442.40733269940205" x2="1051.4719999999995" y2="664.15"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="886.3426330325309" cy="442.40733269940205"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="654.5424484209143" y1="478.71210113809514" x2="463.57700000000006" y2="664.15"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="654.5424484209143" cy="478.71210113809514"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="962.5569439144781" y1="454.3422529898972" x2="1132.378" y2="526.1820000000002"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="962.5569439144781" cy="454.3422529898972"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="1086.7067106368893" y1="360.36775225498707" x2="1132.378" y2="296.6900000000001"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="1086.7067106368893" cy="360.36775225498707"></circle><line stroke="#929497" stroke-width="1.6" stroke-dasharray="0.1 7" stroke-linecap="round" stroke-opacity=".88" opacity=".78" x1="1152.9888998164406" y1="404.48987672849506" x2="1132.378" y2="356.34200000000016"></line><circle r="1.25" fill="#929497" stroke="#929497" stroke-opacity=".88" opacity=".78" cx="1152.9888998164406" cy="404.48987672849506"></circle></svg>
-      <div id="labels"><div class="lbl" data-label-id="cooling-tower" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 631.547px; top: 68.85px;"><div class="lt">냉각탑</div><div class="le">Cooling Tower</div></div><div class="lbl" data-label-id="dry-cooler" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 421.584px; top: 68.85px;"><div class="lt">드라이쿨러 · 유체냉각기</div><div class="le">Dry Cooler / Fluid Cooler</div></div><div class="lbl" data-label-id="crah" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 295.607px; top: 664.15px;"><div class="lt">팬월 · CRAH</div><div class="le">Fan Wall / Computer Room Air Handler</div></div><div class="lbl" data-label-id="gpu-rack" style="--cat: #D936E7; width: 137.97px; max-width: 137.97px; left: 1009.48px; top: 68.85px;"><div class="lt">GPU 랙</div><div class="le">AI Compute Rack (e.g. NVL72)</div></div><div class="lbl" data-label-id="busway" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 148.386px;"><div class="lt">버스웨이</div><div class="le">Busway / Busduct</div></div><div class="lbl" data-label-id="network" style="--cat: #D936E7; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 208.038px;"><div class="lt">네트워크 패브릭</div><div class="le">Network Fabric (InfiniBand / Ethernet)</div></div><div class="lbl" data-label-id="storage" style="--cat: #D936E7; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 386.994px;"><div class="lt">고성능 스토리지</div><div class="le">High-Performance Storage</div></div><div class="lbl" data-label-id="bms" style="--cat: #30353C; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 446.646px;"><div class="lt">DCIM · BMS</div><div class="le">DC Infrastructure Mgmt / Building Mgmt System</div></div><div class="lbl" data-label-id="switchgear" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 43.652px; top: 227.922px;"><div class="lt">수배전반 · 스위치기어</div><div class="le">Switchgear</div></div><div class="lbl" data-label-id="ups" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 43.652px; top: 168.27px;"><div class="lt">UPS (무정전 전원장치)</div><div class="le">Uninterruptible Power Supply</div></div><div class="lbl" data-label-id="battery" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 43.652px; top: 327.342px;"><div class="lt">배터리 (에너지 저장)</div><div class="le">Battery / Energy Storage</div></div><div class="lbl" data-label-id="fws" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 253.614px; top: 68.85px;"><div class="lt">FWS 루프</div><div class="le">Facility Water System</div></div><div class="lbl" data-label-id="chiller" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 43.652px; top: 406.878px;"><div class="lt">칠러 (냉동기)</div><div class="le">Chiller</div></div><div class="lbl" data-label-id="tes" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 85.6445px; top: 68.85px;"><div class="lt">축열조</div><div class="le">Thermal Energy Storage Tank</div></div><div class="lbl" data-label-id="pumps" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 43.652px; top: 565.95px;"><div class="lt">순환 펌프</div><div class="le">FWS Circulation Pumps</div></div><div class="lbl" data-label-id="water-treatment" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 127.637px; top: 664.15px;"><div class="lt">수처리 설비</div><div class="le">Water Treatment / Chemical Dosing</div></div><div class="lbl" data-label-id="manifold" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 43.652px; top: 466.53px;"><div class="lt">매니폴드</div><div class="le">Coolant Manifold</div></div><div class="lbl" data-label-id="containment" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 585.834px;"><div class="lt">열통로 격리</div><div class="le">Hot / Cold Aisle Containment</div></div><div class="lbl" data-label-id="cold-plate" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 841.509px; top: 664.15px;"><div class="lt">콜드플레이트</div><div class="le">Cold Plate (Direct-to-Chip)</div></div><div class="lbl" data-label-id="tcs" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 1051.47px; top: 664.15px;"><div class="lt">TCS 루프</div><div class="le">Technology Cooling System</div></div><div class="lbl" data-label-id="cdu" style="--cat: #1111FF; width: 137.97px; max-width: 137.97px; left: 463.577px; top: 664.15px;"><div class="lt">CDU</div><div class="le">Coolant Distribution Unit</div></div><div class="lbl" data-label-id="pdu" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 526.182px;"><div class="lt">PDU (분전반)</div><div class="le">Power Distribution Unit</div></div><div class="lbl" data-label-id="transformer" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 267.69px;"><div class="lt">변압기 · 수전설비</div><div class="le">Transformer / Utility Intake</div></div><div class="lbl" data-label-id="generator" style="--cat: #F3B81C; width: 137.97px; max-width: 137.97px; left: 1132.38px; top: 327.342px;"><div class="lt">비상 발전기</div><div class="le">Backup Generator</div></div></div>
+      <canvas id="gl"></canvas>
+      <svg id="leaders"></svg>
+      <div id="labels"></div>
       <svg id="selectedLeader" aria-hidden="true" width="1314" height="754" viewBox="0 0 1314 754"></svg>
-      <div id="selectionCard" class="selection-card" style="--card-color: #1111FF;"><div class="sc-name">팬월 · CRAH</div><div class="sc-en">Fan Wall / Computer Room Air Handler</div><div class="sc-short">냉수 코일과 팬으로 데이터홀 공기를 냉각하는 공조 설비.</div></div>
+      <div id="selectionCard" class="selection-card"></div>
       <div class="copyright">© 2026 SUNJIN Engineering &amp; Architecture. All rights reserved.</div>
       <div id="fallback">3D 라이브러리(three.js)를 불러오지 못했습니다.<br>인터넷 연결 상태를 확인한 뒤 페이지를 새로고침해 주세요.</div>
     </div>
   </main>
 </div>
 
-<div id="tip" role="tooltip" class="" style="display: none; --tip-color: #1111FF; left: 969.987px; top: 231.057px;"><div class="t-kicker">냉각 계통</div><div class="t-name">드라이쿨러 · 유체냉각기</div><div class="t-en">Dry Cooler / Fluid Cooler</div><div class="t-short">물 소비 없이 공기-액체 열교환으로 고온수 루프의 열을 방출하는 설비.</div></div>
+<div id="tip" role="tooltip" style="display: none;"></div>
 
 <script>
 var DESIGN_WIDTH=1908,DESIGN_HEIGHT=928,designScale=1;
@@ -1520,39 +1523,15 @@ function layoutLabels(force){
   }
   var slots=[];
   function addHorizontal(count,y,side){
-  if(!count)return;
-  var step=labelW+gapX, space=innerW-labelW;
-  var naturalWidth=(count-1)*step;
-  var startX;
-  if(count===1){ startX=frame.l+space/2; }
-  else if(naturalWidth<=space){
-    /* 여유가 있으면 균등 분산 */
-    startX=frame.l;
-    for(var n=0;n<count;n++)slots.push({x:startX+space*n/(count-1),y:y,side:side});
-    return;
-  } else {
-    /* 여유가 없으면 최소 간격(step)으로 순차 배치 (겹침 방지 최우선) */
-    startX=frame.l;
+    if(!count)return;var space=innerW-labelW;
+    for(var n=0;n<count;n++)slots.push({x:frame.l+(count===1?space/2:space*n/(count-1)),y:y,side:side});
   }
-  for(var n=0;n<count;n++)slots.push({x:startX+n*step,y:y,side:side});
-}
-function addVertical(count,x,side){
-  if(!count)return;
-  var step=labelH+gapY;
-  var y0=frame.t+labelH+gapY, y1=frame.b-labelH*2-gapY;
-  var naturalHeight=(count-1)*step;
-  if(count===1){ slots.push({x:x,y:(y0+y1)/2,side:side}); return; }
-  if(naturalHeight<=(y1-y0)){
-    /* 여유가 있으면 균등 분산 */
-    for(var n=0;n<count;n++)slots.push({x:x,y:y0+(y1-y0)*n/(count-1),side:side});
-  } else {
-    /* 여유가 없으면 최소 간격(step)으로 순차 배치 (겹침 방지 최우선) */
-    for(var n=0;n<count;n++)slots.push({x:x,y:y0+n*step,side:side});
+  function addVertical(count,x,side){
+    if(!count)return;var y0=frame.t+labelH+gapY,y1=frame.b-labelH*2-gapY;
+    for(var n=0;n<count;n++)slots.push({x:x,y:count===1?(y0+y1)/2:y0+(y1-y0)*n/(count-1),side:side});
   }
-}
   addHorizontal(topCount,frame.t,'top');addHorizontal(bottomCount,frame.b-labelH,'bottom');
   addVertical(leftCount,frame.l,'left');addVertical(rightCount,frame.r-labelW,'right');
-  var baseSlots=slots.slice();   /* ← 추가: 촘촘한 회피 후보가 섞이기 전 스냅샷 */
   /* Extra aligned perimeter candidates let occupied model areas remain unused. */
   (function addAvoidanceCandidates(){
     var maxX=frame.r-labelW,yTop=frame.t,yBottom=frame.b-labelH;
@@ -1617,30 +1596,24 @@ function addVertical(count,x,side){
   function slotsOverlap(a,b){
     return !(a.x+labelW+gapX<=b.x||b.x+labelW+gapX<=a.x||a.y+labelH+gapY<=b.y||b.y+labelH+gapY<=a.y);
   }
-  var cx=w/2,cy=h/2;
-
-/* 슬롯을 화면 둘레를 따라 시계방향 하나의 링(ring)으로 정렬 */
-var topSlots=baseSlots.filter(function(s){return s.side==='top';}).sort(function(a,b){return a.x-b.x;});
-var rightSlots=baseSlots.filter(function(s){return s.side==='right';}).sort(function(a,b){return a.y-b.y;});
-var bottomSlots=baseSlots.filter(function(s){return s.side==='bottom';}).sort(function(a,b){return b.x-a.x;});
-var leftSlots=baseSlots.filter(function(s){return s.side==='left';}).sort(function(a,b){return b.y-a.y;});
-var ringSlots=topSlots.concat(rightSlots,bottomSlots,leftSlots);
-
-/* 아이템도 중심 기준 시계방향 각도로 정렬 (위쪽=0도 시작) */
-function ringAngle(x,y){
-  var a=Math.atan2(y-cy,x-cx)+Math.PI/2;
-  if(a<0)a+=Math.PI*2;
-  return a;
-}
-items.sort(function(a,b){return ringAngle(a.sx,a.sy)-ringAngle(b.sx,b.sy);});
-
-/* 같은 순환 순서로 슬롯을 균등 배정 → 선 교차가 발생하지 않음 */
-var assigned=[];
-for(var k=0;k<items.length;k++){
-  var idx=Math.floor(k*ringSlots.length/items.length);
-  var slot=ringSlots[Math.min(idx,ringSlots.length-1)];
-  assigned.push({item:items[k],slot:slot,end:endpoint(slot,items[k])});
-}
+  var cx=w/2,cy=h/2,used={},assigned=[];
+  items.sort(function(a,b){return Math.hypot(b.sx-cx,b.sy-cy)-Math.hypot(a.sx-cx,a.sy-cy);});
+  for(var k=0;k<items.length;k++){
+    var item=items[k],best=-1,bestScore=Infinity,ivx=item.sx-cx,ivy=item.sy-cy,il=Math.max(1,Math.hypot(ivx,ivy));ivx/=il;ivy/=il;
+  for(var pass2=0;pass2<2;pass2++){
+      for(var q=0;q<slots.length;q++){
+        if(used[q])continue;
+        var blocked=false;for(var ba=0;ba<assigned.length;ba++)if(slotsOverlap(slots[q],assigned[ba].slot)){blocked=true;break;}
+        if(pass2===0&&blocked)continue;
+        var e=endpoint(slots[q],item),svx=e.x-cx,svy=e.y-cy,sl=Math.max(1,Math.hypot(svx,svy));svx/=sl;svy/=sl;
+        var score=Math.hypot(item.sx-e.x,item.sy-e.y)+(1-(ivx*svx+ivy*svy))*1100+(slots[q].modelPenalty||0)+(blocked?5000000:0);
+        for(var a=0;a<assigned.length;a++)if(cross({x:item.sx,y:item.sy},e,{x:assigned[a].item.sx,y:assigned[a].item.sy},assigned[a].end))score+=100000;
+        if(score<bestScore){bestScore=score;best=q;}
+      }
+      if(best>=0)break;
+  }
+    if(best<0)continue;used[best]=true;assigned.push({item:item,slot:slots[best],end:endpoint(slots[best],item)});
+  }
   function assignmentScore(arr){
     var total=0;
     for(var i=0;i<arr.length;i++){
@@ -1651,9 +1624,25 @@ for(var k=0;k<items.length;k++){
       for(var j=i+1;j<arr.length;j++){
         var aj=arr[j].item,je=endpoint(arr[j].slot,aj);
         if(cross({x:ai.sx,y:ai.sy},ae,{x:aj.sx,y:aj.sy},je))total+=140000;
+        if(slotsOverlap(arr[i].slot,arr[j].slot))total+=8000000;
       }
     }
     return total;
+  }
+  var currentScore=assignmentScore(assigned);
+  for(var pass=0;pass<18;pass++){
+    var bestSwapI=-1,bestSwapJ=-1,bestSwapScore=currentScore;
+    for(var si=0;si<assigned.length-1;si++)for(var sj=si+1;sj<assigned.length;sj++){
+      var hold=assigned[si].slot;assigned[si].slot=assigned[sj].slot;assigned[sj].slot=hold;
+      var trial=assignmentScore(assigned);
+      hold=assigned[si].slot;assigned[si].slot=assigned[sj].slot;assigned[sj].slot=hold;
+      if(trial<bestSwapScore-0.5){bestSwapScore=trial;bestSwapI=si;bestSwapJ=sj;}
+    }
+    if(bestSwapI<0)break;
+    var finalHold=assigned[bestSwapI].slot;assigned[bestSwapI].slot=assigned[bestSwapJ].slot;assigned[bestSwapJ].slot=finalHold;
+    assigned[bestSwapI].end=endpoint(assigned[bestSwapI].slot,assigned[bestSwapI].item);
+    assigned[bestSwapJ].end=endpoint(assigned[bestSwapJ].slot,assigned[bestSwapJ].item);
+    currentScore=bestSwapScore;
   }
   for(var z=0;z<assigned.length;z++){
     var A=assigned[z],item=A.item,x=A.slot.x,y=A.slot.y;
@@ -1704,20 +1693,35 @@ function setHover(term){
 }
 var selected=null, xraySaved=[], focusSaved=[];
 function restoreFocus(){
-  for(var i=0;i<focusSaved.length;i++)focusSaved[i].material.color.copy(focusSaved[i].color);
+  for(var i=0;i<focusSaved.length;i++){
+    var f=focusSaved[i];
+    f.material.color.copy(f.color);
+    if(f.emissive)f.material.emissive.copy(f.emissive);
+    if(f.hadVC){f.material.vertexColors=true;f.material.needsUpdate=true;}
+  }
   focusSaved=[];
 }
 function applyFocus(term){
   restoreFocus();
-  for(var id in groupReg){
-    if(id===term)continue;
-    groupReg[id].traverse(function(o){
-      if(!o.material||!o.material.color||o.userData.flowPart)return;
-      for(var k=0;k<focusSaved.length;k++)if(focusSaved[k].material===o.material)return;
-      focusSaved.push({material:o.material,color:o.material.color.clone()});
-      var hsl={h:0,s:0,l:0};o.material.color.getHSL(hsl);o.material.color.setHSL(hsl.h,hsl.s*.1,hsl.l);
-    });
-  }
+  var keep=groupReg[term];
+  var grayTarget=new THREE.Color('#d2d4d6');
+  scene.traverse(function(o){
+    if(!o.material||!o.material.color||o.userData.selectionOutline)return;
+    for(var p=o;p;p=p.parent)if(p===keep)return;
+    for(var k=0;k<focusSaved.length;k++)if(focusSaved[k].material===o.material)return;
+    var entry={material:o.material,color:o.material.color.clone()};
+    if(o.material.emissive)entry.emissive=o.material.emissive.clone();
+    if(o.material.vertexColors){
+      entry.hadVC=true;
+      o.material.vertexColors=false;
+      o.material.needsUpdate=true;
+      o.material.color.set('#c4c7ca');
+    }else{
+      o.material.color.lerp(grayTarget,.78);
+    }
+    if(o.material.emissive)o.material.emissive.setHex(0x000000);
+    focusSaved.push(entry);
+  });
 }
 var selectionOutline=[];
 function clearSelectionOutline(){
@@ -1804,7 +1808,7 @@ function clearXray(){
 /* ============ 사이드바 ============ */
 var listEl=document.getElementById('list');
 var order=['cooling','power','it','mgmt'];
-var catCollapsed={cooling:false,power:false,it:false,mgmt:false};
+var catCollapsed={cooling:true,power:true,it:true,mgmt:true};
 function buildList(filterText){
   listEl.innerHTML='';
   var q=(filterText||'').trim().toLowerCase(),total=0;
@@ -1812,7 +1816,7 @@ function buildList(filterText){
     var cat=order[o],ids=[];
     for(var id in TERMS){
       var t=TERMS[id];if(t.cat!==cat)continue;
-      if(q&&(t.name+t.en+t.short).toLowerCase().indexOf(q)===-1)continue;
+      if(q&&(t.name+t.en).toLowerCase().indexOf(q)===-1)continue;
       ids.push(id);
     }
     if(!ids.length)continue;
@@ -1840,6 +1844,11 @@ function buildList(filterText){
 var searchInput=document.getElementById('q');
 function syncSearchClear(){document.getElementById('searchClear').classList.toggle('show',searchInput.value.length>0);}
 searchInput.addEventListener('input',function(e){buildList(e.target.value);syncSearchClear();});
+searchInput.addEventListener('keydown',function(e){
+  if(e.key!=='Enter')return;
+  var first=listEl.querySelector('.term-item');
+  if(first)select(first.getAttribute('data-term'));
+});
 syncSearchClear();
 var detailEl=document.getElementById('detail');
 function select(id){
@@ -1901,7 +1910,7 @@ function syncSel(){
     labelObjs[j].div.classList.toggle('sel',same);
     labelObjs[j].div.classList.toggle('dim',!!selected&&!same);
     labelObjs[j].line.setAttribute('stroke',same?'#000':'#929497');
-    labelObjs[j].line.setAttribute('stroke-dasharray',same?'none':'0.1 7');
+    labelObjs[j].line.setAttribute('stroke-dasharray',same?'0.1 7':'0.1 7');
     labelObjs[j].line.setAttribute('stroke-width',same?'1.65':'1.6');
     labelObjs[j].dot.setAttribute('fill',same?'#000':'#929497');labelObjs[j].dot.setAttribute('r',same?'2.24':'1.25');labelObjs[j].dot.setAttribute('stroke',same?'#000':'#929497');labelObjs[j].dot.setAttribute('stroke-opacity',same?'1':'.88');labelObjs[j].line.setAttribute('stroke-opacity',same?'1':'.88');
     labelObjs[j].line.setAttribute('opacity',same?'1':(selected?'.6':'.78'));labelObjs[j].dot.setAttribute('opacity',same?'1':(selected?'.6':'.78'));
@@ -1971,11 +1980,11 @@ function syncFlowUI(){
 (function(){
   var btns=document.querySelectorAll('.flow-chip');
   for(var i=0;i<btns.length;i++)(function(btn){
-    btn.onclick=function(){var key=btn.getAttribute('data-flow');flowState[key]=!flowState[key];syncFlowUI();};
+    btn.onclick=function(){var key=btn.getAttribute('data-flow');flowState[key]=!flowState[key];syncFlowUI();if(selected)applyFocus(selected);};
   })(btns[i]);
   document.getElementById('flowMaster').onclick=function(){
-    flowOn=!flowOn;syncFlowUI();
-  };
+  flowOn=!flowOn;syncFlowUI();if(selected)applyFocus(selected);
+};
 })();
 document.getElementById('resetBtn').onclick=function(){
   sph.az=HOME.az;sph.pol=HOME.pol;sph.dist=HOME.dist;target.set(HOME.tx,HOME.ty,HOME.tz);updateCam();
@@ -2020,9 +2029,18 @@ window.addEventListener('mousemove',function(e){
 window.addEventListener('mouseup',function(){dragMode=0;});
 canvas.addEventListener('contextmenu',function(e){e.preventDefault();});
 canvas.addEventListener('wheel',function(e){
-  if(!(e.ctrlKey||e.metaKey))return;      /* 일반 휠 = 페이지 기본 동작 */
   e.preventDefault();
-  sph.dist=Math.max(380,Math.min(3600,sph.dist*(e.deltaY>0?1.1:1/1.1)));
+  var newDist=Math.max(380,Math.min(3600,sph.dist*(e.deltaY>0?1.1:1/1.1)));
+  var applied=newDist/sph.dist;               /* clamp 반영된 실제 배율 */
+  var r=canvas.getBoundingClientRect();
+  mv.x=((e.clientX-r.left)/r.width)*2-1;
+  mv.y=-((e.clientY-r.top)/r.height)*2+1;
+  ray.setFromCamera(mv,camera);
+  var pt=new THREE.Vector3(),hits=ray.intersectObjects(pickables,false);
+  if(hits.length)pt.copy(hits[0].point);
+  else if(!ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0),0),pt))pt=null;
+  if(pt)target.lerp(pt,1-applied);            /* 커서 지점 쪽으로 시점 이동 */
+  sph.dist=newDist;
   updateCam();
 },{passive:false});
 
@@ -2074,7 +2092,8 @@ function animate(ts){
     wf.m.material.opacity+= (tgt-wf.m.material.opacity)*0.18;
     wf.e.material.opacity=wf.m.material.opacity>0.4?wf.e.material.userData.baseOp:0;
   }
-  var roofTgt=(sph.pol<0.62)?0.12:0.96;
+  var underRoof=(selected==='switchgear'||selected==='ups'||selected==='battery');
+  var roofTgt=underRoof?0.08:((sph.pol<0.62)?0.12:0.96);
   roofMesh.m.material.transparent=true;
   roofMesh.m.material.opacity+=(roofTgt-roofMesh.m.material.opacity)*0.15;
   roofMesh.e.material.transparent=true;
@@ -2111,6 +2130,9 @@ function resize(){
 }
 window.addEventListener('resize',resize);
 resize(); updateCam(); buildList(''); clearSel(); updateScrollCues(); animate(0);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(function(){ labelsDirty = true; layoutLabels(true); });
+}
 </script>
 
 
