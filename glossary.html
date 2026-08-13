@@ -2078,7 +2078,8 @@ function animate(ts){
     wf.m.material.opacity+= (tgt-wf.m.material.opacity)*0.18;
     wf.e.material.opacity=wf.m.material.opacity>0.4?wf.e.material.userData.baseOp:0;
   }
-  var roofTgt=(sph.pol<0.62)?0.12:0.96;
+  var underRoof=(selected==='switchgear'||selected==='ups'||selected==='battery');
+  var roofTgt=underRoof?0.08:((sph.pol<0.62)?0.12:0.96);
   roofMesh.m.material.transparent=true;
   roofMesh.m.material.opacity+=(roofTgt-roofMesh.m.material.opacity)*0.15;
   roofMesh.e.material.transparent=true;
