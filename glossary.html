@@ -1696,15 +1696,15 @@ function restoreFocus(){
 }
 function applyFocus(term){
   restoreFocus();
-  for(var id in groupReg){
-    if(id===term)continue;
-    groupReg[id].traverse(function(o){
-      if(!o.material||!o.material.color||o.userData.flowPart)return;
-      for(var k=0;k<focusSaved.length;k++)if(focusSaved[k].material===o.material)return;
-      focusSaved.push({material:o.material,color:o.material.color.clone()});
-      var hsl={h:0,s:0,l:0};o.material.color.getHSL(hsl);o.material.color.setHSL(hsl.h,hsl.s*.1,hsl.l);
-    });
-  }
+  var keep=groupReg[term];
+  scene.traverse(function(o){
+    if(!o.material||!o.material.color||o.userData.selectionOutline)return;
+    for(var p=o;p;p=p.parent)if(p===keep)return;
+    for(var k=0;k<focusSaved.length;k++)if(focusSaved[k].material===o.material)return;
+    focusSaved.push({material:o.material,color:o.material.color.clone()});
+    var hsl={h:0,s:0,l:0};o.material.color.getHSL(hsl);
+    o.material.color.setHSL(hsl.h,hsl.s*.1,hsl.l);
+  });
 }
 var selectionOutline=[];
 function clearSelectionOutline(){
