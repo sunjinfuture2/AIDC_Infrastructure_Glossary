@@ -1816,7 +1816,7 @@ function buildList(filterText){
     var cat=order[o],ids=[];
     for(var id in TERMS){
       var t=TERMS[id];if(t.cat!==cat)continue;
-      if(q&&(t.name+t.en+t.short).toLowerCase().indexOf(q)===-1)continue;
+      if(q&&(t.name+t.en).toLowerCase().indexOf(q)===-1)continue;
       ids.push(id);
     }
     if(!ids.length)continue;
