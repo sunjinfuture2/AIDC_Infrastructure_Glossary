@@ -23,6 +23,8 @@ export default function Toolbar() {
   const toggleFlow = useAppStore((s) => s.toggleFlow)
   const flowOn = useAppStore((s) => s.flowOn)
   const toggleFlowMaster = useAppStore((s) => s.toggleFlowMaster)
+  const labelsOn = useAppStore((s) => s.labelsOn)
+  const toggleLabels = useAppStore((s) => s.toggleLabels)
   const requestReset = useAppStore((s) => s.requestReset)
 
   return (
@@ -58,6 +60,15 @@ export default function Toolbar() {
           aria-pressed={flowOn}
           onClick={toggleFlowMaster}
         />
+        <button
+          className={`label-toggle${labelsOn ? ' on' : ''}`}
+          type="button"
+          aria-label="장비 라벨 켜기 또는 끄기"
+          aria-pressed={labelsOn}
+          onClick={toggleLabels}
+        >
+          라벨
+        </button>
         <button className="reset-view" type="button" aria-label="3D 시점 초기화" onClick={requestReset}>
           <svg viewBox="0 0 40 40" aria-hidden="true">
             <path d="M30 20A10 10 0 1 1 27.1 12.9" />

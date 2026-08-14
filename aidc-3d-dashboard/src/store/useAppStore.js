@@ -31,6 +31,10 @@ export const useAppStore = create((set) => ({
   selected: null,
   setSelected: (selected) => set({ selected }),
 
+  /** 장비 라벨(리더라인 포함) 표시 여부 */
+  labelsOn: true,
+  toggleLabels: () => set((s) => ({ labelsOn: !s.labelsOn })),
+
   /** 카메라 리셋 트리거 (증가 카운터) */
   resetTick: 0,
   requestReset: () => set((s) => ({ resetTick: s.resetTick + 1 })),

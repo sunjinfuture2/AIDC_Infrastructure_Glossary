@@ -128,6 +128,7 @@ export default function Viewport() {
     }
 
     function layoutLabels(force) {
+      if (!useAppStore.getState().labelsOn) return
       if (host.classList.contains('labels-moving')) return
       if (!force && !labelsDirty) return
       labelsDirty = false
@@ -665,8 +666,12 @@ export default function Viewport() {
     canvas.addEventListener('click', onClick)
 
     /* ── 스토어 구독 ── */
-    let prev = { selected: null, filter: 'all', floor: 'all', flowState: useAppStore.getState().flowState, resetTick: 0 }
+    let prev = { selected: null, filter: 'all', floor: 'all', flowState: useAppStore.getState().flowState, resetTick: 0, labelsOn: true }
     const unsubscribe = useAppStore.subscribe((state) => {
+      if (state.labelsOn !== prev.labelsOn) {
+        host.classList.toggle('labels-off', !state.labelsOn)
+        if (state.labelsOn) { labelsDirty = true; layoutLabels(true) }
+      }
       if (state.resetTick !== prev.resetTick) {
         sph.az = HOME.az; sph.pol = HOME.pol; sph.dist = HOME.dist
         target.set(HOME.tx, HOME.ty, HOME.tz)
@@ -698,7 +703,7 @@ export default function Viewport() {
           clearXray(); clearSelectionOutline(); restoreFocus(); syncLabels(); refreshSelectedLeader()
         }
       }
-      prev = { selected: state.selected, filter: state.filter, floor: state.floor, flowState: state.flowState, resetTick: state.resetTick }
+      prev = { selected: state.selected, filter: state.filter, floor: state.floor, flowState: state.flowState, resetTick: state.resetTick, labelsOn: state.labelsOn }
     })
 
     /* ── 렌더 루프 ── */
