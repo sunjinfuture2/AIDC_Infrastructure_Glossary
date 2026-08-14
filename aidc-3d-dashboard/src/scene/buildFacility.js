@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import {
-  ctx, resetCtx, setFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
+  ctx, resetCtx, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
   topSurface, gradientGroundSurface, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
 } from './helpers.js'
 
@@ -105,7 +105,7 @@ function buildB1() {
       for (let b = 0; b < 3; b++) {
         cylY(g, x + 0.9 + b * 1.3, 7.5, 3.2, 0.28, 0.9, '#EDE7D8')   // 부싱
         const cap = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 10), lam('#C9971B'))
-        cap.position.copy(V(x + 0.9 + b * 1.3, 7.5, 4.3)); g.add(cap)
+        cap.position.copy(V(x + 0.9 + b * 1.3, 7.5, 4.3)); g.add(cap); tagFloor(cap)
       }
       box(g, x + 0.4, 11.5, 0, 3.6, 1.6, 2.2, '#E4C25C', { noedge: true })  // 제어반
     }
@@ -161,7 +161,7 @@ function buildB1() {
       cylY(g, x, y, 0, 3.4, 6.8, '#E7EDF2', { seg: 26 })
       const dome = new THREE.Mesh(
         new THREE.SphereGeometry(3.4, 26, 12, 0, Math.PI * 2, 0, Math.PI / 2), lam('#DDE5EB'))
-      dome.position.copy(V(x, y, 6.8)); g.add(dome); ctx.pickables.push(dome)
+      dome.position.copy(V(x, y, 6.8)); g.add(dome); ctx.pickables.push(dome); tagFloor(dome)
       cylY(g, x, y, 2.2, 3.55, 0.28, '#C5D3DE', { seg: 26 })
       cylY(g, x, y, 4.7, 3.55, 0.28, '#C5D3DE', { seg: 26 })
       ladder(g, x + 3.9, y, 0, 6.4)
@@ -650,6 +650,7 @@ function buildFlows() {
     const curve = new THREE.QuadraticBezierCurve3(V(-4, 98, 10), V(4, 88, 6.5), V(12, 80, 3.4))
     const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.12, 6, false), lam('#C9A94F'))
     d.add(tube)
+    tagFloor(tube)
   })()
 
   // 전력: 수배전반 → 변압기 → 동측 EPS 라이저 (B1→2F)
