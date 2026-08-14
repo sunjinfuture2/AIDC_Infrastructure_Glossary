@@ -168,6 +168,22 @@ button { background: none; border: 0; cursor: pointer; }
 }
 .flow-master.on::after { left: calc(100% - var(--knob-w) - 4.5px); background: #00c968; }
 
+/* 라벨 ON/OFF 토글 */
+.label-toggle {
+  font-size: clamp(9px, 0.72vw, 11.5px);
+  font-weight: 650;
+  color: #96999e;
+  padding: 4px 11px;
+  border: 1px solid #dedfe2;
+  border-radius: 999px;
+  background: #fff;
+  white-space: nowrap;
+  flex: none;
+  transition: all 0.16s ease;
+}
+.label-toggle:hover { border-color: #9a9da2; color: #45484d; }
+.label-toggle.on { background: #111; border-color: #111; color: #fff; }
+
 .reset-view {
   display: inline-flex;
   align-items: center;
@@ -193,6 +209,9 @@ button { background: none; border: 0; cursor: pointer; }
 .viewport3d.labels-moving .labels,
 .viewport3d.labels-moving .leaders,
 .viewport3d.labels-moving .selected-leader { opacity: 0; }
+.viewport3d.labels-off .labels,
+.viewport3d.labels-off .leaders,
+.viewport3d.labels-off .selected-leader { display: none; }
 
 .lbl {
   position: absolute;
