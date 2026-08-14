@@ -131,6 +131,9 @@ aside{border-left:1px solid var(--line);background:#FFF;display:flex;flex-direct
   transition:opacity .45s ease,transform .45s cubic-bezier(.22,.61,.36,1),visibility 0s linear .45s}
 #intro .intro-link:hover~.intro-desc,#intro .intro-link:focus-visible~.intro-desc{
   opacity:1;visibility:visible;transform:translateY(0);transition-delay:0s}
+/* 배너 목록: 항목 간 간격, 링크형 배너(뉴스 대시보드) */
+#intro .intro-item+.intro-item{margin-top:7vh}
+#intro a.intro-link{text-decoration:none}
 /* 줌인(건물 내부 진입) + 페이드아웃 */
 #intro.zooming{opacity:0;pointer-events:none}
 #intro.zooming .intro-stage{transform:scale(3.4)}
@@ -673,8 +676,14 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
     </div>
     <div class="intro-banner">
       <div class="intro-panel">
-        <button id="introStart" class="intro-link" type="button">AIDC 용어사전</button>
-        <p class="intro-desc">AI 데이터센터를 구성하는 냉각 · 전력 · IT 인프라 설비를<br>3D 공간에서 직접 탐색하며 학습하는 인터랙티브 용어사전입니다.</p>
+        <div class="intro-item">
+          <button id="introStart" class="intro-link" type="button">AIDC 용어사전</button>
+          <p class="intro-desc">AI 데이터센터를 구성하는 냉각 · 전력 · IT 인프라 설비를<br>3D 공간에서 직접 탐색하며 학습하는 인터랙티브 용어사전입니다.</p>
+        </div>
+        <div class="intro-item">
+          <a id="introNews" class="intro-link" href="https://sunjinfuture2.github.io/sunjin-aidcnews/">AIDC 동향 모니터링</a>
+          <p class="intro-desc">정부기관 · 공기업 보도자료와 AI 데이터센터 관련 최신 뉴스를<br>한 페이지에서 모아 보는 모니터링 대시보드입니다.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -2247,9 +2256,14 @@ if (document.fonts && document.fonts.ready) {
   }
 
   var started=false;
-  function startExperience(){
+  function startExperience(dest){
     if(started)return; started=true;
     intro.classList.add('zooming');               /* 줌인 + 페이드아웃, pointer-events 즉시 해제 → 뒤 화면 바로 조작 가능 */
+    if(dest){
+      /* 외부 페이지 연결: 줌인 모션이 끝나갈 때 이동 */
+      setTimeout(function(){window.location.href=dest;},Math.max(ZOOM_MS-200,0));
+      return;
+    }
     if(!reduceMotion&&typeof sph!=='undefined'&&typeof HOME!=='undefined'&&typeof updateCam==='function'){
       /* 페이드로 씬이 드러나기 전에 시작 시점을 미리 옮겨 두고, 살짝 늦게 전진을 시작 */
       sph.az=HOME.az-0.17;sph.pol=Math.min(1.38,HOME.pol+0.06);sph.dist=Math.min(3600,HOME.dist*1.45);
@@ -2261,7 +2275,14 @@ if (document.fonts && document.fonts.ready) {
       if(intro.parentNode)intro.parentNode.removeChild(intro);
     },ZOOM_MS+120);
   }
-  startBtn.addEventListener('click',startExperience);
+  startBtn.addEventListener('click',function(){startExperience(null);});
+  var newsBtn=document.getElementById('introNews');
+  if(newsBtn){
+    newsBtn.addEventListener('click',function(e){
+      e.preventDefault();                          /* 즉시 이동 대신 줌인 모션 후 이동 */
+      startExperience(newsBtn.href);
+    });
+  }
 })();
 </script>
 
