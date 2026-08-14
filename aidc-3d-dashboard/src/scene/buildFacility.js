@@ -647,10 +647,6 @@ function buildFlows() {
     const legs = [[-6, 96], [-2, 96], [-6, 100], [-2, 100]]
     for (let l = 0; l < 4; l++) cylDir(d, [legs[l][0], legs[l][1], 0], [-4, 98, 13], 0.2, '#8A9AA8', { seg: 8, pick: false })
     box(d, -6.5, 97.4, 7.6, 5, 0.5, 0.42, '#8A9AA8', { noedge: true })
-    const curve = new THREE.QuadraticBezierCurve3(V(-4, 98, 10), V(4, 88, 6.5), V(12, 80, 3.4))
-    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.12, 6, false), lam('#C9A94F'))
-    d.add(tube)
-    tagFloor(tube)
   })()
 
   // 전력: 수배전반 → 변압기 → 동측 EPS 라이저 (B1→2F)
