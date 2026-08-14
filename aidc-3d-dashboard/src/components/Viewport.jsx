@@ -58,15 +58,16 @@ export default function Viewport() {
       markCameraMoving()
     }
 
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xd8dde2, 0.95))
-    const dir1 = new THREE.DirectionalLight(0xffffff, 0.55); dir1.position.set(120, 180, 80); scene.add(dir1)
-    const dir2 = new THREE.DirectionalLight(0xffffff, 0.22); dir2.position.set(-100, 80, -120); scene.add(dir2)
+    // 고명도 파스텔 무드: 하이키 조명 (그림자 최소, 밝은 바닥 반사광)
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.12))
+    const dir1 = new THREE.DirectionalLight(0xffffff, 0.42); dir1.position.set(120, 180, 80); scene.add(dir1)
+    const dir2 = new THREE.DirectionalLight(0xffffff, 0.2); dir2.position.set(-100, 80, -120); scene.add(dir2)
 
     /* ── 시설 구축 ── */
     buildFacility(scene)
     const { groupReg, pickables, wallsFade, flows, slabs } = ctx
 
-    /* 장비 색 보정 (레퍼런스 포팅) */
+    /* 장비 색 보정 — 파스텔 무드: 명도는 유지하고 채도만 살짝 올린다 */
     ;(function enhanceBaseEquipmentColors() {
       const seen = []
       for (const id in groupReg) groupReg[id].traverse((o) => {
@@ -75,8 +76,7 @@ export default function Viewport() {
         seen.push(o.material)
         const hsl = { h: 0, s: 0, l: 0 }
         o.material.color.getHSL(hsl)
-        if (hsl.s > 0.04) hsl.s = Math.min(1, hsl.s * 1.20)
-        hsl.l = Math.max(0.08, hsl.l - (hsl.l > 0.78 ? 0.095 : 0.065))
+        if (hsl.s > 0.04) hsl.s = Math.min(1, hsl.s * 1.12 + 0.015)
         o.material.color.setHSL(hsl.h, hsl.s, hsl.l)
       })
     })()
@@ -706,22 +706,25 @@ export default function Viewport() {
     let raf = 0
     function animate(ts) {
       raf = requestAnimationFrame(animate)
-      /* 외벽 자동 페이드 */
+      /* 외벽 자동 페이드 — 층 아이솔레이션 시엔 벽을 얇은 유리처럼 (레퍼런스 렌더 무드) */
+      const floorIso = useAppStore.getState().floor !== 'all'
       camDirH.subVectors(camera.position, target); camDirH.y = 0; camDirH.normalize()
       for (let i = 0; i < wallsFade.length; i++) {
         const wf = wallsFade[i]
-        const tgt = wf.m.userData._dimmed ? 0.06 : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : 0.95)
+        const tgt = wf.m.userData._dimmed ? 0.06 : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
         wf.m.material.transparent = true
         wf.m.material.opacity += (tgt - wf.m.material.opacity) * 0.18
-        wf.e.material.opacity = wf.m.material.opacity > 0.4 ? wf.e.material.userData.baseOp : 0
+        wf.e.material.opacity = wf.m.material.opacity > 0.4 ? wf.e.material.userData.baseOp : (floorIso && !wf.m.userData._dimmed ? 0.3 : 0)
       }
       /* 상부 슬래브 페이드: 탑뷰 · 하부 장비 선택 · 층 필터 연동 */
       const selected = useAppStore.getState().selected
       const selZ = selected != null && anchorZ[selected] !== undefined ? anchorZ[selected] : Infinity
+      const isoFloor = useAppStore.getState().floor
       for (let i = 0; i < slabs.length; i++) {
         const s = slabs[i]
         let tgt = s.baseOp
         if (s.m.userData._dimmed) tgt = 0.06
+        else if (isoFloor !== 'all' && s.floor === isoFloor) tgt = 0.97  // 선택 층의 바닥판은 흰 플레이트로
         else if (selZ < s.zTop - 1) tgt = 0.08
         else if (s.floor === 'roof' && sph.pol < 0.62) tgt = 0.1
         s.m.material.transparent = true

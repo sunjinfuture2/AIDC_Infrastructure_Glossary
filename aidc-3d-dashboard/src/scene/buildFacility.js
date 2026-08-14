@@ -85,9 +85,9 @@ function buildB1() {
       for (let i = 0; i < 6; i++) {
         const x = 10 + i * 5.6
         box(g, x, y, 0, 4.8, 3.1, 2.5, P.yel)
-        box(g, x + 0.4, y + 2.95, 0.8, 4, 0.28, 1.4, '#F6E4AE')            // 도어
-        box(g, x + 0.7, y + 3.1, 2.0, 1.4, 0.2, 0.34, '#3A3F45', { noedge: true }) // 계기
-        box(g, x + 2.9, y + 3.1, 2.0, 1.1, 0.2, 0.34, '#C3542F', { noedge: true })
+        box(g, x + 0.4, y + 2.95, 0.8, 4, 0.28, 1.4, '#FFEBAF')            // 도어
+        box(g, x + 0.7, y + 3.1, 2.0, 1.4, 0.2, 0.34, '#4A525C', { noedge: true }) // 계기
+        box(g, x + 2.9, y + 3.1, 2.0, 1.1, 0.2, 0.34, '#E86A44', { noedge: true })
       }
     }
   })()
@@ -99,15 +99,15 @@ function buildB1() {
       const x = 49.5 + i * 5.6
       box(g, x, 5, 0, 4.4, 5, 3.2, P.yel)
       for (let f = 0; f < 3; f++) {
-        box(g, x - 0.4, 5.5 + f * 1.4, 0.5, 0.4, 0.9, 2.2, '#D9A32E', { noedge: true })  // 방열핀
-        box(g, x + 4.4, 5.5 + f * 1.4, 0.5, 0.4, 0.9, 2.2, '#D9A32E', { noedge: true })
+        box(g, x - 0.4, 5.5 + f * 1.4, 0.5, 0.4, 0.9, 2.2, '#F0B429', { noedge: true })  // 방열핀
+        box(g, x + 4.4, 5.5 + f * 1.4, 0.5, 0.4, 0.9, 2.2, '#F0B429', { noedge: true })
       }
       for (let b = 0; b < 3; b++) {
         cylY(g, x + 0.9 + b * 1.3, 7.5, 3.2, 0.28, 0.9, '#EDE7D8')   // 부싱
-        const cap = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 10), lam('#C9971B'))
+        const cap = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 10), lam('#E0AC2E'))
         cap.position.copy(V(x + 0.9 + b * 1.3, 7.5, 4.3)); g.add(cap); tagFloor(cap)
       }
-      box(g, x + 0.4, 11.5, 0, 3.6, 1.6, 2.2, '#E4C25C', { noedge: true })  // 제어반
+      box(g, x + 0.4, 11.5, 0, 3.6, 1.6, 2.2, '#F2CE6A', { noedge: true })  // 제어반
     }
   })()
 
@@ -117,8 +117,8 @@ function buildB1() {
     for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
       const x = 49 + i * 5.6, y = 19 + j * 4.6
       box(g, x, y, 0, 4.8, 3.4, 2.3, P.yel)
-      for (let s = 0; s < 3; s++) box(g, x + 0.3, y + 3.25, 0.35 + s * 0.72, 4.2, 0.24, 0.42, '#F6E4AE')
-      box(g, x, y + 3.25, 2.35, 4.8, 0.2, 0.2, '#C3542F', { noedge: true })
+      for (let s = 0; s < 3; s++) box(g, x + 0.3, y + 3.25, 0.35 + s * 0.72, 4.2, 0.24, 0.42, '#FFEBAF')
+      box(g, x, y + 3.25, 2.35, 4.8, 0.2, 0.2, '#E86A44', { noedge: true })
     }
   })()
 
@@ -132,23 +132,23 @@ function buildB1() {
       cylY(g, x + 4.6, y + 2.3, 4.6, 1.1, 1.6, '#DCE6EF')
       cylY(g, x + 9.5, y + 2.3, 4.6, 1.1, 1.6, '#DCE6EF')
       pipe(g, [[x + 4.6, y + 2.3, 5.7], [x + 9.5, y + 2.3, 5.7]], '#AEC2D4', 0.3, false)
-      box(g, x + 12.8, y + 1, 0.8, 1.6, 0.4, 3.4, '#2E3238')
+      box(g, x + 12.8, y + 1, 0.8, 1.6, 0.4, 3.4, '#454E58')
     }
     chiller(71.5, 4); chiller(71.5, 10)
 
     const p = G('pumps', 'cooling')
     function pump(x, y) {
       box(p, x - 1.1, y - 1.1, 0, 2.2, 2.2, 0.4, P.steel, { noedge: true })
-      cylY(p, x, y, 0.4, 0.88, 0.95, '#8FA9C0')
+      cylY(p, x, y, 0.4, 0.88, 0.95, '#9FBFDF')
       cylY(p, x, y, 1.35, 0.68, 1.75, '#DCE6EF')
-      cylY(p, x, y, 3.1, 0.76, 0.28, '#8FA9C0')
+      cylY(p, x, y, 3.1, 0.76, 0.28, '#9FBFDF')
       pipe(p, [[x, y, 0.7], [x - 1.9, y, 0.7]], '#9FB6CC', 0.32, false)
     }
     pump(90, 5); pump(90, 8.8); pump(90, 12.6)
 
     const w = G('water-treatment', 'cooling')
     box(w, 94, 10.5, 0, 3.4, 3, 4.2, P.teal)
-    box(w, 94.4, 13.4, 2.6, 1.5, 0.26, 1.1, '#2E3238')
+    box(w, 94.4, 13.4, 2.6, 1.5, 0.26, 1.1, '#454E58')
     cylY(w, 95, 6.5, 0, 0.65, 2.3, '#BFE3DC')
     cylY(w, 96.8, 6.5, 0, 0.65, 2.3, '#BFE3DC')
     pipe(w, [[94.8, 10.5, 3.4], [95, 7.5, 2.6]], '#72B6A8', 0.22, false)
@@ -189,13 +189,13 @@ function buildB1() {
     for (let i = 0; i < 3; i++) {
       const y = 56 + i * 10
       box(g, 11, y, 0, 3.4, 6.4, 2.6, P.gray)                       // 제어 큐비클
-      cylDir(g, [15.5, y + 1.6, 1.9], [27, y + 1.6, 1.9], 1.05, '#C9D2DA', { seg: 14 }) // 모선 탱크
-      cylDir(g, [15.5, y + 4.8, 1.9], [27, y + 4.8, 1.9], 1.05, '#C9D2DA', { seg: 14 })
+      cylDir(g, [15.5, y + 1.6, 1.9], [27, y + 1.6, 1.9], 1.05, '#D6E0EA', { seg: 14 }) // 모선 탱크
+      cylDir(g, [15.5, y + 4.8, 1.9], [27, y + 4.8, 1.9], 1.05, '#D6E0EA', { seg: 14 })
       for (let b = 0; b < 3; b++) {
-        cylY(g, 17.5 + b * 4, y + 3.2, 2.6, 0.75, 1.7, '#BEC9D2', { seg: 14 })          // 차단기 폴
+        cylY(g, 17.5 + b * 4, y + 3.2, 2.6, 0.75, 1.7, '#CBD8E4', { seg: 14 })          // 차단기 폴
         cylY(g, 17.5 + b * 4, y + 3.2, 4.3, 0.34, 1.1, '#EDE7D8')
       }
-      box(g, 27.5, y + 0.9, 0, 2.4, 4.6, 1.7, '#AEB9C2', { noedge: true })
+      box(g, 27.5, y + 0.9, 0, 2.4, 4.6, 1.7, '#C2CFDA', { noedge: true })
     }
 
     // 유류펌프실 — 이송 펌프 2
@@ -203,23 +203,23 @@ function buildB1() {
     for (let i = 0; i < 2; i++) {
       const y = 62 + i * 6
       box(f, 3.4, y - 1.1, 0, 2.2, 2.2, 0.4, P.steel, { noedge: true })
-      cylY(f, 4.5, y, 0.4, 0.8, 0.9, '#C9A94F')
-      cylY(f, 4.5, y, 1.3, 0.6, 1.5, '#E3D6BB')
+      cylY(f, 4.5, y, 0.4, 0.8, 0.9, '#E8C25A')
+      cylY(f, 4.5, y, 1.3, 0.6, 1.5, '#EBDEC0')
     }
     // 옥외유류탱크 (서측 야드, 도면 좌측 2개소)
     function oilTank(y) {
-      cylDir(f, [-9, y, 2.2], [-9, y + 10, 2.2], 1.9, '#E3D6BB', { seg: 16 })
-      box(f, -10.2, y + 1.2, 0, 2.4, 0.9, 1.5, '#B7A88C', { noedge: true })
-      box(f, -10.2, y + 7.9, 0, 2.4, 0.9, 1.5, '#B7A88C', { noedge: true })
-      cylY(f, -9, y + 3.4, 4.1, 0.34, 0.6, '#B7A88C')
+      cylDir(f, [-9, y, 2.2], [-9, y + 10, 2.2], 1.9, '#EBDEC0', { seg: 16 })
+      box(f, -10.2, y + 1.2, 0, 2.4, 0.9, 1.5, '#CFC2A4', { noedge: true })
+      box(f, -10.2, y + 7.9, 0, 2.4, 0.9, 1.5, '#CFC2A4', { noedge: true })
+      cylY(f, -9, y + 3.4, 4.1, 0.34, 0.6, '#CFC2A4')
     }
     oilTank(52); oilTank(78)
-    pipe(f, [[-9, 63, 1], [0, 63, 1], [4.5, 63.5, 1]], '#C9B98A', 0.22, false)
+    pipe(f, [[-9, 63, 1], [0, 63, 1], [4.5, 63.5, 1]], '#DCC998', 0.22, false)
 
     // RCP실 — 원방 감시·제어반
     const r = G(null, null)
-    box(r, 37, 58, 0, 2.6, 5.6, 2.4, '#33383F')
-    box(r, 40.2, 58, 0, 2.6, 5.6, 2.4, '#33383F')
+    box(r, 37, 58, 0, 2.6, 5.6, 2.4, '#4A5560')
+    box(r, 40.2, 58, 0, 2.6, 5.6, 2.4, '#4A5560')
     box(r, 37.3, 61.2, 1.5, 2, 0.22, 0.6, '#7FD8C8', { noedge: true })
   })()
 }
@@ -265,7 +265,7 @@ function buildF1() {
     for (let i = 0; i < 8; i++) {
       const x = 10 + i * 11.4
       box(g, x, 0.8, z, 6.6, 2.8, WH * 0.82, P.blue)
-      box(g, x + 0.3, 0.95, z + WH * 0.82, 6, 2.5, 0.55, '#8FA9C0')
+      box(g, x + 0.3, 0.95, z + WH * 0.82, 6, 2.5, 0.55, '#9FBFDF')
       fanFront(g, x + 1.8, 3.75, z + 1.7, 1.1, 'z')
       fanFront(g, x + 4.8, 3.75, z + 1.7, 1.1, 'z')
       fanFront(g, x + 1.8, 3.75, z + 3.9, 1.1, 'z')
@@ -279,15 +279,15 @@ function buildF1() {
     for (let i = 0; i < 4; i++) {
       const x = 14 + i * 6.4
       box(g, x, 7, z, 5.4, 3.1, 2.6, P.yel)
-      box(g, x + 0.5, 10, z + 1.9, 3.4, 0.26, 0.55, '#2E3238')
+      box(g, x + 0.5, 10, z + 1.9, 3.4, 0.26, 0.55, '#454E58')
       box(g, x + 0.8, 10.15, z + 2.05, 1.2, 0.18, 0.26, '#57D0A8', { noedge: true })
-      for (let s = 0; s < 4; s++) box(g, x + 0.5, 10.1, z + 0.4 + s * 0.34, 3.4, 0.16, 0.22, '#C9A94F', { noedge: true })
+      for (let s = 0; s < 4; s++) box(g, x + 0.5, 10.1, z + 0.4 + s * 0.34, 3.4, 0.16, 0.22, '#E8C25A', { noedge: true })
     }
     // 남측: 정류·바이패스 반 열
     for (let i = 0; i < 4; i++) {
       const x = 14 + i * 6.4
       box(g, x, 14.5, z, 5.4, 3.1, 2.6, P.yel)
-      box(g, x + 0.4, 17.45, z + 0.5, 4.4, 0.26, 1.5, '#F6E4AE')
+      box(g, x + 0.4, 17.45, z + 0.5, 4.4, 0.26, 1.5, '#FFEBAF')
     }
   })()
 
@@ -297,8 +297,8 @@ function buildF1() {
     for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
       const x = 43.5 + i * 6.8, y = 7.5 + j * 6.4
       box(g, x, y, z, 5.8, 3.6, 2.4, P.yel)
-      for (let s = 0; s < 3; s++) box(g, x + 0.35, y + 3.45, z + 0.35 + s * 0.75, 5.1, 0.24, 0.44, '#F6E4AE')
-      box(g, x, y + 3.45, z + 2.45, 5.8, 0.2, 0.2, '#C3542F', { noedge: true })
+      for (let s = 0; s < 3; s++) box(g, x + 0.35, y + 3.45, z + 0.35 + s * 0.75, 5.1, 0.24, 0.44, '#FFEBAF')
+      box(g, x, y + 3.45, z + 2.45, 5.8, 0.2, 0.2, '#E86A44', { noedge: true })
     }
   })()
 
@@ -310,8 +310,8 @@ function buildF1() {
       for (let i = 0; i < 5; i++) {
         const x = 61.5 + i * 5.3
         box(g, x, y, z, 4.6, 3.1, 2.5, P.yel)
-        box(g, x + 0.4, y + 2.95, z + 0.8, 3.8, 0.26, 1.35, '#F6E4AE')
-        box(g, x + 0.6, y + 3.1, z + 1.95, 1.3, 0.2, 0.33, '#3A3F45', { noedge: true })
+        box(g, x + 0.4, y + 2.95, z + 0.8, 3.8, 0.26, 1.35, '#FFEBAF')
+        box(g, x + 0.6, y + 3.1, z + 1.95, 1.3, 0.2, 0.33, '#4A525C', { noedge: true })
       }
     }
   })()
@@ -321,11 +321,11 @@ function buildF1() {
     const g = G('mmr', 'it')
     for (let i = 0; i < 3; i++) {
       box(g, 1.6, 6 + i * 3.4, z, 4.2, 2.6, 2.5, P.purp)
-      for (let s = 0; s < 4; s++) box(g, 1.75, 8.45 + i * 3.4, z + 0.4 + s * 0.5, 3.9, 0.2, 0.3, '#CFC8EE')
+      for (let s = 0; s < 4; s++) box(g, 1.75, 8.45 + i * 3.4, z + 0.4 + s * 0.5, 3.9, 0.2, 0.3, '#DED8F7')
     }
     for (let i = 0; i < 2; i++) {
       box(g, 99.4, 6.5 + i * 3.8, z, 4.2, 2.8, 2.5, P.purp)
-      for (let s = 0; s < 3; s++) box(g, 99.55, 9.15 + i * 3.8, z + 0.45 + s * 0.55, 3.9, 0.2, 0.32, '#CFC8EE')
+      for (let s = 0; s < 3; s++) box(g, 99.55, 9.15 + i * 3.8, z + 0.45 + s * 0.55, 3.9, 0.2, 0.32, '#DED8F7')
     }
   })()
 
@@ -333,7 +333,7 @@ function buildF1() {
   ;(function noc() {
     const g = G('bms', 'mgmt')
     for (let i = 0; i < 3; i++) {
-      const m = box(g, 66 + i * 7.4, 24.2, z + 1, 6.6, 0.4, 3.6, '#33383F')
+      const m = box(g, 66 + i * 7.4, 24.2, z + 1, 6.6, 0.4, 3.6, '#4A5560')
       m.rotation.y = (i - 1) * 0.12
       box(g, 66.6 + i * 7.4, 24.1, z + 1.8, 2.1, 0.22, 1.4, i === 0 ? '#7FD8C8' : i === 1 ? '#F2C94C' : '#E8836A', { noedge: true, ry: (i - 1) * 0.12 })
       box(g, 69.4 + i * 7.4, 24.1, z + 1.6, 2.5, 0.22, 1.9, '#8FB4D8', { noedge: true, ry: (i - 1) * 0.12 })
@@ -408,7 +408,7 @@ function buildF2() {
     for (let i = 0; i < 10; i++) {
       const x = 8.6 + i * 9.1
       box(g, x, 0.8, z, 6.4, 2.8, WH * 0.82, P.blue)
-      box(g, x + 0.3, 0.95, z + WH * 0.82, 5.8, 2.5, 0.55, '#8FA9C0')
+      box(g, x + 0.3, 0.95, z + WH * 0.82, 5.8, 2.5, 0.55, '#9FBFDF')
       fanFront(g, x + 1.7, 3.75, z + 1.7, 1.1, 'z')
       fanFront(g, x + 4.7, 3.75, z + 1.7, 1.1, 'z')
       fanFront(g, x + 1.7, 3.75, z + 3.9, 1.1, 'z')
@@ -440,14 +440,14 @@ function buildF2() {
     const s = G('storage', 'it')
     for (let i = 0; i < 4; i++) {
       box(s, 72 + (i % 2) * 3.2, 7 + Math.floor(i / 2) * 4.4, z, 2.6, 2.9, 2.6, P.purp)
-      for (let k = 0; k < 4; k++) box(s, 72.15 + (i % 2) * 3.2, 9.75 + Math.floor(i / 2) * 4.4, z + 0.4 + k * 0.55, 2.3, 0.2, 0.3, '#CFC8EE')
+      for (let k = 0; k < 4; k++) box(s, 72.15 + (i % 2) * 3.2, 9.75 + Math.floor(i / 2) * 4.4, z + 0.4 + k * 0.55, 2.3, 0.2, 0.3, '#DED8F7')
     }
     // 네트워크 스파인 랙
     const n = G('network', 'it')
     for (let i = 0; i < 4; i++) {
       box(n, 82 + (i % 2) * 3.2, 7 + Math.floor(i / 2) * 4.4, z, 2.6, 2.9, 2.6, P.purp)
-      for (let k = 0; k < 3; k++) box(n, 82.15 + (i % 2) * 3.2, 9.75 + Math.floor(i / 2) * 4.4, z + 0.35 + k * 0.5, 2.3, 0.2, 0.22, '#5F51A8', { noedge: true })
-      box(n, 82.15 + (i % 2) * 3.2, 9.75 + Math.floor(i / 2) * 4.4, z + 2.15, 2.3, 0.2, 0.36, '#CFC8EE')
+      for (let k = 0; k < 3; k++) box(n, 82.15 + (i % 2) * 3.2, 9.75 + Math.floor(i / 2) * 4.4, z + 0.35 + k * 0.5, 2.3, 0.2, 0.22, '#7A6CC9', { noedge: true })
+      box(n, 82.15 + (i % 2) * 3.2, 9.75 + Math.floor(i / 2) * 4.4, z + 2.15, 2.3, 0.2, 0.36, '#DED8F7')
     }
   })()
 
@@ -455,9 +455,9 @@ function buildF2() {
   ;(function containment() {
     const g = G('containment', 'cooling')
     for (const yA of AISLES) {
-      box(g, RACK_X0 - 0.3, yA - 0.78, z + 3.1, RACK_N * RACK_PITCH, 1.56, 0.12, '#BFD2DE', { op: 0.28 })
-      box(g, RACK_X0 - 0.3, yA - 0.78, z + 2.6, 0.1, 1.56, 0.5, '#BFD2DE', { op: 0.24 })
-      box(g, RACK_X0 - 0.3 + RACK_N * RACK_PITCH - 0.1, yA - 0.78, z + 2.6, 0.1, 1.56, 0.5, '#BFD2DE', { op: 0.24 })
+      box(g, RACK_X0 - 0.3, yA - 0.78, z + 3.1, RACK_N * RACK_PITCH, 1.56, 0.12, '#CFE4F0', { op: 0.28 })
+      box(g, RACK_X0 - 0.3, yA - 0.78, z + 2.6, 0.1, 1.56, 0.5, '#CFE4F0', { op: 0.24 })
+      box(g, RACK_X0 - 0.3 + RACK_N * RACK_PITCH - 0.1, yA - 0.78, z + 2.6, 0.1, 1.56, 0.5, '#CFE4F0', { op: 0.24 })
     }
   })()
 
@@ -467,7 +467,7 @@ function buildF2() {
     for (let r = 0; r < AISLES.length; r++) {
       const x = 42 + r * 4.6
       box(g, x, 23, z, 3, 2.4, 2.4, P.cdu)
-      box(g, x + 0.3, 25.3, z + 1.8, 1.2, 0.2, 0.4, '#2E3238')
+      box(g, x + 0.3, 25.3, z + 1.8, 1.2, 0.2, 0.4, '#454E58')
       cylDir(g, [x + 0.8, 25.4, z + 0.9], [x + 0.8, 25.9, z + 0.9], 0.24, '#0FA396', { seg: 10 })
       cylDir(g, [x + 1.8, 25.4, z + 0.9], [x + 1.8, 25.9, z + 0.9], 0.24, '#E2793B', { seg: 10 })
     }
@@ -481,22 +481,22 @@ function buildF2() {
     for (let i = 0; i < 4; i++) {
       const x = 14 + i * 6.2
       box(g, x, 25, z, 5.2, 3.1, 2.6, P.yel)
-      box(g, x + 0.5, 28, z + 1.9, 3.2, 0.26, 0.55, '#2E3238')
+      box(g, x + 0.5, 28, z + 1.9, 3.2, 0.26, 0.55, '#454E58')
       box(g, x + 0.8, 28.15, z + 2.05, 1.2, 0.18, 0.26, '#57D0A8', { noedge: true })
     }
     const b = G('battery', 'power')
     for (let i = 0; i < 4; i++) {
       const x = 46 + i * 6.2
       box(b, x, 25, z, 5.2, 3.4, 2.3, P.yel)
-      for (let s = 0; s < 3; s++) box(b, x + 0.3, 28.25, z + 0.35 + s * 0.72, 4.6, 0.24, 0.42, '#F6E4AE')
-      box(b, x, 28.25, z + 2.35, 5.2, 0.2, 0.2, '#C3542F', { noedge: true })
+      for (let s = 0; s < 3; s++) box(b, x + 0.3, 28.25, z + 0.35 + s * 0.72, 4.6, 0.24, 0.42, '#FFEBAF')
+      box(b, x, 28.25, z + 2.35, 5.2, 0.2, 0.2, '#E86A44', { noedge: true })
     }
     const p = G('pdu', 'power')
     for (let i = 0; i < 2; i++) {
       const x = 88 + i * 4.4
       box(p, x, 25, z, 3.6, 3, 2.5, P.yel)
-      for (let s = 0; s < 3; s++) box(p, x + 0.4, 27.85, z + 0.5 + s * 0.5, 2.8, 0.18, 0.32, '#C9A94F', { noedge: true })
-      cylDir(p, [x + 1, 27.9, z + 2.2], [x + 1, 28.2, z + 2.2], 0.5, '#F6E4AE', { seg: 14 })
+      for (let s = 0; s < 3; s++) box(p, x + 0.4, 27.85, z + 0.5 + s * 0.5, 2.8, 0.18, 0.32, '#E8C25A', { noedge: true })
+      cylDir(p, [x + 1, 27.9, z + 2.2], [x + 1, 28.2, z + 2.2], 0.5, '#FFEBAF', { seg: 14 })
     }
   })()
 
@@ -516,15 +516,15 @@ function buildF2() {
   ;(function genRoom() {
     const g = G('generator', 'power')
     function gen(x, y) {
-      box(g, x, y, z, 12, 5.2, 0.9, '#B7A88C', { noedge: true })          // 스키드
-      box(g, x + 0.3, y + 0.2, z + 0.9, 2.6, 4.8, 5.4, '#E4B640')         // 라디에이터
-      for (let s = 0; s < 4; s++) box(g, x + 0.15, y + 0.6 + s * 1.05, z + 1.6, 0.18, 0.7, 4.2, '#B58A1C', { noedge: true })
+      box(g, x, y, z, 12, 5.2, 0.9, '#CFC2A4', { noedge: true })          // 스키드
+      box(g, x + 0.3, y + 0.2, z + 0.9, 2.6, 4.8, 5.4, '#F5C542')         // 라디에이터
+      for (let s = 0; s < 4; s++) box(g, x + 0.15, y + 0.6 + s * 1.05, z + 1.6, 0.18, 0.7, 4.2, '#D9A93C', { noedge: true })
       box(g, x + 3.2, y + 0.5, z + 0.9, 5, 4.2, 4.2, P.yel)               // 엔진
-      cylDir(g, [x + 8.6, y + 2.6, z + 3], [x + 11.4, y + 2.6, z + 3], 1.5, '#EDBE4B', { seg: 16 })  // 알터네이터
-      cylY(g, x + 11.4, y + 2.6, z + 3, 0.5, 0.24, '#C9971B')
+      cylDir(g, [x + 8.6, y + 2.6, z + 3], [x + 11.4, y + 2.6, z + 3], 1.5, '#F7CE55', { seg: 16 })  // 알터네이터
+      cylY(g, x + 11.4, y + 2.6, z + 3, 0.5, 0.24, '#E0AC2E')
       cylDir(g, [x + 3.7, y + 0.9, z + 5.8], [x + 7.6, y + 0.9, z + 5.8], 0.55, '#AFB6BD', { seg: 12 }) // 머플러
       pipe(g, [[x + 7.6, y + 0.9, z + 5.8], [x + 8.4, y + 0.9, z + 5.8], [x + 8.4, y + 0.9, z + 7.2]], '#8E8B82', 0.3, false)
-      box(g, x + 4.8, y + 4.8, z + 5.3, 2, 0.24, 1.2, '#2E3238')
+      box(g, x + 4.8, y + 4.8, z + 5.3, 2, 0.24, 1.2, '#454E58')
     }
     gen(10, 56); gen(23, 56); gen(10, 74); gen(23, 74)
     // DA 급기 루버 (서측)
@@ -534,9 +534,9 @@ function buildF2() {
     // 유류탱크실 — 일일 서비스 탱크
     const f = G('fuel', 'power')
     for (const ty of [50, 88]) {
-      cylY(f, 4.6, ty + 3, z, 1.7, 4.6, '#E3D6BB', { seg: 16 })
-      cylY(f, 4.6, ty + 3, z + 4.6, 1.75, 0.3, '#C9B98A', { seg: 16 })
-      pipe(f, [[4.6, ty + 3, z + 1], [9, ty + 5, z + 1]], '#C9B98A', 0.2, false)
+      cylY(f, 4.6, ty + 3, z, 1.7, 4.6, '#EBDEC0', { seg: 16 })
+      cylY(f, 4.6, ty + 3, z + 4.6, 1.75, 0.3, '#DCC998', { seg: 16 })
+      pipe(f, [[4.6, ty + 3, z + 1], [9, ty + 5, z + 1]], '#DCC998', 0.2, false)
     }
   })()
 
@@ -544,7 +544,7 @@ function buildF2() {
     const g = G('fire-gas', 'mgmt')
     for (let i = 0; i < 6; i++) {
       const x = 31.5 + (i % 3) * 1.8, y = 47 + Math.floor(i / 3) * 2.2
-      cylY(g, x, y, z, 0.62, 3.2, '#EDBE4B')
+      cylY(g, x, y, z, 0.62, 3.2, '#F7CE55')
       cylY(g, x, y, z + 3.2, 0.26, 0.5, '#8A8577')
     }
     box(g, 36.8, 46.4, z, 2, 4.6, 2.2, '#CBD1D7')
@@ -591,11 +591,11 @@ function buildRoof() {
   ;(function towers() {
     const g = G('cooling-tower', 'cooling')
     function tower(x, y) {
-      box(g, x, y, z, 10, 8, 1.4, '#DCD3C2')
+      box(g, x, y, z, 10, 8, 1.4, '#EAE2D2')
       box(g, x + 0.3, y + 0.3, z + 1.4, 9.4, 7.4, 4.2, P.cream2)
       for (let s = 0; s < 4; s++) {
-        box(g, x + 0.6, y + 7.5, z + 1.8 + s * 0.85, 8.8, 0.22, 0.34, '#C6B89E', { noedge: true })
-        box(g, x + 9.5, y + 0.6, z + 1.8 + s * 0.85, 0.22, 6.8, 0.34, '#BCAE93', { noedge: true })
+        box(g, x + 0.6, y + 7.5, z + 1.8 + s * 0.85, 8.8, 0.22, 0.34, '#DCCFB4', { noedge: true })
+        box(g, x + 9.5, y + 0.6, z + 1.8 + s * 0.85, 0.22, 6.8, 0.34, '#D4C7AC', { noedge: true })
       }
       box(g, x, y, z + 5.6, 10, 8, 0.7, P.cream)
       fanTop(g, x + 2.7, y + 2.4, z + 6.3, 1.4)
@@ -612,8 +612,8 @@ function buildRoof() {
     const g = G('dry-cooler', 'cooling')
     function dryc(x, y) {
       box(g, x, y, z, 7.4, 1.5, 0.85, P.steel, { noedge: true })
-      const v1 = box(g, x + 0.55, y + 0.4, z + 0.55, 6.3, 0.4, 3.7, '#E4C7A6'); v1.rotation.x = -0.42
-      const v2 = box(g, x + 0.55, y + 4.85, z + 0.55, 6.3, 0.4, 3.7, '#E4C7A6'); v2.rotation.x = 0.42
+      const v1 = box(g, x + 0.55, y + 0.4, z + 0.55, 6.3, 0.4, 3.7, '#F2D9B8'); v1.rotation.x = -0.42
+      const v2 = box(g, x + 0.55, y + 4.85, z + 0.55, 6.3, 0.4, 3.7, '#F2D9B8'); v2.rotation.x = 0.42
       box(g, x + 0.3, y + 0.3, z + 3.4, 6.8, 4.9, 0.42, P.cream2)
       fanTop(g, x + 2, y + 2.7, z + 3.85, 1.2, '#B08A62')
       fanTop(g, x + 5.4, y + 2.7, z + 3.85, 1.2, '#B08A62')
@@ -627,7 +627,7 @@ function buildRoof() {
     box(d, 62, 22, z, 7, 5.4, 2.6, P.cream2)
     fanTop(d, 65.5, 24.7, z + 2.6, 1.4)
     box(d, 74, 22.5, z, 6, 4.6, 2, P.cream2)
-    for (let s = 0; s < 3; s++) box(d, 74.3, 27, z + 0.4 + s * 0.55, 5.4, 0.2, 0.22, '#BCAE93', { noedge: true })
+    for (let s = 0; s < 3; s++) box(d, 74.3, 27, z + 0.4 + s * 0.55, 5.4, 0.2, 0.22, '#D4C7AC', { noedge: true })
     // 공급동 옥상 배기 팬 (발전기 상부)
     for (const fy of [60, 78]) { box(d, 14, fy, z, 4, 4, 1, P.cream2); fanTop(d, 16, fy + 2, z + 1, 1.3) }
   })()

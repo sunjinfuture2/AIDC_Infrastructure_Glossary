@@ -66,7 +66,7 @@ export function G(term, cat) {
 /* ── 재질/기본 도형 ─────────────────────────────────────── */
 function dkC(hex) {
   const c = new THREE.Color(hex)
-  c.multiplyScalar(0.9)
+  c.multiplyScalar(0.86)
   return c
 }
 
@@ -78,11 +78,12 @@ export function lam(hex, op) {
 }
 
 export function addEdges(g, geo, mesh, hex) {
+  // 파스텔 무드: 윤곽선은 은은하게 (레퍼런스 렌더의 소프트한 느낌)
   const ls = new THREE.LineSegments(
     new THREE.EdgesGeometry(geo),
-    new THREE.LineBasicMaterial({ color: dkC(hex), transparent: true, opacity: 1 }),
+    new THREE.LineBasicMaterial({ color: dkC(hex), transparent: true, opacity: 0.55 }),
   )
-  ls.material.userData = { baseOp: 1 }
+  ls.material.userData = { baseOp: 0.55 }
   ls.position.copy(mesh.position)
   ls.rotation.copy(mesh.rotation)
   ls.userData.isEdge = true
@@ -177,16 +178,17 @@ function flowTypeFor(hex) {
   return null
 }
 function flowTemperaturePalette(key) {
-  if (key === 'condensate') return ['#4E98C5', '#86BDD8']
-  if (key === 'chilled') return ['#197EB8', '#4AACC9']
-  if (key === 'tcs') return ['#078A7E', '#D47C3E']
-  if (key === 'heat') return ['#D87631', '#B9472C']
+  // 파스텔 그라디언트 (공급 → 회수 온도감)
+  if (key === 'condensate') return ['#8FC8E8', '#BCE0F2']
+  if (key === 'chilled') return ['#5FB1E8', '#93D2F2']
+  if (key === 'tcs') return ['#57C7BD', '#F0A876']
+  if (key === 'heat') return ['#F5A86B', '#E8875C']
   return null
 }
 function deepenFlowPipeColor(color) {
   const hsl = { h: 0, s: 0, l: 0 }
   color.getHSL(hsl)
-  color.setHSL(hsl.h, Math.min(1, hsl.s * 1.06 + 0.015), Math.max(0.12, hsl.l * 0.78))
+  color.setHSL(hsl.h, Math.min(1, hsl.s * 1.08 + 0.02), Math.max(0.3, hsl.l * 0.96))
   return color
 }
 function applyTubeGradient(mesh, startHex, endHex, u0, u1) {
@@ -274,22 +276,22 @@ export function pipe(g, pts, hex, r, flow) {
 
 /* ── 팬/사다리/벽 (레퍼런스 포팅) ───────────────────────── */
 export function fanTop(g, x, y, z, r, hexRing) {
-  cylY(g, x, y, z, r + 0.2, 0.34, hexRing || '#8A8577', { seg: 20 })
+  cylY(g, x, y, z, r + 0.2, 0.34, hexRing || '#A39E90', { seg: 20 })
   cylY(g, x, y, z + 0.17, r * 0.92, 0.17, '#F3F4F6', { seg: 20 })
-  const b1 = box(g, x - r * 0.85, y - 0.2, z + 0.31, r * 1.7, 0.4, 0.16, '#6B7280', { noedge: true })
+  const b1 = box(g, x - r * 0.85, y - 0.2, z + 0.31, r * 1.7, 0.4, 0.16, '#8A93A0', { noedge: true })
   b1.rotation.y = 0.5
-  const b2 = box(g, x - r * 0.85, y - 0.2, z + 0.31, r * 1.7, 0.4, 0.16, '#6B7280', { noedge: true })
+  const b2 = box(g, x - r * 0.85, y - 0.2, z + 0.31, r * 1.7, 0.4, 0.16, '#8A93A0', { noedge: true })
   b2.rotation.y = -1.05
-  cylY(g, x, y, z + 0.28, 0.23, 0.31, '#4B5563', { seg: 10 })
+  cylY(g, x, y, z + 0.28, 0.23, 0.31, '#66788C', { seg: 10 })
 }
 
 export function fanFront(g, x, y, z, r, axis) {
   const parts = [
-    new THREE.Mesh(new THREE.CylinderGeometry(r + 0.17, r + 0.17, 0.31, 20), lam('#5B7B95')),
-    new THREE.Mesh(new THREE.CylinderGeometry(r * 0.9, r * 0.9, 0.16, 20), lam('#EDF1F5')),
-    new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.37, 10), lam('#41586C')),
-    new THREE.Mesh(new THREE.BoxGeometry(r * 1.65, 0.2, 0.34), lam('#41586C')),
-    new THREE.Mesh(new THREE.BoxGeometry(r * 1.65, 0.2, 0.34), lam('#41586C')),
+    new THREE.Mesh(new THREE.CylinderGeometry(r + 0.17, r + 0.17, 0.31, 20), lam('#7FA3C4')),
+    new THREE.Mesh(new THREE.CylinderGeometry(r * 0.9, r * 0.9, 0.16, 20), lam('#F2F6FA')),
+    new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.37, 10), lam('#5C7C9E')),
+    new THREE.Mesh(new THREE.BoxGeometry(r * 1.65, 0.2, 0.34), lam('#5C7C9E')),
+    new THREE.Mesh(new THREE.BoxGeometry(r * 1.65, 0.2, 0.34), lam('#5C7C9E')),
   ]
   for (let i = 0; i < parts.length; i++) {
     const m = parts[i]
@@ -357,22 +359,22 @@ export function slab(x, y, z, w, d, th, floorId, hexBody, hexTop, baseOp) {
   return m
 }
 
-/* ── 팔레트 (레퍼런스 + 도면 존 색상) ───────────────────── */
+/* ── 팔레트 — 고명도 파스텔 (레퍼런스 렌더 무드) ─────────── */
 export const P = {
-  ground: '#DDE1E4', slab: '#D3D8DC', roof: '#D9DEE2',
-  groundTop: '#EAECED', slabTop: '#E8EAEC', roofTop: '#E9EBED',
-  hall: '#DEE4E9', plant: '#ECECE8', office: '#EFEDEA',
-  cream: '#F0EBE1', cream2: '#E7E0D2',
-  rackBody: '#3F2A34', rackDoor: '#5C3B49', tray: '#93AF7B',
-  blue: '#A9BFD3', blueD: '#7E9DB8', cdu: '#7FA7D8', teal: '#8FD0C2',
-  yel: '#EDBE4B', yelD: '#D9A32E', purp: '#ACA2DA',
-  gray: '#CBD1D7', steel: '#B9C2CA', wood: '#C8A87E', rose: '#D8ACA2',
+  ground: '#E7EAEE', slab: '#EDEFF2', roof: '#EEF0F3',
+  groundTop: '#F2F4F6', slabTop: '#F5F6F8', roofTop: '#F5F6F8',
+  hall: '#E9EEF4', plant: '#F2F2EE', office: '#F4F2EE',
+  cream: '#F7F2E7', cream2: '#F0E8D6',
+  rackBody: '#6B3B52', rackDoor: '#8A4E6C', tray: '#A9D98B',
+  blue: '#A4C9F2', blueD: '#79A9E6', cdu: '#79C0F2', teal: '#8FD9CB',
+  yel: '#FFD34D', yelD: '#F0B429', purp: '#C9BCF2',
+  gray: '#DDE3E8', steel: '#CFD9E2', wood: '#D9B98F', rose: '#EFC0B4',
   /* 도면 존 컬러 (평면도의 실별 색상 반영) */
-  zoneElec: '#F2DFAE',   // 전기실 (도면 주황)
-  zoneMech: '#C9D8EC',   // 기계실 (도면 파랑)
-  zoneHall: '#D6DAF0',   // 전산실 (도면 보라)
-  zoneCrah: '#EFD9E4',   // 항온항습실 (도면 분홍)
-  zoneOffice: '#EDE9D8', // 사무 구역 (도면 노랑/베이지)
-  zoneMeet: '#D8ECEA',   // 회의실 (도면 청록)
-  zoneCore: '#E2E5E8',   // 코어/샤프트
+  zoneElec: '#FBE9B8',   // 전기실 (도면 주황)
+  zoneMech: '#CFE2F5',   // 기계실 (도면 파랑)
+  zoneHall: '#DDE1F8',   // 전산실 (도면 보라)
+  zoneCrah: '#F7DEEA',   // 항온항습실 (도면 분홍)
+  zoneOffice: '#F3EDDA', // 사무 구역 (도면 노랑/베이지)
+  zoneMeet: '#D8F0EC',   // 회의실 (도면 청록)
+  zoneCore: '#EAEDF0',   // 코어/샤프트
 }
