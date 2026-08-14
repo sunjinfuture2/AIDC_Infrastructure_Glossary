@@ -544,6 +544,11 @@ export default function Viewport() {
         o.visible = !floorHidden
         o.material.transparent = catDim || base < 1
         o.material.opacity = catDim ? (o.isLineSegments ? 0.03 : 0.06) : base
+        // 지하 1층 뷰: 지형 상면을 반투명 유리처럼 (지하가 천장에 덮이지 않게)
+        if (o.userData.terrain && o.userData.floorTop) {
+          o.material.transparent = true
+          o.material.opacity = floor === 'b1' ? 0.14 : base
+        }
       })
       for (let i = 0; i < labelObjs.length; i++) {
         const L = labelObjs[i]
@@ -751,11 +756,15 @@ export default function Viewport() {
         if (target.distanceTo(camGoal.t) < 0.4 && Math.abs(sph.dist - camGoal.d) < 0.8) camGoal = null
       }
       /* 외벽 자동 페이드 — 층 아이솔레이션 시엔 벽을 얇은 유리처럼 (레퍼런스 렌더 무드) */
-      const floorIso = useAppStore.getState().floor !== 'all'
+      const isoFloorNow = useAppStore.getState().floor
+      const floorIso = isoFloorNow !== 'all'
       camDirH.subVectors(camera.position, target); camDirH.y = 0; camDirH.normalize()
       for (let i = 0; i < wallsFade.length; i++) {
         const wf = wallsFade[i]
-        const tgt = wf.m.userData._dimmed ? 0.06 : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
+        // 지하 1층 뷰에서는 지형 볼륨 전체를 반투명 유리로 (천장처럼 덮이는 것 방지)
+        const tgt = wf.m.userData._dimmed ? 0.06
+          : (wf.m.userData.terrain && isoFloorNow === 'b1') ? 0.12
+          : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
         wf.m.material.transparent = true
         wf.m.material.opacity += (tgt - wf.m.material.opacity) * 0.18
         wf.e.material.opacity = wf.m.material.opacity > 0.4 ? wf.e.material.userData.baseOp : (floorIso && !wf.m.userData._dimmed ? 0.3 : 0)

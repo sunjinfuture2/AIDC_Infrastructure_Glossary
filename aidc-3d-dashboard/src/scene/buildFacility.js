@@ -56,8 +56,11 @@ function buildSite() {
      E2(공급동+서측 유류야드) x -11~64.4 · y 52.5~105.5
      공동구 트렌치 슬롯: x 31~39 · y 40.1~52.5 (개방 → 지하 공동구 노출) */
   function terrain(x, y, w, d, nx, nz) {
-    wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
-    topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
+    // terrain 플래그: 지하 1층 아이솔레이션에서 유리처럼 반투명 처리 (천장화 방지)
+    const wm = wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
+    wm.userData.terrain = true
+    const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
+    ts.userData.terrain = true
   }
   terrain(-14, -10, 152, 8.5, 0, -1)            // 북측
   terrain(-14, -1.5, 12.5, 41.6, -1, 0)         // 전산동 서측
