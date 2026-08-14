@@ -8,7 +8,7 @@ import { TERMS, CATS, CAT_ORDER } from '../data/terms.js'
  */
 export default function Sidebar() {
   const selected = useAppStore((s) => s.selected)
-  const setSelected = useAppStore((s) => s.setSelected)
+  const requestFocus = useAppStore((s) => s.requestFocus)
   const query = useAppStore((s) => s.query)
   const setQuery = useAppStore((s) => s.setQuery)
   const [collapsed, setCollapsed] = useState({ cooling: true, power: true, it: true, mgmt: true })
@@ -44,7 +44,7 @@ export default function Sidebar() {
     if (e.key !== 'Enter') return
     for (const cat of CAT_ORDER) {
       const ids = idsFor(cat)
-      if (ids.length) { setSelected(ids[0]); return }
+      if (ids.length) { requestFocus(ids[0]); return }
     }
   }
 
@@ -98,7 +98,7 @@ export default function Sidebar() {
                   key={id}
                   data-cat={TERMS[id].cat}
                   style={{ '--tag-color': CATS[TERMS[id].cat].color }}
-                  onClick={() => setSelected(id)}
+                  onClick={() => requestFocus(id)}
                 >
                   {TERMS[id].name}
                 </button>
@@ -126,7 +126,7 @@ export default function Sidebar() {
                     key={id}
                     className={`term-item${selected === id ? ' sel' : ''}`}
                     style={{ '--cat': CATS[TERMS[id].cat].color }}
-                    onClick={() => setSelected(id)}
+                    onClick={() => requestFocus(id)}
                   >
                     <span className="tn">{TERMS[id].name}</span>
                     <span className="te">{TERMS[id].en}</span>

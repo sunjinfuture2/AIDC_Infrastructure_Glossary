@@ -31,6 +31,15 @@ export const useAppStore = create((set) => ({
   selected: null,
   setSelected: (selected) => set({ selected }),
 
+  /**
+   * 사이드바에서 부품을 클릭했을 때: 선택 + 해당 층 전환 + 카메라 줌인.
+   * (3D 라벨/모델 클릭은 setSelected만 — 카메라는 움직이지 않음)
+   */
+  focusId: null,
+  focusTick: 0,
+  requestFocus: (id) =>
+    set((s) => ({ selected: id, focusId: id, focusTick: s.focusTick + 1 })),
+
   /** 장비 라벨(리더라인 포함) 표시 여부 */
   labelsOn: true,
   toggleLabels: () => set((s) => ({ labelsOn: !s.labelsOn })),
