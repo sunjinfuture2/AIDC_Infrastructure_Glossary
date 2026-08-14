@@ -68,19 +68,20 @@ function buildSite() {
   terrain(64.4, 52.5, 73.6, 53, 0.7, 0.7)       // 남동측 대지 (도로·조경)
   terrain(-14, 105.5, 152, 10.5, 0, 1)          // 남측
 
-  /* ── 주차장 (도면의 종류별 배치) ──
+  /* ── 사이트 디테일 (주차장·도로·조경) — "1층" 뷰에서만 표시 ──
      스톨 헬퍼: dir 'y' = 스톨 개구가 남북(줄무늬는 x 분할) */
+  const sd = G(null, null)
   function stallsX(x, y, n, stallW, stallD, tint) {
-    topSurface(g, x - 0.3, y - 0.3, GL + 0.05, n * stallW + 0.6, stallD + 0.6, tint)
+    topSurface(sd, x - 0.3, y - 0.3, GL + 0.05, n * stallW + 0.6, stallD + 0.6, tint)
     for (let i = 0; i <= n; i++)
-      box(g, x + i * stallW - 0.06, y, GL, 0.12, stallD, 0.08, '#FFFFFF', { noedge: true })
-    box(g, x, y + (stallD - 0.12), GL, n * stallW, 0.12, 0.08, '#FFFFFF', { noedge: true })
+      box(sd, x + i * stallW - 0.06, y, GL, 0.12, stallD, 0.08, '#FFFFFF', { noedge: true })
+    box(sd, x, y + (stallD - 0.12), GL, n * stallW, 0.12, 0.08, '#FFFFFF', { noedge: true })
   }
   function stallsY(x, y, n, stallW, stallD, tint) {
-    topSurface(g, x - 0.3, y - 0.3, GL + 0.05, stallD + 0.6, n * stallW + 0.6, tint)
+    topSurface(sd, x - 0.3, y - 0.3, GL + 0.05, stallD + 0.6, n * stallW + 0.6, tint)
     for (let i = 0; i <= n; i++)
-      box(g, x, y + i * stallW - 0.06, GL, stallD, 0.12, 0.08, '#FFFFFF', { noedge: true })
-    box(g, x + (stallD - 0.12), y, GL, 0.12, n * stallW, 0.08, '#FFFFFF', { noedge: true })
+      box(sd, x, y + i * stallW - 0.06, GL, stallD, 0.12, 0.08, '#FFFFFF', { noedge: true })
+    box(sd, x + (stallD - 0.12), y, GL, 0.12, n * stallW, 0.08, '#FFFFFF', { noedge: true })
   }
   const PK = '#E4E6E9'          // 일반주차 포장 톤
   stallsY(-12, 14, 6, 2.6, 5, PK)                    // 일반주차(6대) — 전산동 서측
@@ -92,33 +93,36 @@ function buildSite() {
     box(g, 42.2 + i * 3.4, 43.6, GL + 0.02, 1, 1, 0.09, '#3F6FB5', { noedge: true })
   stallsY(108.2, 5, 8, 3.0, 4.6, '#CDE8D2')          // 전기차주차(8대) — 녹색 포장
   /* 옥외주차장(108대) — 동측 대형 주차장 2열 (더블로우) */
-  topSurface(g, 114.5, 0.5, GL + 0.04, 21.5, 37.6, '#E1E4E7')
+  topSurface(sd, 114.5, 0.5, GL + 0.04, 21.5, 37.6, '#E1E4E7')
   for (const px of [115.5, 127]) {
     for (let i = 0; i <= 14; i++)
-      box(g, px, 1.2 + i * 2.5, GL, 9.6, 0.12, 0.08, '#FFFFFF', { noedge: true })
-    box(g, px + 4.75, 1.2, GL, 0.12, 35, 0.08, '#FFFFFF', { noedge: true })
+      box(sd, px, 1.2 + i * 2.5, GL, 9.6, 0.12, 0.08, '#FFFFFF', { noedge: true })
+    box(sd, px + 4.75, 1.2, GL, 0.12, 35, 0.08, '#FFFFFF', { noedge: true })
   }
 
   /* ── 진입도로 · 횡단보도 · 보행로 · 조경 (도면 남동측) ── */
-  topSurface(g, 66, 52.5, GL + 0.05, 10, 63.5, '#DDE0E4')          // 진입도로 (남→북)
-  topSurface(g, 39.5, 46.8, GL + 0.05, 99, 5.2, '#DDE0E4')         // 마당 차로 (동서)
-  for (let i = 0; i < 6; i++)                                       // 횡단보도
-    box(g, 66.8 + i * 1.5, 88, GL, 1, 4.6, 0.09, '#FFFFFF', { noedge: true })
-  topSurface(g, 64.4, 70, GL + 0.06, 1.8, 18, '#EFE9DC')           // 로비 앞 보행로
-  topSurface(g, 76.5, 56, GL + 0.06, 56, 46, '#DCE8D8')            // 조경 (남동 정원)
-  topSurface(g, 80, 62, GL + 0.08, 3, 36, '#EFE9DC')               // 정원 산책로
-  topSurface(g, 80, 76, GL + 0.08, 46, 3, '#EFE9DC')
+  topSurface(sd, 66, 52.5, GL + 0.05, 10, 63.5, '#DDE0E4')          // 진입도로 (남→북)
+  topSurface(sd, 39.5, 46.8, GL + 0.05, 99, 5.2, '#DDE0E4')         // 마당 차로 (동서)
+  for (let i = 0; i < 6; i++)                                        // 횡단보도
+    box(sd, 66.8 + i * 1.5, 88, GL, 1, 4.6, 0.09, '#FFFFFF', { noedge: true })
+  topSurface(sd, 64.4, 70, GL + 0.06, 1.8, 18, '#EFE9DC')           // 로비 앞 보행로
+  topSurface(sd, 76.5, 56, GL + 0.06, 56, 46, '#DCE8D8')            // 조경 (남동 정원)
+  topSurface(sd, 80, 62, GL + 0.08, 3, 36, '#EFE9DC')               // 정원 산책로
+  topSurface(sd, 80, 76, GL + 0.08, 46, 3, '#EFE9DC')
   /* 수목 */
   function tree(x, y, s) {
     s = s || 1
-    cylY(g, x, y, GL, 0.22 * s, 1.5 * s, '#B99B72', { seg: 8 })
+    cylY(sd, x, y, GL, 0.22 * s, 1.5 * s, '#B99B72', { seg: 8 })
     const crown = new THREE.Mesh(new THREE.SphereGeometry(1.5 * s, 10, 8), lam('#A8CFA0'))
     crown.position.copy(V(x, y, GL + 2.3 * s))
-    g.add(crown)
+    sd.add(crown)
   }
   tree(88, 60); tree(98, 66, 1.2); tree(110, 62); tree(120, 72, 1.1)
   tree(92, 86, 1.2); tree(104, 92); tree(116, 88, 1.3); tree(126, 98)
   tree(84, 100, 1.1); tree(70, 110); tree(96, 108, 1.2); tree(124, 52)
+
+  /* 사이트 디테일은 "1층" 아이솔레이션에서만 표시 (Viewport 가시성 규칙) */
+  sd.traverse((o) => { o.userData.siteDetail = true })
 
   /* ── 공동구 (지하 연결 통로 — 도면 1페이지) ── */
   setFloor('b1')

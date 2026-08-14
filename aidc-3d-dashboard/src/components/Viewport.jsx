@@ -535,7 +535,10 @@ export default function Viewport() {
           if (p.userData && p.userData.cat) { catDim = filter !== 'all' && p.userData.cat !== filter; break }
         }
         // 층 필터는 완전 숨김(반투명 누적 방지), 계통 필터는 레퍼런스처럼 잔상 유지
-        const floorHidden = floor !== 'all' && o.userData.floor && o.userData.floor !== floor
+        // 사이트 디테일(주차장·도로·조경)은 "1층" 뷰에서만 표시
+        const floorHidden =
+          (floor !== 'all' && o.userData.floor && o.userData.floor !== floor) ||
+          (o.userData.siteDetail && floor !== 'f1')
         o.userData._dimmed = catDim || !!floorHidden
         o.userData._floorHidden = !!floorHidden
         o.visible = !floorHidden
