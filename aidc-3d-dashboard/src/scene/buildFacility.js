@@ -25,19 +25,38 @@ const WH = 5.8   // 층 벽 높이
 export function buildFacility(scene) {
   resetCtx(scene)
 
-  /* ═══ 대지 ═══ */
+  /* ═══ 대지 · 지형 ═══
+   * 지반(GL)은 1층 바닥 레벨(z=9). 건물 굴토 범위 바깥을 GL 높이의
+   * 대지 볼륨으로 둘러싸서, 지하 1층(z=0)이 피트 안에 잠겨 보이게 한다.
+   * 대지 측면은 카메라 방향 자동 페이드에 등록 → 바라보는 쪽이 열린다.
+   */
   setFloor(null)
   ;(function site() {
+    const GL = 9
+    const EARTH = '#E9E2D2'      // 대지 절토면 (웜 톤 — 건물과 구분)
     const g = G(null, null)
-    // 부지 기단 (전체 바운딩)
+    // 굴토 피트 바닥 (지하층 기단 — 한 톤 어둡게)
     box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { edge: '#969EA6' })
     gradientGroundSurface(g, -32, -26, -1.15, 190, 160, P.groundTop)
-    topSurface(g, -14, -10, 0.04, 152, 126, P.slabTop)
-    // 옥외주차장 (전산동 동측) + 진입 도로 톤
-    topSurface(g, 108, 0, 0.06, 26, 38.6, '#E3E5E7')
-    topSurface(g, 58, 44, 0.06, 50, 62, '#E6E8E9')
-    // 조경 힌트 (남동측 정원)
-    topSurface(g, 60, 70, 0.07, 44, 32, '#E2E8DF')
+    topSurface(g, -14, -10, 0.04, 152, 126, '#E2E5E9')
+
+    // 지형 블록: 굴토 범위(전산동 E1, 공급동+유류야드 E2) 밖을 GL까지 채움
+    function terrain(x, y, w, d, nx, nz) {
+      wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
+      topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
+    }
+    // E1 = 전산동(-1.5~106.8, -1.5~40.1) · E2 = 공급동+유류야드(-13~57.5, 40.1~105.5)
+    terrain(-14, -10, 152, 8.5, 0, -1)          // 북측
+    terrain(-14, -1.5, 12.5, 41.6, -1, 0)       // 전산동 서측
+    terrain(106.8, -1.5, 31.2, 41.6, 1, 0)      // 전산동 동측 (주차장)
+    terrain(-14, 40.1, 1, 65.4, -1, 0)          // 공급동 서측 슬리버
+    terrain(57.5, 40.1, 80.5, 65.4, 0.7, 0.7)   // 남동측 대지 (도로·조경)
+    terrain(-14, 105.5, 152, 10.5, 0, 1)        // 남측
+
+    // 지표 톤: 옥외주차장 · 진입 도로 · 조경 (GL 위)
+    topSurface(g, 108, 0, GL + 0.06, 26, 38.6, '#E3E5E7')
+    topSurface(g, 58, 44, GL + 0.06, 50, 62, '#E6E8E9')
+    topSurface(g, 60, 70, GL + 0.07, 44, 32, '#DCE8D8')
   })()
 
   buildB1()
