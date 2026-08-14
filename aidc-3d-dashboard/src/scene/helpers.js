@@ -49,6 +49,11 @@ function registerFloor(obj) {
   }
 }
 
+/** 헬퍼를 거치지 않고 scene에 직접 추가한 mesh(돔·캡·튜브 등)의 층 태깅용 */
+export function tagFloor(obj) {
+  registerFloor(obj)
+}
+
 export function G(term, cat) {
   if (term && ctx.groupReg[term]) return ctx.groupReg[term]
   const g = new THREE.Group()
