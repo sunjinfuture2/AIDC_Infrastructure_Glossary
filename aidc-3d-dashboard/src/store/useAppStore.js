@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { LABELS } from '../scene/buildFacility.js'
 
-const FLOOR_OF_Z = (z) => (z < 8 ? 'b1' : z < 17 ? 'f1' : z < 26 ? 'f2' : 'roof')
+const FLOOR_OF_Z = (z) => (z < 12 ? 'b1' : z < 25.5 ? 'f1' : z < 39 ? 'f2' : 'roof')
 
 /** 용어의 라벨 앵커 높이로 소속 층 결정 (fws는 전 층 관통 → 전체 유지) */
 function floorOfTerm(id) {

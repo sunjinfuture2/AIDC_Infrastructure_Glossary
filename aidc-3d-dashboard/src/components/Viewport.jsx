@@ -22,7 +22,7 @@ import { FLOORS } from '../data/terms.js'
 
 function V(x, y, z) { return new THREE.Vector3(x - CX, z, y - CZ) }
 
-const FLOOR_OF_Z = (z) => (z < 8 ? 'b1' : z < 17 ? 'f1' : z < 26 ? 'f2' : 'roof')
+const FLOOR_OF_Z = (z) => (z < 12 ? 'b1' : z < 25.5 ? 'f1' : z < 39 ? 'f2' : 'roof')
 
 export default function Viewport() {
   const hostRef = useRef(null)
@@ -45,8 +45,8 @@ export default function Viewport() {
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(33, 1, 1, 4000)
     const target = new THREE.Vector3(-22, 6, -6)
-    const sph = { az: -0.62, pol: 1.06, dist: 315 }
-    const HOME = { az: -0.62, pol: 1.06, dist: 315, tx: -22, ty: 6, tz: -6 }
+    const sph = { az: -0.62, pol: 1.02, dist: 350 }
+    const HOME = { az: -0.62, pol: 1.02, dist: 350, tx: -22, ty: 10, tz: -6 }
 
     function updateCam() {
       const sp = Math.sin(sph.pol), cp = Math.cos(sph.pol)
