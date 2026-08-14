@@ -583,8 +583,10 @@ export default function Viewport() {
     const last = { x: 0, y: 0 }
     let dragMoved = false
     const ray = new THREE.Raycaster(), mv = new THREE.Vector2()
+    let camGoal = null   // 사이드바 포커스 비행 목표 { t:Vector3, d, p }
 
     function onMouseDown(e) {
+      camGoal = null      // 사용자가 직접 조작하면 비행 취소
       dragMode = (e.button === 2) ? 2 : 1
       dragMoved = false
       last.x = e.clientX; last.y = e.clientY
@@ -596,7 +598,8 @@ export default function Viewport() {
       last.x = e.clientX; last.y = e.clientY
       if (dragMode === 1) {
         sph.az -= dx * 0.0052
-        sph.pol = Math.max(0.28, Math.min(1.38, sph.pol - dy * 0.0042))
+        // 거의 180° 상하 회전: 수직 탑뷰(0.06) ↔ 수평 시점(1.54)
+        sph.pol = Math.max(0.06, Math.min(1.54, sph.pol - dy * 0.0042))
       } else {
         const k = sph.dist * 0.0011
         const right = new THREE.Vector3().subVectors(camera.position, target).cross(new THREE.Vector3(0, 1, 0)).normalize()
@@ -608,6 +611,7 @@ export default function Viewport() {
     function onMouseUp() { dragMode = 0 }
     function onWheel(e) {
       e.preventDefault()
+      camGoal = null
       const newDist = Math.max(28, Math.min(560, sph.dist * (e.deltaY > 0 ? 1.1 : 1 / 1.1)))
       const applied = newDist / sph.dist
       const r = canvas.getBoundingClientRect()
@@ -666,11 +670,35 @@ export default function Viewport() {
     canvas.addEventListener('click', onClick)
 
     /* ── 스토어 구독 ── */
-    let prev = { selected: null, filter: 'all', floor: 'all', flowState: useAppStore.getState().flowState, resetTick: 0, labelsOn: true }
+    let prev = { selected: null, filter: 'all', floor: 'all', flowState: useAppStore.getState().flowState, resetTick: 0, labelsOn: true, focusTick: 0 }
     const unsubscribe = useAppStore.subscribe((state) => {
       if (state.labelsOn !== prev.labelsOn) {
         host.classList.toggle('labels-off', !state.labelsOn)
         if (state.labelsOn) { labelsDirty = true; layoutLabels(true) }
+      }
+      /* 사이드바 포커스: 해당 층으로 전환 + 카메라가 부품으로 비행·확대 */
+      if (state.focusTick !== prev.focusTick && state.focusId) {
+        const L = labelObjs.find((l) => l.id === state.focusId)
+        if (L) {
+          // fws처럼 전 층을 관통하는 계통은 층 아이솔레이션 없이 전체 뷰 유지
+          const targetFloor = state.focusId === 'fws' ? 'all' : L.floor
+          if (state.floor !== targetFloor) state.setFloor(targetFloor)
+          let dist = 70
+          const fg = groupReg[state.focusId]
+          if (fg) {
+            const bb = new THREE.Box3().setFromObject(fg)
+            if (!bb.isEmpty()) {
+              const sphere = bb.getBoundingSphere(new THREE.Sphere())
+              dist = THREE.MathUtils.clamp(sphere.radius * 2.8, 48, 150)
+            }
+          }
+          camGoal = {
+            t: L.anchor.clone(),
+            d: dist,
+            p: THREE.MathUtils.clamp(sph.pol, 0.55, 1.15),
+          }
+        }
+        prev.focusTick = state.focusTick
       }
       if (state.resetTick !== prev.resetTick) {
         sph.az = HOME.az; sph.pol = HOME.pol; sph.dist = HOME.dist
@@ -703,7 +731,7 @@ export default function Viewport() {
           clearXray(); clearSelectionOutline(); restoreFocus(); syncLabels(); refreshSelectedLeader()
         }
       }
-      prev = { selected: state.selected, filter: state.filter, floor: state.floor, flowState: state.flowState, resetTick: state.resetTick, labelsOn: state.labelsOn }
+      prev = { selected: state.selected, filter: state.filter, floor: state.floor, flowState: state.flowState, resetTick: state.resetTick, labelsOn: state.labelsOn, focusTick: state.focusTick }
     })
 
     /* ── 렌더 루프 ── */
@@ -711,6 +739,14 @@ export default function Viewport() {
     let raf = 0
     function animate(ts) {
       raf = requestAnimationFrame(animate)
+      /* 포커스 비행: 목표 지점·거리·각도로 부드럽게 수렴 */
+      if (camGoal) {
+        target.lerp(camGoal.t, 0.09)
+        sph.dist += (camGoal.d - sph.dist) * 0.09
+        sph.pol += (camGoal.p - sph.pol) * 0.09
+        updateCam()
+        if (target.distanceTo(camGoal.t) < 0.4 && Math.abs(sph.dist - camGoal.d) < 0.8) camGoal = null
+      }
       /* 외벽 자동 페이드 — 층 아이솔레이션 시엔 벽을 얇은 유리처럼 (레퍼런스 렌더 무드) */
       const floorIso = useAppStore.getState().floor !== 'all'
       camDirH.subVectors(camera.position, target); camDirH.y = 0; camDirH.normalize()
