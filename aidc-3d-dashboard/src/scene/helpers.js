@@ -315,10 +315,11 @@ export function ladder(g, x, y, z, h, hex) {
 /**
  * 벽. exterior 벽은 카메라 방향 자동 페이드 대상으로 등록.
  * @param interior true → 반투명 칸막이
+ * @param hexOverride 지형(대지) 등 벽 색을 바꿀 때
  */
-export function wall(x, y, z, w, d, h, nx, nz, interior) {
+export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   const g = G(null, null)
-  const hex = '#EDEFF2'
+  const hex = hexOverride || '#EDEFF2'
   const geo = new THREE.BoxGeometry(w, h, d)
   const m = new THREE.Mesh(geo, lam(hex, interior ? 0.45 : 0.95))
   m.material.depthWrite = !interior
