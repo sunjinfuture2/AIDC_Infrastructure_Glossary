@@ -1,4 +1,14 @@
 import { create } from 'zustand'
+import { LABELS } from '../scene/buildFacility.js'
+
+const FLOOR_OF_Z = (z) => (z < 8 ? 'b1' : z < 17 ? 'f1' : z < 26 ? 'f2' : 'roof')
+
+/** 용어의 라벨 앵커 높이로 소속 층 결정 (fws는 전 층 관통 → 전체 유지) */
+function floorOfTerm(id) {
+  if (id === 'fws') return 'all'
+  const entry = LABELS.find((l) => l[0] === id)
+  return entry ? FLOOR_OF_Z(entry[1][2]) : 'all'
+}
 
 /**
  * Shared state between the React UI (header/toolbar/sidebar) and the
@@ -38,15 +48,21 @@ export const useAppStore = create((set) => ({
   focusId: null,
   focusTick: 0,
   requestFocus: (id) =>
-    set((s) => ({ selected: id, focusId: id, focusTick: s.focusTick + 1 })),
+    set((s) => ({
+      selected: id,
+      focusId: id,
+      focusTick: s.focusTick + 1,
+      floor: floorOfTerm(id),
+    })),
 
   /** 장비 라벨(리더라인 포함) 표시 여부 */
   labelsOn: true,
   toggleLabels: () => set((s) => ({ labelsOn: !s.labelsOn })),
 
-  /** 카메라 리셋 트리거 (증가 카운터) */
+  /** 카메라 리셋 트리거 — 시점 초기화 + 선택 해제 + 층 필터 '전체' 복귀 */
   resetTick: 0,
-  requestReset: () => set((s) => ({ resetTick: s.resetTick + 1 })),
+  requestReset: () =>
+    set((s) => ({ resetTick: s.resetTick + 1, selected: null, floor: 'all' })),
 
   /** 사이드바 검색어 */
   query: '',

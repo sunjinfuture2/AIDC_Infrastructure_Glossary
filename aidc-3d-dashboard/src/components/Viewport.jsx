@@ -689,8 +689,7 @@ export default function Viewport() {
         const L = labelObjs.find((l) => l.id === state.focusId)
         if (L) {
           // fws처럼 전 층을 관통하는 계통은 층 아이솔레이션 없이 전체 뷰 유지
-          const targetFloor = state.focusId === 'fws' ? 'all' : L.floor
-          if (state.floor !== targetFloor) state.setFloor(targetFloor)
+          // 층 전환은 requestFocus 액션이 floor를 함께 설정 → 아래 floor 브랜치에서 처리
           let dist = 70
           const fg = groupReg[state.focusId]
           if (fg) {
@@ -709,6 +708,7 @@ export default function Viewport() {
         prev.focusTick = state.focusTick
       }
       if (state.resetTick !== prev.resetTick) {
+        camGoal = null   // 진행 중인 포커스 비행 취소
         sph.az = HOME.az; sph.pol = HOME.pol; sph.dist = HOME.dist
         target.set(HOME.tx, HOME.ty, HOME.tz)
         updateCam()
@@ -739,7 +739,9 @@ export default function Viewport() {
           clearXray(); clearSelectionOutline(); restoreFocus(); syncLabels(); refreshSelectedLeader()
         }
       }
-      prev = { selected: state.selected, filter: state.filter, floor: state.floor, flowState: state.flowState, resetTick: state.resetTick, labelsOn: state.labelsOn, focusTick: state.focusTick }
+      // 재진입(콜백 중 상태 변경) 대비: 스냅샷이 아닌 최신 상태로 prev 갱신
+      const cur = useAppStore.getState()
+      prev = { selected: cur.selected, filter: cur.filter, floor: cur.floor, flowState: cur.flowState, resetTick: cur.resetTick, labelsOn: cur.labelsOn, focusTick: cur.focusTick }
     })
 
     /* ── 렌더 루프 ── */
