@@ -12,7 +12,7 @@ export const CATS = {
 export const FLOORS = {
   all: '전체',
   roof: '옥상',
-  f2: '2층 · 전산실',
+  f2: '2층',
   f1: '1층',
   b1: '지하 1층',
 }
