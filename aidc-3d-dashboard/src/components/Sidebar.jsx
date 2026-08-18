@@ -16,6 +16,7 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState({ cooling: true, power: true, it: true, mgmt: true })
   const bodyRef = useRef(null)
   const [fades, setFades] = useState({ top: false, bottom: false })
+  const [overflowing, setOverflowing] = useState(false)
 
   const q = query.trim().toLowerCase()
 
@@ -33,6 +34,8 @@ export default function Sidebar() {
     if (!el) return
     const max = Math.max(0, el.scrollHeight - el.clientHeight)
     setFades({ top: el.scrollTop > 8, bottom: el.scrollTop < max - 8 })
+    // 목록이 패널을 다 채울 때(스크롤 생길 때)만 층 내비 위 구분선 표시
+    setOverflowing(el.scrollHeight > el.clientHeight + 2)
   }
   useEffect(() => { updateFades() }, [query, selected, collapsed])
   useEffect(() => {
@@ -141,7 +144,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <nav className="floor-nav" aria-label="층 선택">
+      <nav className={`floor-nav${overflowing ? ' divided' : ''}`} aria-label="층 선택">
         {Object.entries(FLOORS).map(([key, label], i) => (
           <Fragment key={key}>
             {i > 0 && <span className="floor-sep" aria-hidden="true" />}

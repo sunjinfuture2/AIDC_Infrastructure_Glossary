@@ -54,7 +54,7 @@ button { background: none; border: 0; cursor: pointer; }
   font-size: 23.2776px;
   line-height: 1;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.05em;
 }
 
 /* 복층/단층 모드 드롭다운 (타이틀 우측) */
@@ -105,10 +105,10 @@ button { background: none; border: 0; cursor: pointer; }
   font-size: 10.3032px;
   line-height: 1;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
   color: #111;
-  padding-top: 3px;
+  padding-top: 2.32px;
 }
 
 /* ── 레이아웃 ── */
@@ -129,7 +129,7 @@ button { background: none; border: 0; cursor: pointer; }
   height: 50px;
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 30.528px;
   border-bottom: 1px solid #000;
   min-width: 0;
 }
@@ -165,11 +165,14 @@ button { background: none; border: 0; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* 글씨 하단 끝선을 뷰포트 라벨 최하단 라인(바닥에서 56px)과 정렬 */
-  padding: 15px 0 56px;
+  /* 글씨 하단 끝선을 뷰포트 라벨 최하단 라인(단층 프레임 공식 기준)과 정렬 */
+  padding: 15px 0 60px;
   background: #fff;
-  border-top: 1px solid #26282b;
+  /* 구분선은 목록이 패널을 다 채울 때만 (.divided) — 평소엔 투명으로 높이 유지 */
+  border-top: 1px solid transparent;
+  transition: border-color 0.18s ease;
 }
+.floor-nav.divided { border-top-color: #26282b; }
 .floor-btn {
   font-family: Pretendard, 'SUIT', 'Apple SD Gothic Neo', sans-serif;
   font-size: 16.5px;
@@ -188,8 +191,8 @@ button { background: none; border: 0; cursor: pointer; }
 .flow-chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11.3px;
+  gap: 5.3424px;
+  font-size: 11.33px;
   font-weight: 500;
   color: #c9cacc;
   white-space: nowrap;
@@ -197,7 +200,7 @@ button { background: none; border: 0; cursor: pointer; }
 }
 .flow-chip::before {
   content: '';
-  width: 14px;
+  width: 13.3438px;
   height: 4.5px;
   background: var(--flow-color);
   opacity: 0.24;
@@ -239,6 +242,7 @@ button { background: none; border: 0; cursor: pointer; }
   background: #fff;
   white-space: nowrap;
   flex: none;
+  margin-left: 2px;
   transition: all 0.16s ease;
 }
 .label-toggle:hover { border-color: #9a9da2; color: #45484d; }
@@ -277,8 +281,10 @@ button { background: none; border: 0; cursor: pointer; }
   position: absolute;
   pointer-events: auto;
   cursor: pointer;
-  height: 31px;
-  min-height: 31px;
+  /* 단층 기준: JS가 넣는 고정 폭 대신 내용 폭 (좌측 정렬) */
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 30px;
   padding: 1px 5px 2px 6px;
   background: rgba(255, 255, 255, 0.94);
   text-align: left;
@@ -297,6 +303,7 @@ button { background: none; border: 0; cursor: pointer; }
 .lbl.hid { display: none; }
 .lbl.dim { opacity: 0.16; }
 .lbl .lt {
+  font-family: 'SUIT', 'Pretendard', sans-serif;
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -309,6 +316,7 @@ button { background: none; border: 0; cursor: pointer; }
   top: 0.5px;
 }
 .lbl .le {
+  letter-spacing: -0.015em;
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -338,11 +346,11 @@ button { background: none; border: 0; cursor: pointer; }
 .tip3d .t-en { font-size: 13.6px; font-weight: 650; line-height: 1.2; margin: 2.5px 0 21px; letter-spacing: -0.025em; }
 .tip3d .t-short { font-size: 13.2px; font-weight: 400; line-height: 1.68; letter-spacing: -0.025em; word-break: keep-all; }
 
-.scene-copyright {
+.scene-copyright { /* 단층과 동일 크기 */
   position: absolute;
   right: 0; bottom: 5px;
   color: #b8babc;
-  font-size: 9px;
+  font-size: 8.7768px;
   pointer-events: none;
   z-index: 5;
 }
@@ -378,6 +386,8 @@ button { background: none; border: 0; cursor: pointer; }
 .search-symbol svg { width: 19.8px; height: 19.8px; overflow: visible; }
 .search-symbol circle, .search-symbol path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linecap: square; stroke-linejoin: round; }
 .search {
+  color: #000;
+  line-height: 1.2;
   flex: 1;
   min-width: 0;
   height: 48px;
@@ -448,6 +458,7 @@ button { background: none; border: 0; cursor: pointer; }
 
 /* 그룹 리스트 */
 .group-lbl {
+  font-family: 'SUIT', 'Pretendard', sans-serif;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -460,12 +471,19 @@ button { background: none; border: 0; cursor: pointer; }
   color: #111;
   cursor: pointer;
 }
-.group-lbl:first-child { margin-top: 27px; }
+/* 각 그룹이 래퍼 div에 싸여 있어 :first-child로는 전부 걸림 —
+   단층과 동일하게 실제 첫 그룹만 27px, 나머지는 18px */
+.list > div:first-child .group-lbl { margin-top: 27px; }
+/* 단층(#list top:-10px)과 동일한 리스트 시작 위치 */
+.list { position: relative; top: -10px; }
 .group-lbl::after { content: '▲'; font-size: 6.8px; color: #303237; margin-left: 2px; }
 .group-lbl.collapsed::after { content: '▼'; }
 .group-lbl .dot { width: 2px; height: 15px; transform: translateY(-1px); }
 
 .term-item {
+  font-size: 10px;
+  letter-spacing: -0.025em;
+  line-height: 1;
   min-height: 22px;
   height: 22px;
   padding: 2px 0 2px 6px;
@@ -484,7 +502,7 @@ button { background: none; border: 0; cursor: pointer; }
   position: relative;
   flex: 0 0 auto;
   white-space: nowrap;
-  font-size: 11.8px;
+  font-size: 11.83px;
   font-weight: 520;
   line-height: 18px;
   letter-spacing: -0.03em;
@@ -529,7 +547,7 @@ button { background: none; border: 0; cursor: pointer; }
 .scroll-edge.visible { opacity: 1; }
 .scroll-edge-top { top: 50px; background: linear-gradient(to bottom, rgba(255,255,255,0.98), rgba(255,255,255,0)); }
 .scroll-edge-bottom {
-  bottom: 91px;
+  bottom: 95px;
   height: 76px;
   background: linear-gradient(to top, #fff 10%, rgba(255,255,255,0.96) 38%, rgba(255,255,255,0) 100%);
 }

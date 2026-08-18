@@ -149,9 +149,8 @@ export default function Viewport() {
         items.push(L)
       }
       if (!items.length) return
-      // 좌측 층 칩 오버레이(~96px)를 피해 라벨 프레임 시작
-      /* 하단 라인은 56px 고정 — 사이드바 층 내비(PH/2F/1F/B1) 글씨 끝선과 정렬 */
-      const frame = { l: Math.max(18, w * 0.018), r: w - Math.max(18, w * 0.018) - 20, t: Math.max(16, h * 0.025) + 50, b: h - 56 }
+      /* 단층 원본과 동일한 라벨 프레임 공식 */
+      const frame = { l: Math.max(18, w * 0.018) + 20, r: w - Math.max(18, w * 0.018) - 20, t: Math.max(16, h * 0.025) + 50, b: h - Math.max(16, h * 0.025) - 40 }
       const gapX = Math.max(30, w * 0.022), gapY = Math.max(26, h * 0.038), innerW = frame.r - frame.l
       const horizontalCapacity = Math.max(4, Math.floor((innerW + gapX) / (labelW + gapX)))
       let topCount = Math.min(horizontalCapacity, Math.ceil(items.length * 0.34))
