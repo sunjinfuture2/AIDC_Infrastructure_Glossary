@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {
-  ctx, resetCtx, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
-  topSurface, gradientGroundSurface, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
+  ctx, resetCtx, setCenter, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
+  topSurface, gradientGroundSurface, fanTop, fanFront, ladder, addEdges, P,
 } from './helpers.js'
 
 /**
@@ -30,6 +30,7 @@ const GL = 13.5  // 지반 레벨 (= 1층 바닥)
 
 export function buildFacility(scene) {
   resetCtx(scene)
+  setCenter(72, 56)
 
   buildSite()
   buildB1()

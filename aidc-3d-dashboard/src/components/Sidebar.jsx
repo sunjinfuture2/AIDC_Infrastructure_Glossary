@@ -1,6 +1,10 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useAppStore } from '../store/useAppStore.js'
 import { TERMS, CATS, CAT_ORDER, FLOORS } from '../data/terms.js'
+import { LABELS_SINGLE } from '../scene/buildFacilitySingle.js'
+
+/* 단층 씬에 존재하는 용어만 목록에 노출 */
+const SINGLE_IDS = new Set(LABELS_SINGLE.map((l) => l[0]))
 
 /**
  * 좌측 학습 패널 — 검색 · 선택 상세 · 계통별 용어 리스트.
@@ -13,6 +17,7 @@ export default function Sidebar() {
   const setQuery = useAppStore((s) => s.setQuery)
   const floor = useAppStore((s) => s.floor)
   const setFloor = useAppStore((s) => s.setFloor)
+  const mode = useAppStore((s) => s.mode)
   const [collapsed, setCollapsed] = useState({ cooling: true, power: true, it: true, mgmt: true })
   const bodyRef = useRef(null)
   const [fades, setFades] = useState({ top: false, bottom: false })
@@ -24,6 +29,7 @@ export default function Sidebar() {
     return Object.keys(TERMS).filter((id) => {
       const t = TERMS[id]
       if (t.cat !== cat) return false
+      if (mode === 'single' && !SINGLE_IDS.has(id)) return false
       if (q && (t.name + t.en).toLowerCase().indexOf(q) === -1) return false
       return true
     })
@@ -98,7 +104,7 @@ export default function Sidebar() {
               {t.facts.map((f) => (<div className="f" key={f}>{f}</div>))}
             </div>
             <div className="d-rel">
-              {t.rel.slice(0, 3).filter((id) => TERMS[id]).map((id) => (
+              {t.rel.filter((id) => TERMS[id] && (mode !== 'single' || SINGLE_IDS.has(id))).slice(0, 3).map((id) => (
                 <button
                   key={id}
                   data-cat={TERMS[id].cat}
@@ -144,6 +150,7 @@ export default function Sidebar() {
         </div>
       </div>
 
+      {mode !== 'single' && (
       <nav className={`floor-nav${overflowing ? ' divided' : ''}`} aria-label="층 선택">
         {Object.entries(FLOORS).map(([key, label], i) => (
           <Fragment key={key}>
@@ -158,6 +165,7 @@ export default function Sidebar() {
           </Fragment>
         ))}
       </nav>
+      )}
 
       <div className={`scroll-edge scroll-edge-top${fades.top ? ' visible' : ''}`} />
       <div className={`scroll-edge scroll-edge-bottom${fades.bottom ? ' visible' : ''}`} />

@@ -17,11 +17,12 @@ function floorOfTerm(id) {
  */
 export const useAppStore = create((set) => ({
   /**
-   * 모델 모드: multi(복층·React 앱) | single(단층·원본 HTML을 iframe으로 그대로 실행).
-   * 단층 코드는 수정 없이 원본 그대로 구동된다.
+   * 모델 모드: multi(복층·충주 도면) | single(단층·원본 포팅 씬).
+   * 전환 시 레이아웃(헤더·사이드바·툴바)은 유지되고 3D 씬만 교체된다.
    */
   mode: 'multi',
-  setMode: (mode) => set((s) => (s.mode === mode ? {} : { mode })),
+  setMode: (mode) =>
+    set((s) => (s.mode === mode ? {} : { mode, selected: null, floor: 'all' })),
 
   /** 계통 필터: all | cooling | power | it | mgmt */
   filter: 'all',
@@ -59,7 +60,7 @@ export const useAppStore = create((set) => ({
       selected: id,
       focusId: id,
       focusTick: s.focusTick + 1,
-      floor: floorOfTerm(id),
+      floor: s.mode === 'single' ? 'all' : floorOfTerm(id),
     })),
 
   /** 장비 라벨(리더라인 포함) 표시 여부 */
