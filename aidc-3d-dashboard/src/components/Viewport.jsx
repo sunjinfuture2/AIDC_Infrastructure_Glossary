@@ -35,8 +35,12 @@ export default function Viewport() {
     const tip = host.querySelector('.tip3d')
 
     /* ── 렌더러/카메라 ── */
+    // 고정 디자인 캔버스(1908×928)가 scale로 축소되므로, 선명도를 위해 배율을 픽셀비율에 반영
+    const designScale = () => window.__designScale || 1
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.5))
+    const applyPixelRatio = () =>
+      renderer.setPixelRatio(Math.min(Math.max((window.devicePixelRatio || 1) * designScale(), 0.75), 2.5))
+    applyPixelRatio()
     renderer.setClearColor(0xffffff, 1)
     renderer.outputColorSpace = THREE.SRGBColorSpace
     const scene = new THREE.Scene()
@@ -334,13 +338,15 @@ export default function Viewport() {
       if (e) moveTip(e)
     }
     function moveTip(e) {
+      // 스케일된 캔버스: 화면 px → 디자인 px 변환 후 배치
+      const s = designScale()
       const rect = host.getBoundingClientRect()
-      const ex = e.clientX - rect.left, ey = e.clientY - rect.top
+      const ex = (e.clientX - rect.left) / s, ey = (e.clientY - rect.top) / s
       const pad = 14
       let x = ex + pad, y = ey + pad
-      const r = tip.getBoundingClientRect()
-      if (x + r.width > rect.width - 8) x = ex - r.width - pad
-      if (y + r.height > rect.height - 8) y = ey - r.height - pad
+      const tw = tip.offsetWidth, th = tip.offsetHeight
+      if (x + tw > host.clientWidth - 8) x = ex - tw - pad
+      if (y + th > host.clientHeight - 8) y = ey - th - pad
       tip.style.left = x + 'px'; tip.style.top = y + 'px'
     }
     function hideTip() { tip.style.display = 'none' }
@@ -599,7 +605,9 @@ export default function Viewport() {
     }
     function onMouseMove(e) {
       if (!dragMode) { hoverPick(e); return }
-      const dx = e.clientX - last.x, dy = e.clientY - last.y
+      // 화면 px → 디자인 px (스케일 배율 보정, 단층 원본과 동일한 조작감)
+      const s = designScale()
+      const dx = (e.clientX - last.x) / s, dy = (e.clientY - last.y) / s
       if (Math.abs(dx) + Math.abs(dy) > 3) dragMoved = true
       last.x = e.clientX; last.y = e.clientY
       if (dragMode === 1) {
@@ -820,6 +828,9 @@ export default function Viewport() {
     }
     const ro = new ResizeObserver(resize)
     ro.observe(host)
+    // 창 크기 변경 → 디자인 스케일 변동 → 픽셀비율만 갱신 (레이아웃 크기는 고정)
+    const onWinResize = () => applyPixelRatio()
+    window.addEventListener('resize', onWinResize)
 
     resize()
     updateCam()
@@ -833,6 +844,7 @@ export default function Viewport() {
       cancelAnimationFrame(raf)
       ro.disconnect()
       unsubscribe()
+      window.removeEventListener('resize', onWinResize)
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
       renderer.dispose()
