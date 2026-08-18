@@ -6023,7 +6023,7 @@ if (document.fonts && document.fonts.ready) {
 
 
 <style>
-/* 원본의 .h-title h1 span{display:none} 규칙에서 모드 드롭다운만 제외 */
+/* ── 모드 드롭다운 ── */
 .h-title h1 span.mode-dd{display:inline-block;color:inherit;font-weight:inherit}
 .h-title h1 span.mode-caret{display:inline}
 .mode-dd{position:relative;display:inline-block}
@@ -6033,9 +6033,18 @@ if (document.fonts && document.fonts.ready) {
 .mode-item{font-family:inherit;font-size:13.5px;font-weight:500;letter-spacing:-.02em;text-align:left;padding:9px 14px;background:#fff;border:0;cursor:pointer;color:#6B7280}
 .mode-item:hover{background:#F4F5F7;color:#111}
 .mode-item.on{color:#0B0C0D;font-weight:800}
+/* ── 복층 레이아웃과 통일: 1908×928 고정 스케일 대신 반응형 프레임 ── */
+html,body{width:100%;height:100%}
+body{position:static!important;left:auto!important;top:auto!important;width:100%!important;height:100%!important;overflow:hidden!important}
+header.top-header{height:88px;min-height:0;max-height:none;padding:34px clamp(24px,6.5vw,148px) 0 calc(clamp(24px,6.5vw,148px) + 40px)!important}
+.h-title h1{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:clamp(18px,1.6vw,25px)}
+.h-meta{display:none}
+.wrap{height:calc(100% - 88px);grid-template-columns:282px minmax(0,1fr);column-gap:14px;padding:0 clamp(24px,6.5vw,148px) 26px}
+.learning-panel{padding:0 16px 0 40px}
 </style>
 <script>
 (function(){
+  /* 모드 드롭다운 */
   var dd=document.getElementById('modeDD'),btn=document.getElementById('modeBtn'),menu=document.getElementById('modeMenu');
   btn.addEventListener('click',function(e){e.stopPropagation();menu.style.display=menu.style.display==='none'?'flex':'none';});
   document.addEventListener('mousedown',function(e){if(!dd.contains(e.target))menu.style.display='none';});
@@ -6047,6 +6056,17 @@ if (document.fonts && document.fonts.ready) {
       else{location.href='./';}
     }
   });})(items[i]);
+  /* 고정 디자인 스케일 해제 → 항상 1:1 (복층과 동일한 화면 크기) */
+  function noScale(){
+    window.designScale=1;
+    document.body.style.left='0px';
+    document.body.style.top='0px';
+    document.body.style.transform='none';
+    document.documentElement.style.setProperty('--design-scale',1);
+  }
+  window.applyDesignScale=noScale;
+  noScale();
+  window.dispatchEvent(new Event('resize'));
 })();
 <\/script>
 </body></html>
