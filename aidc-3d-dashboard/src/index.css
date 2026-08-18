@@ -105,14 +105,15 @@ button { background: none; border: 0; cursor: pointer; }
   flex: none;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 15px 2px 20px;
+  justify-content: space-between;
+  padding: 15px 0 20px;
   background: #fff;
   border-top: 1px solid #26282b;
 }
 .floor-btn {
+  font-family: Pretendard, 'SUIT', 'Apple SD Gothic Neo', sans-serif;
   font-size: 16.5px;
-  font-weight: 650;
+  font-weight: 400;
   letter-spacing: 0.015em;
   color: #b8babf;
   white-space: nowrap;
@@ -120,7 +121,7 @@ button { background: none; border: 0; cursor: pointer; }
 }
 .floor-btn:hover { color: #55585d; }
 .floor-btn.on { color: #0b0c0d; font-weight: 800; }
-.floor-sep { width: 1px; height: 11px; background: #d8d9dc; flex: none; }
+.floor-sep { width: 1px; height: 7px; background: #e0e1e4; flex: none; transform: scaleX(0.6); }
 
 /* Flow 컨트롤 */
 .flow-control { margin-left: auto; display: flex; align-items: center; gap: clamp(7px, 0.9vw, 14px); min-width: 0; }
