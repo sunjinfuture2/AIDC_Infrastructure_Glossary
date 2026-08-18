@@ -106,7 +106,8 @@ button { background: none; border: 0; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 0 20px;
+  /* 글씨 하단 끝선을 뷰포트 라벨 최하단 라인(바닥에서 56px)과 정렬 */
+  padding: 15px 0 56px;
   background: #fff;
   border-top: 1px solid #26282b;
 }
@@ -469,7 +470,7 @@ button { background: none; border: 0; cursor: pointer; }
 .scroll-edge.visible { opacity: 1; }
 .scroll-edge-top { top: 50px; background: linear-gradient(to bottom, rgba(255,255,255,0.98), rgba(255,255,255,0)); }
 .scroll-edge-bottom {
-  bottom: 54px;
+  bottom: 91px;
   height: 76px;
   background: linear-gradient(to top, #fff 10%, rgba(255,255,255,0.96) 38%, rgba(255,255,255,0) 100%);
 }
