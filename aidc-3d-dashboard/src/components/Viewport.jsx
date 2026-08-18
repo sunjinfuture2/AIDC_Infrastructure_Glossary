@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { buildFacility, LABELS } from '../scene/buildFacility.js'
-import { ctx } from '../scene/helpers.js'
-import { CX, CZ } from '../scene/helpers.js'
+import { buildFacilitySingle, LABELS_SINGLE } from '../scene/buildFacilitySingle.js'
+import { ctx, V } from '../scene/helpers.js'
 import { TERMS, CATS } from '../data/terms.js'
 import { useAppStore } from '../store/useAppStore.js'
 
@@ -19,9 +19,13 @@ import { useAppStore } from '../store/useAppStore.js'
  *  · 배관 그라디언트 + 흐름 패킷(꼬리 4개) 애니메이션, 계통별 토글
  */
 
-function V(x, y, z) { return new THREE.Vector3(x - CX, z, y - CZ) }
-
 const FLOOR_OF_Z = (z) => (z < 12 ? 'b1' : z < 25.5 ? 'f1' : z < 39 ? 'f2' : 'roof')
+
+/* 모드별 카메라 파라미터 — 단층 씬은 복층 대비 약 10배 스케일 (원본 값 그대로) */
+const CAM = {
+  multi: { home: { az: -0.62, pol: 1.02, dist: 350, tx: -22, ty: 10, tz: -6 }, far: 4000, zoomMin: 28, zoomMax: 560, flyMin: 48, flyMax: 150, flyFallback: 70 },
+  single: { home: { az: -0.62, pol: 0.98, dist: 1650, tx: 0, ty: 55, tz: 0 }, far: 9000, zoomMin: 380, zoomMax: 3600, flyMin: 420, flyMax: 1500, flyFallback: 700 },
+}
 
 export default function Viewport() {
   const hostRef = useRef(null)
@@ -34,6 +38,12 @@ export default function Viewport() {
     const labelsDiv = host.querySelector('.labels')
     const tip = host.querySelector('.tip3d')
 
+    /* ── 모드 (복층/단층) — 모드 전환 시 App이 key로 이 컴포넌트를 재마운트 ── */
+    const mode = useAppStore.getState().mode
+    const single = mode === 'single'
+    const MODE_LABELS = single ? LABELS_SINGLE : LABELS
+    const C = single ? CAM.single : CAM.multi
+
     /* ── 렌더러/카메라 ── */
     // 고정 디자인 캔버스(1908×928)가 scale로 축소되므로, 선명도를 위해 배율을 픽셀비율에 반영
     const designScale = () => window.__designScale || 1
@@ -44,10 +54,10 @@ export default function Viewport() {
     renderer.setClearColor(0xffffff, 1)
     renderer.outputColorSpace = THREE.SRGBColorSpace
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(33, 1, 1, 4000)
-    const target = new THREE.Vector3(-22, 6, -6)
-    const sph = { az: -0.62, pol: 1.02, dist: 350 }
-    const HOME = { az: -0.62, pol: 1.02, dist: 350, tx: -22, ty: 10, tz: -6 }
+    const camera = new THREE.PerspectiveCamera(33, 1, 1, C.far)
+    const target = new THREE.Vector3(C.home.tx, C.home.ty - 4, C.home.tz)
+    const sph = { az: C.home.az, pol: C.home.pol, dist: C.home.dist }
+    const HOME = C.home
 
     function updateCam() {
       const sp = Math.sin(sph.pol), cp = Math.cos(sph.pol)
@@ -65,11 +75,13 @@ export default function Viewport() {
     const dir2 = new THREE.DirectionalLight(0xffffff, 0.2); dir2.position.set(-100, 80, -120); scene.add(dir2)
 
     /* ── 시설 구축 ── */
-    buildFacility(scene)
+    if (single) buildFacilitySingle(scene)
+    else buildFacility(scene)
     const { groupReg, pickables, wallsFade, flows, slabs } = ctx
 
-    /* 장비 색 보정 — 파스텔 무드: 명도는 유지하고 채도만 살짝 올린다 */
+    /* 장비 색 보정 — 복층 파스텔 무드 전용 (단층은 빌더가 원본 보정을 자체 적용) */
     ;(function enhanceBaseEquipmentColors() {
+      if (single) return
       const seen = []
       for (const id in groupReg) groupReg[id].traverse((o) => {
         if (!o.isMesh || !o.material || !o.material.color || o.userData.flowPart || o.userData.selectionOutline) return
@@ -85,10 +97,10 @@ export default function Viewport() {
     /* ── 라벨/리더 생성 ── */
     const labelObjs = []
     const anchorZ = {}
-    for (let i = 0; i < LABELS.length; i++) {
-      const id = LABELS[i][0]
+    for (let i = 0; i < MODE_LABELS.length; i++) {
+      const id = MODE_LABELS[i][0]
       const t = TERMS[id]
-      anchorZ[id] = LABELS[i][1][2]
+      anchorZ[id] = MODE_LABELS[i][1][2]
       const div = document.createElement('div')
       div.className = 'lbl'
       div.setAttribute('data-label-id', id)
@@ -109,9 +121,9 @@ export default function Viewport() {
       dot.setAttribute('stroke', '#929497'); dot.setAttribute('stroke-opacity', '0.88')
       leadersSvg.appendChild(dot)
       labelObjs.push({
-        id, anchor: V(LABELS[i][1][0], LABELS[i][1][1], LABELS[i][1][2]),
+        id, anchor: V(MODE_LABELS[i][1][0], MODE_LABELS[i][1][1], MODE_LABELS[i][1][2]),
         div, line: ln, dot, hidden: false, sx: 0, sy: 0,
-        floor: FLOOR_OF_Z(LABELS[i][1][2]),
+        floor: single ? 'all' : FLOOR_OF_Z(MODE_LABELS[i][1][2]),
       })
     }
 
@@ -625,7 +637,7 @@ export default function Viewport() {
     function onWheel(e) {
       e.preventDefault()
       camGoal = null
-      const newDist = Math.max(28, Math.min(560, sph.dist * (e.deltaY > 0 ? 1.1 : 1 / 1.1)))
+      const newDist = Math.max(C.zoomMin, Math.min(C.zoomMax, sph.dist * (e.deltaY > 0 ? 1.1 : 1 / 1.1)))
       const applied = newDist / sph.dist
       const r = canvas.getBoundingClientRect()
       mv.x = ((e.clientX - r.left) / r.width) * 2 - 1
@@ -695,13 +707,13 @@ export default function Viewport() {
         if (L) {
           // fws처럼 전 층을 관통하는 계통은 층 아이솔레이션 없이 전체 뷰 유지
           // 층 전환은 requestFocus 액션이 floor를 함께 설정 → 아래 floor 브랜치에서 처리
-          let dist = 70
+          let dist = C.flyFallback
           const fg = groupReg[state.focusId]
           if (fg) {
             const bb = new THREE.Box3().setFromObject(fg)
             if (!bb.isEmpty()) {
               const sphere = bb.getBoundingSphere(new THREE.Sphere())
-              dist = THREE.MathUtils.clamp(sphere.radius * 2.8, 48, 150)
+              dist = THREE.MathUtils.clamp(sphere.radius * 2.8, C.flyMin, C.flyMax)
             }
           }
           camGoal = {

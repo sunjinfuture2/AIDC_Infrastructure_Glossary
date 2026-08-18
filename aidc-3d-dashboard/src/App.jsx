@@ -4,7 +4,6 @@ import Toolbar from './components/Toolbar.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Viewport from './components/Viewport.jsx'
 import { useAppStore } from './store/useAppStore.js'
-import singleHtml from './single/aidc-single.html?raw'
 
 /* 단층 원본과 동일한 고정 디자인 캔버스 (창에 맞춰 축소·중앙 정렬) */
 const DESIGN_W = 1908
@@ -12,7 +11,6 @@ const DESIGN_H = 928
 
 export default function App() {
   const mode = useAppStore((s) => s.mode)
-  const setMode = useAppStore((s) => s.setMode)
   const shellRef = useRef(null)
 
   /* 단층 기준 레이아웃: 1908×928 캔버스를 min(w/1908, h/928) 배율로 스케일 */
@@ -29,21 +27,7 @@ export default function App() {
     apply()
     window.addEventListener('resize', apply)
     return () => window.removeEventListener('resize', apply)
-  }, [mode])
-
-  /* 단층(원본 HTML) 쪽 드롭다운에서 '복층' 선택 → 메시지로 복귀 */
-  useEffect(() => {
-    const onMessage = (e) => {
-      if (e.data && e.data.aidcMode === 'multi') setMode('multi')
-    }
-    window.addEventListener('message', onMessage)
-    return () => window.removeEventListener('message', onMessage)
-  }, [setMode])
-
-  /* 단층 모드: 업로드된 원본 코드를 수정 없이 그대로 전체 화면 iframe으로 구동 */
-  if (mode === 'single') {
-    return <iframe className="single-frame" title="인터랙티브 인프라 용어사전 · 단층" srcDoc={singleHtml} />
-  }
+  }, [])
 
   return (
     <div className="app-shell" ref={shellRef}>
@@ -52,7 +36,8 @@ export default function App() {
         <Sidebar />
         <main className="stage">
           <Toolbar />
-          <Viewport />
+          {/* 복층/단층 전환: 레이아웃은 그대로, 3D 씬만 재마운트로 교체 */}
+          <Viewport key={mode} />
         </main>
       </div>
     </div>

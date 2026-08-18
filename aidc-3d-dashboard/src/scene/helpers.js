@@ -7,12 +7,15 @@ import * as THREE from 'three'
  * 단위는 미터. 모든 mesh는 생성 시점의 currentFloor 로 층 태깅된다.
  */
 
-/* 부지 중심 (도면 좌표 기준) */
-export const CX = 72
-export const CZ = 56
+/* 부지 중심 (도면 좌표 기준) — 씬 빌더가 setCenter로 설정 (복층 72/56, 단층 500/250) */
+export const CENTER = { x: 72, z: 56 }
+export function setCenter(x, z) {
+  CENTER.x = x
+  CENTER.z = z
+}
 
 export function V(x, y, z) {
-  return new THREE.Vector3(x - CX, z, y - CZ)
+  return new THREE.Vector3(x - CENTER.x, z, y - CENTER.z)
 }
 
 /* ── 레지스트리 ─────────────────────────────────────────── */
@@ -96,7 +99,7 @@ export function box(g, x, y, z, w, d, h, hex, opt) {
   opt = opt || {}
   const geo = new THREE.BoxGeometry(w, h, d)
   const m = new THREE.Mesh(geo, lam(hex, opt.op))
-  m.position.set(x + w / 2 - CX, z + h / 2, y + d / 2 - CZ)
+  m.position.set(x + w / 2 - CENTER.x, z + h / 2, y + d / 2 - CENTER.z)
   if (opt.ry) m.rotation.y = opt.ry
   g.add(m)
   ctx.pickables.push(m)
@@ -113,7 +116,7 @@ export function topSurface(g, x, y, z, w, d, hex, op) {
   mat.userData = { baseOp: op === undefined ? 1 : op }
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat)
   m.rotation.x = -Math.PI / 2
-  m.position.set(x + w / 2 - CX, z, y + d / 2 - CZ)
+  m.position.set(x + w / 2 - CENTER.x, z, y + d / 2 - CENTER.z)
   m.userData.floorTop = true
   g.add(m)
   registerFloor(m)
@@ -132,7 +135,7 @@ export function gradientGroundSurface(g, x, y, z, w, d, hex) {
   mat.userData = { baseOp: 1 }
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat)
   m.rotation.x = -Math.PI / 2
-  m.position.set(x + w / 2 - CX, z, y + d / 2 - CZ)
+  m.position.set(x + w / 2 - CENTER.x, z, y + d / 2 - CENTER.z)
   m.renderOrder = -10
   m.userData.floorTop = true
   m.userData.groundSurface = true
@@ -144,7 +147,7 @@ export function cylY(g, x, y, z, r, h, hex, opt) {
   opt = opt || {}
   const geo = new THREE.CylinderGeometry(opt.rTop !== undefined ? opt.rTop : r, r, h, opt.seg || 18)
   const m = new THREE.Mesh(geo, lam(hex, opt.op))
-  m.position.set(x - CX, z + h / 2, y - CZ)
+  m.position.set(x - CENTER.x, z + h / 2, y - CENTER.z)
   g.add(m)
   ctx.pickables.push(m)
   registerFloor(m)
@@ -323,7 +326,7 @@ export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   const geo = new THREE.BoxGeometry(w, h, d)
   const m = new THREE.Mesh(geo, lam(hex, interior ? 0.45 : 0.95))
   m.material.depthWrite = !interior
-  m.position.set(x + w / 2 - CX, z + h / 2, y + d / 2 - CZ)
+  m.position.set(x + w / 2 - CENTER.x, z + h / 2, y + d / 2 - CENTER.z)
   g.add(m)
   registerFloor(m)
   const edgeColor = interior ? '#DEE2E5' : '#C5CBD0'
@@ -351,7 +354,7 @@ export function slab(x, y, z, w, d, th, floorId, hexBody, hexTop, baseOp) {
   const geo = new THREE.BoxGeometry(w, th, d)
   const m = new THREE.Mesh(geo, lam(hexBody || '#D3D8DC', op))
   m.material.depthWrite = false
-  m.position.set(x + w / 2 - CX, z - th / 2, y + d / 2 - CZ)
+  m.position.set(x + w / 2 - CENTER.x, z - th / 2, y + d / 2 - CENTER.z)
   g.add(m)
   registerFloor(m)
   const e = addEdges(g, geo, m, '#969EA6')
