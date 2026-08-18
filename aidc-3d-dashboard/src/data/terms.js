@@ -9,12 +9,12 @@ export const CATS = {
   mgmt: { label: '감시 · 제어', color: '#30353C' },
 }
 
+/** 층 내비게이션 표기 — 활성 층 재클릭 시 전체 뷰('all')로 복귀 */
 export const FLOORS = {
-  all: '전체',
-  roof: '옥상',
-  f2: '2층',
-  f1: '1층',
-  b1: '지하 1층',
+  roof: 'PH',
+  f2: '2F',
+  f1: '1F',
+  b1: 'B1',
 }
 
 export const TERMS = {

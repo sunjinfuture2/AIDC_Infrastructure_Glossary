@@ -5,7 +5,6 @@ import { ctx } from '../scene/helpers.js'
 import { CX, CZ } from '../scene/helpers.js'
 import { TERMS, CATS } from '../data/terms.js'
 import { useAppStore } from '../store/useAppStore.js'
-import { FLOORS } from '../data/terms.js'
 
 /**
  * 3D 뷰포트 — 레퍼런스(용어사전 HTML)의 카메라·라벨·인터랙션 로직을
@@ -26,8 +25,6 @@ const FLOOR_OF_Z = (z) => (z < 12 ? 'b1' : z < 25.5 ? 'f1' : z < 39 ? 'f2' : 'ro
 
 export default function Viewport() {
   const hostRef = useRef(null)
-  const floor = useAppStore((s) => s.floor)
-  const setFloorFilter = useAppStore((s) => s.setFloor)
 
   useEffect(() => {
     const host = hostRef.current
@@ -149,7 +146,7 @@ export default function Viewport() {
       }
       if (!items.length) return
       // 좌측 층 칩 오버레이(~96px)를 피해 라벨 프레임 시작
-      const frame = { l: Math.max(18, w * 0.018) + 96, r: w - Math.max(18, w * 0.018) - 20, t: Math.max(16, h * 0.025) + 50, b: h - Math.max(16, h * 0.025) - 40 }
+      const frame = { l: Math.max(18, w * 0.018), r: w - Math.max(18, w * 0.018) - 20, t: Math.max(16, h * 0.025) + 50, b: h - Math.max(16, h * 0.025) - 40 }
       const gapX = Math.max(30, w * 0.022), gapY = Math.max(26, h * 0.038), innerW = frame.r - frame.l
       const horizontalCapacity = Math.max(4, Math.floor((innerW + gapX) / (labelW + gapX)))
       let topCount = Math.min(horizontalCapacity, Math.ceil(items.length * 0.34))
@@ -851,17 +848,6 @@ export default function Viewport() {
       <div className="labels" />
       <svg className="selected-leader" aria-hidden="true" />
       <div className="tip3d" role="tooltip" style={{ display: 'none' }} />
-      <nav className="floor-nav" aria-label="층 선택">
-        {Object.entries(FLOORS).map(([key, label]) => (
-          <button
-            key={key}
-            className={`floor-chip${floor === key ? ' on' : ''}`}
-            onClick={() => setFloorFilter(key)}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
       <div className="scene-copyright">© 2026 SUNJIN Engineering &amp; Architecture. All rights reserved.</div>
     </div>
   )
