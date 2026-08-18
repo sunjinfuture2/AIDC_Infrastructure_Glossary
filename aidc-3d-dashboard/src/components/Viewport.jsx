@@ -69,10 +69,17 @@ export default function Viewport() {
       markCameraMoving()
     }
 
-    // 고명도 파스텔 무드: 하이키 조명 (그림자 최소, 밝은 바닥 반사광)
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.12))
-    const dir1 = new THREE.DirectionalLight(0xffffff, 0.42); dir1.position.set(120, 180, 80); scene.add(dir1)
-    const dir2 = new THREE.DirectionalLight(0xffffff, 0.2); dir2.position.set(-100, 80, -120); scene.add(dir2)
+    if (single) {
+      // 단층: 원본 조명 그대로
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xd8dde2, 0.95))
+      const d1 = new THREE.DirectionalLight(0xffffff, 0.55); d1.position.set(600, 900, 400); scene.add(d1)
+      const d2 = new THREE.DirectionalLight(0xffffff, 0.22); d2.position.set(-500, 400, -600); scene.add(d2)
+    } else {
+      // 복층: 고명도 파스텔 무드 하이키 조명 (그림자 최소, 밝은 바닥 반사광)
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.12))
+      const dir1 = new THREE.DirectionalLight(0xffffff, 0.42); dir1.position.set(120, 180, 80); scene.add(dir1)
+      const dir2 = new THREE.DirectionalLight(0xffffff, 0.2); dir2.position.set(-100, 80, -120); scene.add(dir2)
+    }
 
     /* ── 시설 구축 ── */
     if (single) buildFacilitySingle(scene)
@@ -445,7 +452,9 @@ export default function Viewport() {
         maxDiag = Math.max(maxDiag, diag)
         meshes.push({ mesh: o, diag })
       })
-      const radius = Math.max(0.06, Math.min(0.13, maxDiag * 0.0065))
+      const radius = single
+        ? Math.max(0.42, Math.min(0.9, maxDiag * 0.0065))  // 단층 원본 값
+        : Math.max(0.06, Math.min(0.13, maxDiag * 0.0065))
       const lineMat = new THREE.MeshBasicMaterial({ color: 0x000000, depthTest: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 })
       for (let m = 0; m < meshes.length; m++) {
         const o = meshes[m].mesh, type = o.geometry.type || ''
@@ -796,6 +805,10 @@ export default function Viewport() {
         const s = slabs[i]
         let tgt = s.baseOp
         if (s.m.userData._dimmed) tgt = 0.06
+        else if (s.roofTerms) {
+          // 단층 지붕 — 원본 규칙: 지붕 아래 전력실 장비 선택 시 0.08, 탑뷰 근접 시 0.12
+          tgt = (selected && s.roofTerms.indexOf(selected) !== -1) ? 0.08 : (sph.pol < 0.62 ? 0.12 : s.baseOp)
+        }
         else if (isoFloor !== 'all' && s.floor === isoFloor) tgt = 0.97  // 선택 층의 바닥판은 흰 플레이트로
         else if (selZ < s.zTop - 1) tgt = 0.08
         else if (s.floor === 'roof' && sph.pol < 0.62) tgt = 0.1
