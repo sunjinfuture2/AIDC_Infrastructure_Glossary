@@ -174,7 +174,8 @@ button { background: none; border: 0; cursor: pointer; }
   border-top: 1px solid transparent;
   transition: border-color 0.18s ease;
 }
-.floor-nav.divided { border-top-color: #26282b; }
+/* 얇은 가름선 기준(상세 패널 하단 선과 동일 색) */
+.floor-nav.divided { border-top-color: #a7a9ac; }
 .floor-btn {
   font-family: Pretendard, 'SUIT', 'Apple SD Gothic Neo', sans-serif;
   font-size: 16.5px;
@@ -189,7 +190,7 @@ button { background: none; border: 0; cursor: pointer; }
 .floor-sep { width: 1px; height: 7px; background: #e0e1e4; flex: none; transform: scaleX(0.6); }
 
 /* Flow 컨트롤 */
-.flow-control { margin-left: auto; display: flex; align-items: center; gap: 14px; min-width: 0; transform: translate(4px, 2px); }
+.flow-control { margin-left: auto; display: flex; align-items: center; gap: 14px; min-width: 0; transform: translate(3.5px, 1.5px); }
 .flow-chip {
   display: inline-flex;
   align-items: center;
@@ -203,7 +204,7 @@ button { background: none; border: 0; cursor: pointer; }
 .flow-chip::before {
   content: '';
   width: 13.3438px;
-  height: 4.5px;
+  height: 5.85px;
   background: var(--flow-color);
   opacity: 0.24;
   transition: opacity 0.16s ease;
@@ -238,7 +239,7 @@ button { background: none; border: 0; cursor: pointer; }
   font-size: 11.5px;
   font-weight: 650;
   color: #96999e;
-  padding: 4px 11px;
+  padding: 3px 11px;
   border: 1px solid #dedfe2;
   border-radius: 999px;
   background: #fff;
@@ -384,7 +385,7 @@ button { background: none; border: 0; cursor: pointer; }
   z-index: 20;
   pointer-events: none;
 }
-.search-symbol { width: 20px; height: 23px; flex: 0 0 20px; display: flex; align-items: center; justify-content: center; color: #000; transform: translate(0, 5px); }
+.search-symbol { width: 20px; height: 23px; flex: 0 0 20px; display: flex; align-items: center; justify-content: center; color: #000; transform: translate(0.5px, 5px); }
 .search-symbol svg { width: 19.8px; height: 19.8px; overflow: visible; }
 .search-symbol circle, .search-symbol path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linecap: square; stroke-linejoin: round; }
 .search {
@@ -400,7 +401,7 @@ button { background: none; border: 0; cursor: pointer; }
   font-weight: 400;
   letter-spacing: -0.02em;
   caret-color: #111;
-  transform: translate(-1px, 6px);
+  transform: translate(1px, 6px);
 }
 .search::placeholder { color: #aeb0b4; opacity: 1; }
 .search:hover::placeholder { color: transparent; }
