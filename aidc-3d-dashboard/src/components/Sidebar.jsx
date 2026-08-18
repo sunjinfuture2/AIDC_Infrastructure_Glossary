@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useAppStore } from '../store/useAppStore.js'
-import { TERMS, CATS, CAT_ORDER } from '../data/terms.js'
+import { TERMS, CATS, CAT_ORDER, FLOORS } from '../data/terms.js'
 
 /**
  * 좌측 학습 패널 — 검색 · 선택 상세 · 계통별 용어 리스트.
@@ -11,6 +11,8 @@ export default function Sidebar() {
   const requestFocus = useAppStore((s) => s.requestFocus)
   const query = useAppStore((s) => s.query)
   const setQuery = useAppStore((s) => s.setQuery)
+  const floor = useAppStore((s) => s.floor)
+  const setFloor = useAppStore((s) => s.setFloor)
   const [collapsed, setCollapsed] = useState({ cooling: true, power: true, it: true, mgmt: true })
   const bodyRef = useRef(null)
   const [fades, setFades] = useState({ top: false, bottom: false })
@@ -138,6 +140,21 @@ export default function Sidebar() {
           {!anyResult && <div className="empty">일치하는 용어가 없습니다.</div>}
         </div>
       </div>
+
+      <nav className="floor-nav" aria-label="층 선택">
+        {Object.entries(FLOORS).map(([key, label], i) => (
+          <Fragment key={key}>
+            {i > 0 && <span className="floor-sep" aria-hidden="true" />}
+            <button
+              className={`floor-btn${floor === key ? ' on' : ''}`}
+              aria-pressed={floor === key}
+              onClick={() => setFloor(floor === key ? 'all' : key)}
+            >
+              {label}
+            </button>
+          </Fragment>
+        ))}
+      </nav>
 
       <div className={`scroll-edge scroll-edge-top${fades.top ? ' visible' : ''}`} />
       <div className={`scroll-edge scroll-edge-bottom${fades.bottom ? ' visible' : ''}`} />
