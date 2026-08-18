@@ -22,7 +22,7 @@ export default function Header() {
     <header className="top-header">
       <div className="h-title">
         <h1>
-          AI Data Center 인터랙티브 인프라 용어사전:{' '}
+          AI Data Center 인터랙티브 인프라 용어사전 :{' '}
           <span className="mode-dd" ref={ddRef}>
             <button
               className="mode-current"
@@ -30,7 +30,7 @@ export default function Header() {
               aria-expanded={open}
               onClick={() => setOpen((o) => !o)}
             >
-              {MODE_LABEL[mode]} <span className="mode-caret">▾</span>
+              {MODE_LABEL[mode]}<span className="mode-caret">▼</span>
             </button>
             {open && (
               <span className="mode-menu" role="listbox">

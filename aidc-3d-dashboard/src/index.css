@@ -65,7 +65,7 @@ button { background: none; border: 0; cursor: pointer; }
   color: inherit;
   padding: 0;
 }
-.mode-caret { font-size: 14px; color: #9ca0a6; }
+.mode-caret { font-size: 11.5px; color: #111; margin-left: 5px; vertical-align: 1.5px; }
 .mode-menu {
   position: absolute;
   left: 0;
@@ -204,7 +204,7 @@ button { background: none; border: 0; cursor: pointer; }
 .flow-chip::before {
   content: '';
   width: 13.3438px;
-  height: 5.85px;
+  height: 4.5px;
   background: var(--flow-color);
   opacity: 0.24;
   transition: opacity 0.16s ease;
@@ -225,7 +225,7 @@ button { background: none; border: 0; cursor: pointer; }
 .flow-master::after {
   content: '';
   position: absolute;
-  top: 3.5px; left: 4.5px;
+  top: 2.5px; left: 4.5px;
   width: var(--knob-w);
   height: 15px;
   border-radius: 999px;
@@ -239,7 +239,7 @@ button { background: none; border: 0; cursor: pointer; }
   font-size: 11.5px;
   font-weight: 650;
   color: #96999e;
-  padding: 3px 11px;
+  padding: 4px 11px;
   border: 1px solid #dedfe2;
   border-radius: 999px;
   background: #fff;
@@ -249,7 +249,7 @@ button { background: none; border: 0; cursor: pointer; }
   transition: all 0.16s ease;
 }
 .label-toggle:hover { border-color: #9a9da2; color: #45484d; }
-.label-toggle.on { background: #111; border-color: #111; color: #fff; }
+.label-toggle.on { background: rgba(17, 17, 17, 0.8); border-color: rgba(17, 17, 17, 0.8); color: #fff; }
 
 .reset-view {
   display: inline-flex;
