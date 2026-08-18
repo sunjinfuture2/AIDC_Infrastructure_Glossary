@@ -109,6 +109,7 @@ button { background: none; border: 0; cursor: pointer; }
   text-transform: uppercase;
   color: #111;
   padding-top: 2.32px;
+  transform: translateX(-1px);
 }
 
 /* ── 레이아웃 ── */
@@ -133,7 +134,7 @@ button { background: none; border: 0; cursor: pointer; }
   border-bottom: 1px solid #000;
   min-width: 0;
 }
-.filter-nav { display: flex; align-items: stretch; height: 100%; gap: 31px; flex: none; }
+.filter-nav { display: flex; align-items: stretch; height: 100%; gap: 31px; flex: none; transform: translateY(1px); }
 .chip {
   position: relative;
   padding: 0;
@@ -147,7 +148,8 @@ button { background: none; border: 0; cursor: pointer; }
 .chip.on::after {
   content: '';
   position: absolute;
-  height: 2px;
+  /* 활성 언더라인 — 단층과 동일한 얇기 */
+  height: 1px;
   left: 0; right: 0; bottom: 9px;
   background: var(--power);
 }
@@ -187,7 +189,7 @@ button { background: none; border: 0; cursor: pointer; }
 .floor-sep { width: 1px; height: 7px; background: #e0e1e4; flex: none; transform: scaleX(0.6); }
 
 /* Flow 컨트롤 */
-.flow-control { margin-left: auto; display: flex; align-items: center; gap: 14px; min-width: 0; }
+.flow-control { margin-left: auto; display: flex; align-items: center; gap: 14px; min-width: 0; transform: translate(2px, 1px); }
 .flow-chip {
   display: inline-flex;
   align-items: center;
@@ -382,7 +384,7 @@ button { background: none; border: 0; cursor: pointer; }
   z-index: 20;
   pointer-events: none;
 }
-.search-symbol { width: 20px; height: 23px; flex: 0 0 20px; display: flex; align-items: center; justify-content: center; color: #000; transform: translateY(5px); }
+.search-symbol { width: 20px; height: 23px; flex: 0 0 20px; display: flex; align-items: center; justify-content: center; color: #000; transform: translate(-1px, 5px); }
 .search-symbol svg { width: 19.8px; height: 19.8px; overflow: visible; }
 .search-symbol circle, .search-symbol path { fill: none; stroke: #000; stroke-width: 4.2; stroke-linecap: square; stroke-linejoin: round; }
 .search {
@@ -398,7 +400,7 @@ button { background: none; border: 0; cursor: pointer; }
   font-weight: 400;
   letter-spacing: -0.02em;
   caret-color: #111;
-  transform: translateY(6px);
+  transform: translate(-2px, 6px);
 }
 .search::placeholder { color: #aeb0b4; opacity: 1; }
 .search:hover::placeholder { color: transparent; }
@@ -476,7 +478,8 @@ button { background: none; border: 0; cursor: pointer; }
 .list > div:first-child .group-lbl { margin-top: 27px; }
 /* 단층(#list top:-10px)과 동일한 리스트 시작 위치 */
 .list { position: relative; top: -10px; }
-.group-lbl::after { content: '▲'; font-size: 6.8px; color: #303237; margin-left: 2px; }
+/* 접기 화살표 3px 좌측 이동 */
+.group-lbl::after { content: '▲'; font-size: 6.8px; color: #303237; margin-left: -1px; }
 .group-lbl.collapsed::after { content: '▼'; }
 .group-lbl .dot { width: 2px; height: 15px; transform: translateY(-1px); }
 

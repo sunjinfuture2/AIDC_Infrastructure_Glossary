@@ -50,7 +50,7 @@ export default function Header() {
           </span>
         </h1>
       </div>
-      <div className="h-meta">AI DATA CENTER · INFRASTRUCTURE</div>
+      <div className="h-meta">AIDC · INFRASTRUCTURE</div>
     </header>
   )
 }
