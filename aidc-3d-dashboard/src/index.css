@@ -42,6 +42,49 @@ button { background: none; border: 0; cursor: pointer; }
   font-weight: 800;
   letter-spacing: -0.045em;
 }
+
+/* 복층/단층 모드 드롭다운 (타이틀 우측) */
+.mode-dd { position: relative; display: inline-block; }
+.mode-current {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  padding: 0;
+}
+.mode-caret { font-size: 14px; color: #9ca0a6; }
+.mode-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 9px);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #d7d9dd;
+  min-width: 98px;
+  z-index: 200;
+  box-shadow: 0 10px 26px rgba(20, 22, 26, 0.1);
+}
+.mode-item {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-align: left;
+  padding: 9px 14px;
+  background: #fff;
+  color: #6b7280;
+}
+.mode-item:hover { background: #f4f5f7; color: #111; }
+.mode-item.on { color: #0b0c0d; font-weight: 800; }
+
+/* 단층 모드 — 원본 HTML 전체 화면 구동 */
+.single-frame {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
 .h-meta {
   font-size: clamp(9px, 0.75vw, 11px);
   line-height: 1;

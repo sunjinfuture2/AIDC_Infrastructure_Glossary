@@ -16,6 +16,13 @@ function floorOfTerm(id) {
  * globals: activeFilter, activeFloor, flowState/flowOn, selected.
  */
 export const useAppStore = create((set) => ({
+  /**
+   * 모델 모드: multi(복층·React 앱) | single(단층·원본 HTML을 iframe으로 그대로 실행).
+   * 단층 코드는 수정 없이 원본 그대로 구동된다.
+   */
+  mode: 'multi',
+  setMode: (mode) => set((s) => (s.mode === mode ? {} : { mode })),
+
   /** 계통 필터: all | cooling | power | it | mgmt */
   filter: 'all',
   setFilter: (filter) => set({ filter }),
