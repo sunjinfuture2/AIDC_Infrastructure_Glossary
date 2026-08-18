@@ -623,6 +623,31 @@ html{width:100%;height:100%;overflow:hidden;background:#fff}
 body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!important;transform-origin:0 0!important;overflow:hidden!important}
 #tip{position:absolute!important}
 </style>
+<style>
+/* ── 복층 레이아웃과 통일 (첫 페인트부터 적용) ── */
+html,body{width:100%;height:100%}
+body{position:static!important;left:auto!important;top:auto!important;width:100%!important;height:100%!important;overflow:hidden!important;transform:none!important}
+header.top-header{height:88px;min-height:0;max-height:none;padding:34px clamp(24px,6.5vw,148px) 0 calc(clamp(24px,6.5vw,148px) + 40px)!important}
+.h-title h1{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:clamp(18px,1.6vw,25px)}
+.h-meta{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;font-size:11px!important}
+.wrap{height:calc(100% - 88px);grid-template-columns:282px minmax(0,1fr);column-gap:14px;padding:0 clamp(24px,6.5vw,148px) 26px}
+.learning-panel{padding:0 16px 0 40px}
+/* ── 모드 드롭다운 ── */
+.h-title h1 span.mode-dd{display:inline-block;color:inherit;font-weight:inherit}
+.h-title h1 span.mode-caret{display:inline}
+.mode-dd{position:relative;display:inline-block}
+.mode-current{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.mode-caret{font-size:14px;color:#9CA0A6}
+.mode-menu{position:absolute;left:0;top:calc(100% + 9px);display:flex;flex-direction:column;background:#fff;border:1px solid #D7D9DD;min-width:98px;z-index:200;box-shadow:0 10px 26px rgba(20,22,26,.10)}
+.mode-item{font-family:inherit;font-size:13.5px;font-weight:500;letter-spacing:-.02em;text-align:left;padding:9px 14px;background:#fff;border:0;cursor:pointer;color:#6B7280}
+.mode-item:hover{background:#F4F5F7;color:#111}
+.mode-item.on{color:#0B0C0D;font-weight:800}
+/* ── 라벨 ON/OFF 토글 (복층과 동일) ── */
+.label-toggle{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:clamp(9px,.72vw,11.5px);font-weight:650;color:#96999e;padding:4px 11px;border:1px solid #dedfe2;border-radius:999px;background:#fff;white-space:nowrap;flex:none;cursor:pointer;transition:all .16s ease;margin-left:2px}
+.label-toggle:hover{border-color:#9a9da2;color:#45484d}
+.label-toggle.on{background:#111;border-color:#111;color:#fff}
+#viewport.labels-off #labels,#viewport.labels-off #leaders,#viewport.labels-off #selectedLeader{display:none}
+</style>
 </head>
 <body>
 <header class="top-header">
@@ -2145,31 +2170,6 @@ if (document.fonts && document.fonts.ready) {
 
 
 
-<style>
-/* ── 모드 드롭다운 ── */
-.h-title h1 span.mode-dd{display:inline-block;color:inherit;font-weight:inherit}
-.h-title h1 span.mode-caret{display:inline}
-.mode-dd{position:relative;display:inline-block}
-.mode-current{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-.mode-caret{font-size:14px;color:#9CA0A6}
-.mode-menu{position:absolute;left:0;top:calc(100% + 9px);display:flex;flex-direction:column;background:#fff;border:1px solid #D7D9DD;min-width:98px;z-index:200;box-shadow:0 10px 26px rgba(20,22,26,.10)}
-.mode-item{font-family:inherit;font-size:13.5px;font-weight:500;letter-spacing:-.02em;text-align:left;padding:9px 14px;background:#fff;border:0;cursor:pointer;color:#6B7280}
-.mode-item:hover{background:#F4F5F7;color:#111}
-.mode-item.on{color:#0B0C0D;font-weight:800}
-/* ── 라벨 ON/OFF 토글 (복층과 동일) ── */
-.label-toggle{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:clamp(9px,.72vw,11.5px);font-weight:650;color:#96999e;padding:4px 11px;border:1px solid #dedfe2;border-radius:999px;background:#fff;white-space:nowrap;flex:none;cursor:pointer;transition:all .16s ease;margin-left:2px}
-.label-toggle:hover{border-color:#9a9da2;color:#45484d}
-.label-toggle.on{background:#111;border-color:#111;color:#fff}
-#viewport.labels-off #labels,#viewport.labels-off #leaders,#viewport.labels-off #selectedLeader{display:none}
-/* ── 복층 레이아웃과 통일: 1908×928 고정 스케일 대신 반응형 프레임 ── */
-html,body{width:100%;height:100%}
-body{position:static!important;left:auto!important;top:auto!important;width:100%!important;height:100%!important;overflow:hidden!important}
-header.top-header{height:88px;min-height:0;max-height:none;padding:34px clamp(24px,6.5vw,148px) 0 calc(clamp(24px,6.5vw,148px) + 40px)!important}
-.h-title h1{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:clamp(18px,1.6vw,25px)}
-.h-meta{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;font-size:11px!important}
-.wrap{height:calc(100% - 88px);grid-template-columns:282px minmax(0,1fr);column-gap:14px;padding:0 clamp(24px,6.5vw,148px) 26px}
-.learning-panel{padding:0 16px 0 40px}
-</style>
 <script>
 (function(){
   /* 모드 드롭다운 */
@@ -2196,7 +2196,7 @@ header.top-header{height:88px;min-height:0;max-height:none;padding:34px clamp(24
     lbtn.classList.toggle('on',on);lbtn.setAttribute('aria-pressed',String(on));
     vp.classList.toggle('labels-off',!on);
   });
-  /* 고정 디자인 스케일 해제 → 항상 1:1 (복층과 동일한 화면 크기) */
+  /* 고정 디자인 스케일 해제 → 항상 1:1 (시각 차단은 head CSS !important가 선행) */
   function noScale(){
     window.designScale=1;
     document.body.style.left='0px';
