@@ -45,6 +45,10 @@ export default function Viewport() {
     const C = single ? CAM.single : CAM.multi
 
     /* ── 렌더러/카메라 ── */
+    // 단층 원본은 three r128(색 관리 없음·리니어 출력)로 그려졌다.
+    // r169의 sRGB 파이프라인으로 같은 hex를 그리면 더 진하게 보이므로,
+    // 단층 모드에선 레거시 색 파이프라인을 재현해 원본과 동일한 톤을 유지한다.
+    THREE.ColorManagement.enabled = !single
     // 고정 디자인 캔버스(1908×928)가 scale로 축소되므로, 선명도를 위해 배율을 픽셀비율에 반영
     const designScale = () => window.__designScale || 1
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
@@ -52,7 +56,7 @@ export default function Viewport() {
       renderer.setPixelRatio(Math.min(Math.max((window.devicePixelRatio || 1) * designScale(), 0.75), 2.5))
     applyPixelRatio()
     renderer.setClearColor(0xffffff, 1)
-    renderer.outputColorSpace = THREE.SRGBColorSpace
+    renderer.outputColorSpace = single ? THREE.LinearSRGBColorSpace : THREE.SRGBColorSpace
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(33, 1, 1, C.far)
     const target = new THREE.Vector3(C.home.tx, C.home.ty - 4, C.home.tz)
@@ -70,10 +74,12 @@ export default function Viewport() {
     }
 
     if (single) {
-      // 단층: 원본 조명 그대로
-      scene.add(new THREE.HemisphereLight(0xffffff, 0xd8dde2, 0.95))
-      const d1 = new THREE.DirectionalLight(0xffffff, 0.55); d1.position.set(600, 900, 400); scene.add(d1)
-      const d2 = new THREE.DirectionalLight(0xffffff, 0.22); d2.position.set(-500, 400, -600); scene.add(d2)
+      // 단층: 원본(r128 레거시 조명) 강도 재현 — r155+는 램버트에 1/π가 붙어
+      // 같은 강도가 어둡게 나오므로 π를 곱해 등가 밝기로 맞춘다
+      const LP = Math.PI
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xd8dde2, 0.95 * LP))
+      const d1 = new THREE.DirectionalLight(0xffffff, 0.55 * LP); d1.position.set(600, 900, 400); scene.add(d1)
+      const d2 = new THREE.DirectionalLight(0xffffff, 0.22 * LP); d2.position.set(-500, 400, -600); scene.add(d2)
     } else {
       // 복층: 고명도 파스텔 무드 하이키 조명 (그림자 최소, 밝은 바닥 반사광)
       scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.12))
