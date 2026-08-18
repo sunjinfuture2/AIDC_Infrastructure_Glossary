@@ -37,6 +37,8 @@ button { background: none; border: 0; cursor: pointer; }
   background: #fff;
 }
 .h-title h1 {
+  /* 복층·단층 공통 타이포 — Pretendard, 동일 크기 */
+  font-family: Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   font-size: clamp(18px, 1.6vw, 25px);
   line-height: 1;
   font-weight: 800;
