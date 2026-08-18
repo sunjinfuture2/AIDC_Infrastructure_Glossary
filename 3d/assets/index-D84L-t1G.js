@@ -4509,7 +4509,7 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 .h-title h1 span.mode-caret{display:inline}
 .mode-dd{position:relative;display:inline-block}
 .mode-current{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-.mode-caret{font-size:11.5px;color:#111;margin-left:5px;vertical-align:1.5px}
+.mode-caret{font-size:11.5px;color:#111;margin-left:5px;vertical-align:5.5px}
 .mode-menu{position:absolute;left:0;top:calc(100% + 9px);display:flex;flex-direction:column;background:#fff;border:1px solid #D7D9DD;min-width:98px;z-index:200;box-shadow:0 10px 26px rgba(20,22,26,.10)}
 .mode-item{font-family:inherit;font-size:13.5px;font-weight:500;letter-spacing:-.02em;text-align:left;padding:9px 14px;background:#fff;border:0;cursor:pointer;color:#6B7280}
 .mode-item:hover{background:#F4F5F7;color:#111}
@@ -4517,7 +4517,7 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 /* ── 라벨 ON/OFF 토글 (복층과 동일 기능) ── */
 .label-toggle{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:11.5px;font-weight:650;color:#96999e;padding:4px 11px;border:1px solid #dedfe2;border-radius:999px;background:#fff;white-space:nowrap;flex:none;cursor:pointer;transition:all .16s ease;margin-left:2px}
 .label-toggle:hover{border-color:#9a9da2;color:#45484d}
-.label-toggle.on{background:#111;border-color:#111;color:#fff}
+.label-toggle.on{background:rgba(17,17,17,.8);border-color:rgba(17,17,17,.8);color:#fff}
 #viewport.labels-off #labels,#viewport.labels-off #leaders,#viewport.labels-off #selectedLeader{display:none}
 </style>
 </head>
