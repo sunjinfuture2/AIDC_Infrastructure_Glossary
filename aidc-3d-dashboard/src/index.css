@@ -168,8 +168,11 @@ button { background: none; border: 0; cursor: pointer; }
   /* 글씨 하단 끝선을 뷰포트 라벨 최하단 라인(단층 프레임 공식 기준)과 정렬 */
   padding: 15px 0 60px;
   background: #fff;
-  border-top: 1px solid #26282b;
+  /* 구분선은 목록이 패널을 다 채울 때만 (.divided) — 평소엔 투명으로 높이 유지 */
+  border-top: 1px solid transparent;
+  transition: border-color 0.18s ease;
 }
+.floor-nav.divided { border-top-color: #26282b; }
 .floor-btn {
   font-family: Pretendard, 'SUIT', 'Apple SD Gothic Neo', sans-serif;
   font-size: 16.5px;
@@ -468,7 +471,11 @@ button { background: none; border: 0; cursor: pointer; }
   color: #111;
   cursor: pointer;
 }
-.group-lbl:first-child { margin-top: 27px; }
+/* 각 그룹이 래퍼 div에 싸여 있어 :first-child로는 전부 걸림 —
+   단층과 동일하게 실제 첫 그룹만 27px, 나머지는 18px */
+.list > div:first-child .group-lbl { margin-top: 27px; }
+/* 단층(#list top:-10px)과 동일한 리스트 시작 위치 */
+.list { position: relative; top: -10px; }
 .group-lbl::after { content: '▲'; font-size: 6.8px; color: #303237; margin-left: 2px; }
 .group-lbl.collapsed::after { content: '▼'; }
 .group-lbl .dot { width: 2px; height: 15px; transform: translateY(-1px); }
