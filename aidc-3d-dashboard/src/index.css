@@ -88,7 +88,9 @@ button { background: none; border: 0; cursor: pointer; }
   background: #fff;
 }
 .h-meta {
-  font-size: clamp(9px, 0.75vw, 11px);
+  /* 우측 상단 메타 — 복층·단층 동일 (Pretendard 11px) */
+  font-family: Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  font-size: 11px;
   line-height: 1;
   font-weight: 800;
   letter-spacing: -0.02em;
