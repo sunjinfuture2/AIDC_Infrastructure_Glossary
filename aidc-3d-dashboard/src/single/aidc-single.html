@@ -629,14 +629,14 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 .h-meta{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif!important;font-weight:400!important}
 /* ── 모드 드롭다운 ── */
 .h-title h1 span.mode-dd{display:inline-block;color:inherit;font-weight:inherit}
-.h-title h1 span.mode-caret{display:inline}
+.h-title h1 span.mode-caret{display:inline;color:#111}
 .mode-dd{position:relative;display:inline-block}
 .mode-current{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
 .mode-caret{font-size:11.5px;color:#111;margin-left:5px;vertical-align:5.5px}
-.mode-menu{position:absolute;left:0;top:calc(100% + 9px);display:flex;flex-direction:column;background:#fff;border:1px solid #D7D9DD;min-width:98px;z-index:200;box-shadow:0 10px 26px rgba(20,22,26,.10)}
-.mode-item{font-family:inherit;font-size:13.5px;font-weight:500;letter-spacing:-.02em;text-align:left;padding:9px 14px;background:#fff;border:0;cursor:pointer;color:#6B7280}
-.mode-item:hover{background:#F4F5F7;color:#111}
-.mode-item.on{color:#0B0C0D;font-weight:800}
+.mode-menu{position:absolute;left:0;top:calc(100% + 10px);display:flex;flex-direction:column;align-items:center;background:#fff;border:1px solid #26282B;padding:16px 20px 14px;gap:15px;min-width:0;z-index:200;box-shadow:none}
+.mode-item{font-family:inherit;font-size:17px;font-weight:700;letter-spacing:-.04em;text-align:center;padding:0 1px 5px;background:none;border:0;cursor:pointer;color:#C3C5C9;white-space:nowrap}
+.mode-item:hover{background:none;color:#55585D}
+.mode-item.on{color:#0B0C0D;font-weight:800;border-bottom:2.5px solid #E2793B}
 /* ── 라벨 ON/OFF 토글 (복층과 동일 기능) ── */
 .label-toggle{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:11.5px;font-weight:650;color:#96999e;padding:4px 11px;border:1px solid #dedfe2;border-radius:999px;background:#fff;white-space:nowrap;flex:none;cursor:pointer;transition:all .16s ease;margin-left:2px}
 .label-toggle:hover{border-color:#9a9da2;color:#45484d}

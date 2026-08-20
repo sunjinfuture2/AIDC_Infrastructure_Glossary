@@ -683,7 +683,10 @@ export default function Viewport() {
     canvas.addEventListener('click', onClick)
 
     /* ── 스토어 구독 ── */
-    let prev = { selected: null, filter: 'all', floor: 'all', flowState: useAppStore.getState().flowState, resetTick: 0, labelsOn: true, focusTick: 0 }
+    // 재마운트(모드 전환) 시 라벨 OFF 상태가 유지된 채 돌아올 수 있으므로
+    // 초기 labelsOn을 즉시 반영 — 안 하면 미배치 라벨이 (0,0)에 겹쳐 노출된다
+    host.classList.toggle('labels-off', !useAppStore.getState().labelsOn)
+    let prev = { selected: null, filter: 'all', floor: 'all', flowState: useAppStore.getState().flowState, resetTick: 0, labelsOn: useAppStore.getState().labelsOn, focusTick: 0 }
     const unsubscribe = useAppStore.subscribe((state) => {
       if (state.labelsOn !== prev.labelsOn) {
         host.classList.toggle('labels-off', !state.labelsOn)
