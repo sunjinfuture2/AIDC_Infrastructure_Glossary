@@ -36,6 +36,7 @@ export function buildFacility(scene) {
   buildF1()
   buildF2()
   buildRoof()
+  buildDetailPlus()
   buildFlows()
 
   return ctx
@@ -846,6 +847,126 @@ function buildFlows() {
   ;(function genTie() {
     const g = G('generator', 'power')
     pipe(g, [[23, 60, 33.6], [35, 52, 33.6], [35, 40, 33.6], [80, 40, 33.6], [101.5, 33, 33.6], [101.5, 30, 29.8]], '#EBB410', 0.3)
+  })()
+
+  setFloor(null)
+}
+
+/* ═══════════════ 디테일 증강 (스케일 확장에 따른 밀도 보강) ═══════════════
+   단면계획·평면도 기반 추가 요소: 케이블 트레이, 배관 헤더, 트렌치,
+   급기 덕트, EOR 분전 캐비닛, 옥상 프리쿨링 냉동기 가대 프레임 등 */
+function buildDetailPlus() {
+  /* ── B1 ── */
+  setFloor('b1')
+  ;(function b1Plus() {
+    // 전기실-1: 배전반 열 상부 케이블 트레이 3주행
+    const sg = G('switchgear', 'power')
+    for (const ty of [7, 14, 21]) {
+      box(sg, 9.5, ty - 0.5, 4.4, 35, 1.0, 0.16, P.tray, { noedge: true })
+      for (let k = 0; k < 8; k++) box(sg, 10.5 + k * 4.4, ty - 0.5, 4.1, 0.16, 1.0, 0.3, '#8FA083', { noedge: true })
+    }
+    // 기계실: 칠러 ↔ 펌프 스키드 냉수 헤더 + 밸브
+    const pm = G('pumps', 'cooling')
+    pipe(pm, [[87.6, 4.5, 1.2], [87.6, 13.5, 1.2]], '#9FB6CC', 0.34, false)
+    for (const vy of [5, 8.8, 12.6]) {
+      pipe(pm, [[87.6, vy, 1.2], [88.9, vy, 0.9]], '#9FB6CC', 0.24, false)
+      cylY(pm, 87.6, vy, 1.7, 0.28, 0.5, '#5C7C9E')
+    }
+    // 기계 갤러리: 배관 랙 위 실배관 2주행
+    const tg = G(null, null)
+    cylDir(tg, [71.5, 21.2, 1.15], [95.5, 21.2, 1.15], 0.34, '#C4D6E4', { seg: 12, pick: false })
+    cylDir(tg, [71.5, 22.6, 1.15], [95.5, 22.6, 1.15], 0.34, '#E8C9AF', { seg: 12, pick: false })
+    // GIS실: 케이블 트렌치 마킹 2열
+    const gz = G('gis', 'power')
+    topSurface(gz, 34.6, 59, 0.12, 1.1, 39, '#C8CFD8')
+    topSurface(gz, 37.2, 59, 0.12, 1.1, 39, '#C8CFD8')
+  })()
+
+  /* ── 1F ── */
+  ;(function f1Plus() {
+    setFloor('f1')
+    const z = LV.f1
+    // 항온항습실: 팬월 상부 급기 덕트 (동서 주행 + 팬월별 수직 연결)
+    const cr = G('crah', 'cooling')
+    box(cr, 8, 0.9, z + WH * 0.82 + 0.85, 96, 2.2, 1.4, '#D3DEE8', { op: 0.92 })
+    for (let i = 0; i < 8; i++) {
+      const x = 10 + i * 11.4
+      box(cr, x + 2.5, 1.2, z + WH * 0.82 + 0.55, 1.6, 1.6, 0.32, '#B9CAD9', { noedge: true })
+    }
+    // 전기실1: UPS 열 상부 케이블 트레이 2주행
+    const up = G('ups', 'power')
+    for (const ty of [8.6, 16.1]) {
+      box(up, 13.4, ty - 0.5, z + 4.2, 27, 1.0, 0.16, P.tray, { noedge: true })
+      for (let k = 0; k < 6; k++) box(up, 14.6 + k * 4.4, ty - 0.5, z + 3.9, 0.16, 1.0, 0.3, '#8FA083', { noedge: true })
+    }
+    // 하역장: 지게차 + 팔레트 스택
+    const d = G(null, null)
+    box(d, 30.5, 27.5, z, 1.5, 2.6, 1.1, '#E8A33D')
+    box(d, 30.7, 28.0, z + 1.1, 1.1, 1.3, 0.9, '#4A5560')
+    box(d, 30.35, 30.1, z + 0.2, 1.8, 0.16, 0.14, '#8A93A0', { noedge: true })
+    box(d, 30.35, 30.35, z + 0.2, 1.8, 0.16, 0.14, '#8A93A0', { noedge: true })
+    box(d, 27, 30.5, z, 2.4, 2, 0.35, P.wood, { noedge: true })
+    box(d, 27, 30.5, z + 0.35, 2.4, 2, 1.1, P.cream2)
+    // 로비: 사이니지 + 플랜터
+    box(d, 47.6, 71, z, 0.4, 2.6, 2.3, '#30353C')
+    box(d, 47.55, 71.4, z + 0.9, 0.5, 1.8, 1.0, '#7FD8C8', { noedge: true })
+    for (const py of [69.4, 84.6]) {
+      box(d, 60.8, py, z, 1.3, 1.3, 0.75, '#C9D3DC', { noedge: true })
+      cylY(d, 61.45, py + 0.65, z + 0.75, 0.5, 1.3, '#A8CFA0', { seg: 10 })
+    }
+  })()
+
+  /* ── 2F ── */
+  ;(function f2Plus() {
+    setFloor('f2')
+    const z = LV.f2
+    const AISLE_X = [16, 23.6, 31.2, 38.8, 46.4, 54, 61.6, 69.2, 76.8]
+    // 각 랙 열 남단 EOR(End-of-Row) 분전 캐비닛
+    const pd = G('pdu', 'power')
+    for (const ax of AISLE_X) {
+      box(pd, ax - 0.75, 19.85, z, 1.5, 1.3, 2.2, P.gray)
+      box(pd, ax - 0.45, 21.1, z + 1.5, 0.9, 0.14, 0.4, '#454E58', { noedge: true })
+    }
+    // 전산실 상부 광케이블 트레이 (동서 1주행 — 버스웨이와 별도 레벨)
+    const nw = G('network', 'it')
+    box(nw, 14, 11.6, z + 4.5, 66, 0.8, 0.14, '#B9AEE0', { noedge: true })
+    for (const ax of AISLE_X) box(nw, ax - 0.4, 11.5, z + 4.2, 0.8, 1.0, 0.3, '#9D8FD4', { noedge: true })
+    // 소화가스실: 실린더 2기 추가 + 방출 헤더
+    const fg = G('fire-gas', 'mgmt')
+    for (const fx of [33, 34.5]) { cylY(fg, fx, 46.6, z, 0.58, 3.2, '#F7CE55'); cylY(fg, fx, 46.6, z + 3.2, 0.24, 0.5, '#A39E90') }
+    pipe(fg, [[33, 42, z + 3.9], [36, 42, z + 3.9], [36, 46.6, z + 3.9]], '#C9B98A', 0.16, false)
+    // 발전기실 바닥 정비 통로 마킹
+    const gd = G(null, null)
+    topSurface(gd, 10, 68.5, z + 0.1, 27, 1.6, '#E9D9A8')
+    topSurface(gd, 10, 86.5, z + 0.1, 27, 1.6, '#E9D9A8')
+  })()
+
+  /* ── 옥상 ── */
+  ;(function roofPlus() {
+    setFloor('roof')
+    const z = LV.roof
+    // 프리쿨링 냉동기 + 가대 프레임 (단면계획: '프리쿨링 냉동기(기계) · 냉동기 가대 프레임')
+    const d = G(null, null)
+    const FR = { x0: 14, y0: 21, w: 30, dpt: 12, h: 2.6 }
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++)
+      box(d, FR.x0 + 1 + i * ((FR.w - 2.6) / 3), FR.y0 + 1 + j * (FR.dpt - 2.6), z, 0.6, 0.6, FR.h, '#9AA5B1', { noedge: true })
+    box(d, FR.x0, FR.y0, z + FR.h, FR.w, 0.55, 0.5, '#8A96A3', { noedge: true })
+    box(d, FR.x0, FR.y0 + FR.dpt - 0.55, z + FR.h, FR.w, 0.55, 0.5, '#8A96A3', { noedge: true })
+    box(d, FR.x0, FR.y0, z + FR.h, 0.55, FR.dpt, 0.5, '#8A96A3', { noedge: true })
+    box(d, FR.x0 + FR.w - 0.55, FR.y0, z + FR.h, 0.55, FR.dpt, 0.5, '#8A96A3', { noedge: true })
+    topSurface(d, FR.x0, FR.y0, z + FR.h + 0.52, FR.w, FR.dpt, '#CBD4DC', 0.96)
+    for (let i = 0; i < 3; i++) {
+      const cx = FR.x0 + 1.6 + i * 9.6
+      box(d, cx, FR.y0 + 2, z + FR.h + 0.55, 8, 5.2, 2.4, '#CFE0EE')
+      cylDir(d, [cx + 0.8, FR.y0 + 3.2, z + FR.h + 1.4], [cx + 7.2, FR.y0 + 3.2, z + FR.h + 1.4], 0.75, P.blue, { seg: 14 })
+      cylDir(d, [cx + 0.8, FR.y0 + 5.6, z + FR.h + 2.2], [cx + 7.2, FR.y0 + 5.6, z + FR.h + 2.2], 0.75, P.blueD, { seg: 14 })
+      fanTop(d, cx + 2.2, FR.y0 + 4.6, z + FR.h + 2.95, 1.05)
+      fanTop(d, cx + 5.8, FR.y0 + 4.6, z + FR.h + 2.95, 1.05)
+    }
+    // 냉각탑 급수 헤더 + 탑별 분기
+    const ct = G('cooling-tower', 'cooling')
+    pipe(ct, [[13, 16.8, z + 1.2], [49, 16.8, z + 1.2]], '#9CC6E4', 0.3, false)
+    for (const tx of [17, 31, 45]) pipe(ct, [[tx, 16.8, z + 1.2], [tx, 15.2, z + 1.6]], '#9CC6E4', 0.22, false)
   })()
 
   setFloor(null)
