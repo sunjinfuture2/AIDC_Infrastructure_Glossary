@@ -621,6 +621,9 @@ header.top-header{height:96.6976px;min-height:88px;max-height:120px;padding:48.2
 /* fixed-proportion 1908 x 928 design canvas */
 html{width:100%;height:100%;overflow:hidden;background:#fff}
 body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!important;transform-origin:0 0!important;overflow:hidden!important}
+/* 고해상도(dPR>1) 환경에서 캔버스가 버퍼 크기(px 속성)대로 표시되어 모델이 우하단으로
+   밀리는 현상 교정 — 표시 크기를 항상 뷰포트 컨테이너에 고정 (버퍼/종횡비 무변경) */
+#gl{width:100%!important;height:100%!important}
 #tip{position:absolute!important}
 </style>
 <style>
@@ -633,10 +636,10 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 .mode-dd{position:relative;display:inline-block}
 .mode-current{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
 .mode-caret{font-size:11.5px;color:#111;margin-left:5px;vertical-align:5.5px}
-.mode-menu{position:absolute;left:0;top:calc(100% + 10px);display:flex;flex-direction:column;align-items:center;background:#fff;border:1px solid #26282B;padding:16px 20px 14px;gap:15px;min-width:0;z-index:200;box-shadow:none}
-.mode-item{font-family:inherit;font-size:17px;font-weight:700;letter-spacing:-.04em;text-align:center;padding:0 1px 5px;background:none;border:0;cursor:pointer;color:#C3C5C9;white-space:nowrap}
+.mode-menu{position:absolute;left:0;top:calc(100% + 10px);display:flex;flex-direction:column;align-items:center;background:#fff;border:1px solid #26282B;padding:16px 20px 15.25px;gap:15px;min-width:0;z-index:200;box-shadow:none}
+.mode-item{font-family:inherit;font-size:17px;font-weight:700;letter-spacing:-.04em;text-align:center;padding:0 1px 5px;background:none;border:0;cursor:pointer;color:#C3C5C9;white-space:nowrap;transform:translate(-1.5px,1px)}
 .mode-item:hover{background:none;color:#55585D}
-.mode-item.on{color:#0B0C0D;font-weight:800;border-bottom:2.5px solid #E2793B}
+.mode-item.on{color:#0B0C0D;font-weight:800;border-bottom:1.25px solid #E2793B}
 /* ── 라벨 ON/OFF 토글 (복층과 동일 기능) ── */
 .label-toggle{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:11.5px;font-weight:650;color:#96999e;padding:4px 11px;border:1px solid #dedfe2;border-radius:999px;background:#fff;white-space:nowrap;flex:none;cursor:pointer;transition:all .16s ease;margin-left:2px}
 .label-toggle:hover{border-color:#9a9da2;color:#45484d}

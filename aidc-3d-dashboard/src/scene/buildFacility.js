@@ -23,9 +23,10 @@ import {
 
 const MAIN = { x0: 0, x1: 105.3, y0: 0, y1: 38.6 }   // 전산동
 const SUP = { x0: 4.2, x1: 63.9, y0: 54, y1: 104 }    // 공급동
-/* 층고 1.5배 (피치 9m → 13.5m, 벽 5.8m → 8.7m) */
+/* 층고 1.5배 (피치 9m → 13.5m) */
 const LV = { b1: 0, f1: 13.5, f2: 27, roof: 40.5 }
-const WH = 8.7   // 층 벽 높이
+const WH = 8.7   // 장비 기준 높이 (덕트·팬월 등 배치 좌표에만 사용)
+const XWH = 12.5 // 벽 높이 — 층 피치 13.5 − 슬래브 두께 1: 벽 상단이 천장 슬래브에 밀착
 const GL = 13.5  // 지반 레벨 (= 1층 바닥)
 
 export function buildFacility(scene) {
@@ -165,16 +166,16 @@ function buildB1() {
   })()
 
   /* 외벽 + 칸막이 */
-  wall(MAIN.x0, MAIN.y0, 0, MAIN.x1 - MAIN.x0, 1.1, WH, 0, -1, false)
-  wall(MAIN.x0, MAIN.y1 - 1.1, 0, MAIN.x1 - MAIN.x0, 1.1, WH, 0, 1, false)
-  wall(MAIN.x0, 1.1, 0, 1.1, MAIN.y1 - 2.2, WH, -1, 0, false)
-  wall(MAIN.x1 - 1.1, 1.1, 0, 1.1, MAIN.y1 - 2.2, WH, 1, 0, false)
-  wall(7, 1.1, 0, 0.7, 36.4, WH * 0.86, 0, 0, true)
-  wall(98.3, 1.1, 0, 0.7, 36.4, WH * 0.86, 0, 0, true)
-  wall(47.2, 1.1, 0, 0.7, 28, WH * 0.86, 0, 0, true)
-  wall(66.5, 1.1, 0, 0.7, 36.4, WH * 0.86, 0, 0, true)
-  wall(48, 16.2, 0, 18, 0.7, WH * 0.86, 0, 0, true)
-  wall(70, 16.2, 0, 28, 0.7, WH * 0.86, 0, 0, true)
+  wall(MAIN.x0, MAIN.y0, 0, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, -1, false)
+  wall(MAIN.x0, MAIN.y1 - 1.1, 0, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, 1, false)
+  wall(MAIN.x0, 1.1, 0, 1.1, MAIN.y1 - 2.2, XWH, -1, 0, false)
+  wall(MAIN.x1 - 1.1, 1.1, 0, 1.1, MAIN.y1 - 2.2, XWH, 1, 0, false)
+  wall(7, 1.1, 0, 0.7, 36.4, XWH * 0.86, 0, 0, true)
+  wall(98.3, 1.1, 0, 0.7, 36.4, XWH * 0.86, 0, 0, true)
+  wall(47.2, 1.1, 0, 0.7, 28, XWH * 0.86, 0, 0, true)
+  wall(66.5, 1.1, 0, 0.7, 36.4, XWH * 0.86, 0, 0, true)
+  wall(48, 16.2, 0, 18, 0.7, XWH * 0.86, 0, 0, true)
+  wall(70, 16.2, 0, 28, 0.7, XWH * 0.86, 0, 0, true)
 
   /* 전기실-1 — 수배전반 열반 3열 */
   ;(function switchgearRoom() {
@@ -282,12 +283,12 @@ function buildB1() {
     topSurface(g0, 27, SUP.y1 - 1, 0.08, 12, 5, P.zoneCore)       // 장비반입구
 
     // 공급동 외벽
-    wall(SUP.x0, SUP.y0, 0, SUP.x1 - SUP.x0, 1.1, WH, 0, -1, false)
-    wall(SUP.x0, SUP.y1 - 1.1, 0, SUP.x1 - SUP.x0, 1.1, WH, 0, 1, false)
-    wall(SUP.x0, SUP.y0 + 1.1, 0, 1.1, SUP.y1 - SUP.y0 - 2.2, WH, -1, 0, false)
-    wall(SUP.x1 - 1.1, SUP.y0 + 1.1, 0, 1.1, SUP.y1 - SUP.y0 - 2.2, WH, 1, 0, false)
-    wall(40, SUP.y0 + 1.1, 0, 0.7, 44, WH * 0.86, 0, 0, true)     // GIS | RCP·PIT
-    wall(9.4, SUP.y0 + 1.1, 0, 0.7, 44, WH * 0.86, 0, 0, true)    // 유류펌프 | GIS
+    wall(SUP.x0, SUP.y0, 0, SUP.x1 - SUP.x0, 1.1, XWH, 0, -1, false)
+    wall(SUP.x0, SUP.y1 - 1.1, 0, SUP.x1 - SUP.x0, 1.1, XWH, 0, 1, false)
+    wall(SUP.x0, SUP.y0 + 1.1, 0, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, -1, 0, false)
+    wall(SUP.x1 - 1.1, SUP.y0 + 1.1, 0, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, 1, 0, false)
+    wall(40, SUP.y0 + 1.1, 0, 0.7, 44, XWH * 0.86, 0, 0, true)     // GIS | RCP·PIT
+    wall(9.4, SUP.y0 + 1.1, 0, 0.7, 44, XWH * 0.86, 0, 0, true)    // 유류펌프 | GIS
 
     // GIS — 가스절연개폐장치 3베이 (도면: 홀 안에 3조 종배열)
     const g = G('gis', 'power')
@@ -361,21 +362,21 @@ function buildF1() {
   })()
 
   /* 외벽 + 칸막이 */
-  wall(MAIN.x0, MAIN.y0, z, MAIN.x1 - MAIN.x0, 1.1, WH, 0, -1, false)
-  wall(MAIN.x0, MAIN.y1 - 1.1, z, MAIN.x1 - MAIN.x0, 1.1, WH, 0, 1, false)
-  wall(MAIN.x0, 1.1, z, 1.1, MAIN.y1 - 2.2, WH, -1, 0, false)
-  wall(MAIN.x1 - 1.1, 1.1, z, 1.1, MAIN.y1 - 2.2, WH, 1, 0, false)
-  wall(43, SUP.y0, z, SUP.x1 - 43, 1.1, WH, 0, -1, false)             // 공급동 동측 스트립
-  wall(43, SUP.y1 - 1.1, z, SUP.x1 - 43, 1.1, WH, 0, 1, false)
-  wall(43, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, WH, -1, 0, false)
-  wall(SUP.x1 - 1.1, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, WH, 1, 0, false)
-  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, WH * 0.7, 0, 0, true)   // 연결부 코리도 벽
-  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, WH * 0.7, 0, 0, true)
-  wall(7, 4.4, z, 91.3, 0.7, WH * 0.86, 0, 0, true)
-  wall(10.8, 4.9, z, 0.7, 15, WH * 0.86, 0, 0, true)
-  wall(41, 4.9, z, 0.7, 15, WH * 0.86, 0, 0, true)
-  wall(58.8, 4.9, z, 0.7, 15, WH * 0.86, 0, 0, true)
-  wall(12, 20.8, z, 82, 0.7, WH * 0.86, 0, 0, true)
+  wall(MAIN.x0, MAIN.y0, z, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, -1, false)
+  wall(MAIN.x0, MAIN.y1 - 1.1, z, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, 1, false)
+  wall(MAIN.x0, 1.1, z, 1.1, MAIN.y1 - 2.2, XWH, -1, 0, false)
+  wall(MAIN.x1 - 1.1, 1.1, z, 1.1, MAIN.y1 - 2.2, XWH, 1, 0, false)
+  wall(43, SUP.y0, z, SUP.x1 - 43, 1.1, XWH, 0, -1, false)             // 공급동 동측 스트립
+  wall(43, SUP.y1 - 1.1, z, SUP.x1 - 43, 1.1, XWH, 0, 1, false)
+  wall(43, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, -1, 0, false)
+  wall(SUP.x1 - 1.1, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, 1, 0, false)
+  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)   // 연결부 코리도 벽
+  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)
+  wall(7, 4.4, z, 91.3, 0.7, XWH * 0.86, 0, 0, true)
+  wall(10.8, 4.9, z, 0.7, 15, XWH * 0.86, 0, 0, true)
+  wall(41, 4.9, z, 0.7, 15, XWH * 0.86, 0, 0, true)
+  wall(58.8, 4.9, z, 0.7, 15, XWH * 0.86, 0, 0, true)
+  wall(12, 20.8, z, 82, 0.7, XWH * 0.86, 0, 0, true)
 
   /* 항온항습실 — 팬월 8기 */
   ;(function crahGallery() {
@@ -524,21 +525,21 @@ function buildF2() {
   })()
 
   /* 외벽 + 칸막이 */
-  wall(MAIN.x0, MAIN.y0, z, MAIN.x1 - MAIN.x0, 1.1, WH, 0, -1, false)
-  wall(MAIN.x0, MAIN.y1 - 1.1, z, MAIN.x1 - MAIN.x0, 1.1, WH, 0, 1, false)
-  wall(MAIN.x0, 1.1, z, 1.1, MAIN.y1 - 2.2, WH, -1, 0, false)
-  wall(MAIN.x1 - 1.1, 1.1, z, 1.1, MAIN.y1 - 2.2, WH, 1, 0, false)
-  wall(SUP.x0, SUP.y0, z, SUP.x1 - SUP.x0, 1.1, WH, 0, -1, false)
-  wall(SUP.x0, SUP.y1 - 1.1, z, SUP.x1 - SUP.x0, 1.1, WH, 0, 1, false)
-  wall(SUP.x0, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, WH, -1, 0, false)
-  wall(SUP.x1 - 1.1, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, WH, 1, 0, false)
-  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, WH * 0.7, 0, 0, true)   // 소화가스실 벽
-  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, WH * 0.7, 0, 0, true)
-  wall(7, 4.4, z, 91.3, 0.7, WH * 0.86, 0, 0, true)
-  wall(12, 22.4, z, 82, 0.7, WH * 0.86, 0, 0, true)
-  wall(7, 1.8, z, 0.7, 35, WH * 0.86, 0, 0, true)
-  wall(97.6, 1.8, z, 0.7, 35, WH * 0.86, 0, 0, true)
-  wall(42.3, SUP.y0 + 1.1, z, 0.7, 48, WH * 0.86, 0, 0, true)   // 발전기실 | 사무 윙
+  wall(MAIN.x0, MAIN.y0, z, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, -1, false)
+  wall(MAIN.x0, MAIN.y1 - 1.1, z, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, 1, false)
+  wall(MAIN.x0, 1.1, z, 1.1, MAIN.y1 - 2.2, XWH, -1, 0, false)
+  wall(MAIN.x1 - 1.1, 1.1, z, 1.1, MAIN.y1 - 2.2, XWH, 1, 0, false)
+  wall(SUP.x0, SUP.y0, z, SUP.x1 - SUP.x0, 1.1, XWH, 0, -1, false)
+  wall(SUP.x0, SUP.y1 - 1.1, z, SUP.x1 - SUP.x0, 1.1, XWH, 0, 1, false)
+  wall(SUP.x0, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, -1, 0, false)
+  wall(SUP.x1 - 1.1, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, 1, 0, false)
+  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)   // 소화가스실 벽
+  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)
+  wall(7, 4.4, z, 91.3, 0.7, XWH * 0.86, 0, 0, true)
+  wall(12, 22.4, z, 82, 0.7, XWH * 0.86, 0, 0, true)
+  wall(7, 1.8, z, 0.7, 35, XWH * 0.86, 0, 0, true)
+  wall(97.6, 1.8, z, 0.7, 35, XWH * 0.86, 0, 0, true)
+  wall(42.3, SUP.y0 + 1.1, z, 0.7, 48, XWH * 0.86, 0, 0, true)   // 발전기실 | 사무 윙
 
   /* 항온항습실 — 팬월 10기 */
   ;(function crahF2() {
