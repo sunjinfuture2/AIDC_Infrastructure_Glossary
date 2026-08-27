@@ -75,7 +75,8 @@ button { background: none; border: 0; cursor: pointer; }
   align-items: center;
   background: #fff;
   border: 1px solid #26282b;
-  padding: 16px 20px 14px;
+  /* 밑줄 두께 절반(-1.25px)만큼 하단 패딩 보정 → 박스 크기 유지 */
+  padding: 16px 20px 15.25px;
   gap: 15px;
   min-width: 0;
   z-index: 200;
@@ -90,9 +91,11 @@ button { background: none; border: 0; cursor: pointer; }
   background: none;
   color: #c3c5c9;
   white-space: nowrap;
+  /* 박스 크기는 유지한 채 텍스트만 좌 1.5px · 하 1px 이동 */
+  transform: translate(-1.5px, 1px);
 }
 .mode-item:hover { background: none; color: #55585d; }
-.mode-item.on { color: #0b0c0d; font-weight: 800; border-bottom: 2.5px solid var(--hl); }
+.mode-item.on { color: #0b0c0d; font-weight: 800; border-bottom: 1.25px solid var(--hl); }
 
 /* 단층 모드 — 원본 HTML 전체 화면 구동 */
 .single-frame {
@@ -171,8 +174,9 @@ button { background: none; border: 0; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* 글씨 하단 끝선을 뷰포트 라벨 최하단 라인(단층 프레임 공식 기준)과 정렬 */
-  padding: 15px 0 60px;
+  /* 글씨 하단 끝선을 뷰포트 라벨 최하단 라인(단층 프레임 공식 기준)과 정렬.
+     좌우 4px 인셋 — PH/B1 표기가 양끝에서 4px씩 안쪽으로, 사이 간격은 자동 재분배 */
+  padding: 15px 4px 60px;
   background: #fff;
   /* 구분선은 목록이 패널을 다 채울 때만 (.divided) — 평소엔 투명으로 높이 유지 */
   border-top: 1px solid transparent;
