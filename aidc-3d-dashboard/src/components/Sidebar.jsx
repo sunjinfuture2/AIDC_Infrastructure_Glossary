@@ -33,7 +33,9 @@ export default function Sidebar() {
     const el = bodyRef.current
     if (!el) return
     const max = Math.max(0, el.scrollHeight - el.clientHeight)
-    setFades({ top: el.scrollTop > 8, bottom: el.scrollTop < max - 8 })
+    /* 넘침량이 작은 마지막 그룹(감시·제어)도 잘림이 있으면 페이드가 뜨도록
+       고정 8px 임계 대신 '남은 스크롤 > 2px' 기준 사용 */
+    setFades({ top: el.scrollTop > 8, bottom: max > 0 && max - el.scrollTop > 2 })
     // 목록이 패널을 다 채울 때(스크롤 생길 때)만 층 내비 위 구분선 표시
     setOverflowing(el.scrollHeight > el.clientHeight + 2)
   }
