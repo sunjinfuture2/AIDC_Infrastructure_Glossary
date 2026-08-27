@@ -624,6 +624,8 @@ body{position:fixed!important;left:0;top:0;width:1908px!important;height:928px!i
 /* 고해상도(dPR>1) 환경에서 캔버스가 버퍼 크기(px 속성)대로 표시되어 모델이 우하단으로
    밀리는 현상 교정 — 표시 크기를 항상 뷰포트 컨테이너에 고정 (버퍼/종횡비 무변경) */
 #gl{width:100%!important;height:100%!important}
+/* 뷰포트(모델+라벨) 영역: 아래로 5px 확장 + 우 7px 이동 — 복층과 동일 */
+#viewport{transform:translateX(7px);margin-bottom:-5px!important}
 #tip{position:absolute!important}
 </style>
 <style>
