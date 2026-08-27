@@ -129,7 +129,8 @@ button { background: none; border: 0; cursor: pointer; }
   padding: 0 148.824px 26.912px;
   background: #fff;
 }
-.stage { min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+/* 뷰포트(모델+라벨) 영역: 아래로 5px 확장 — 이동한 박스가 잘리지 않게 overflow 개방(단층과 동일) */
+.stage { min-width: 0; display: flex; flex-direction: column; overflow: visible; margin-bottom: -5px; }
 
 /* ── 툴바 ── */
 .toolbar {
@@ -276,7 +277,8 @@ button { background: none; border: 0; cursor: pointer; }
 .reset-view:focus-visible { outline: 1px solid var(--hl); outline-offset: 2px; }
 
 /* ── 뷰포트 · 라벨 · 리더 ── */
-.viewport3d { position: relative; flex: 1; min-height: 0; background: #fff; overflow: hidden; }
+/* 우 7px 이동 (마우스 좌표는 canvas rect 기준이라 transform 안전) */
+.viewport3d { position: relative; flex: 1; min-height: 0; background: #fff; overflow: hidden; transform: translateX(7px); }
 .viewport3d .gl { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .viewport3d .leaders { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; transition: opacity 0.18s; }
 .viewport3d .labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 3; transition: opacity 0.18s; }
