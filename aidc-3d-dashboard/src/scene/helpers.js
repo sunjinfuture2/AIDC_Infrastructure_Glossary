@@ -141,25 +141,25 @@ export function gradientGroundSurface(g, x, y, z, w, d, hex) {
 }
 
 /**
- * 그라운드 에이프런 — 대지 경계(inner rect)에서 대지 색으로 시작해 바깥으로
- * fadeWidth(도면 단위)에 걸쳐 투명해지는 링. 대지가 땅처럼 자연스럽게 소산되고,
- * 굴토 단면(흙벽)도 링 뒤로 가려진다. 내부(대지 안쪽)는 discard로 비워
- * 반투명 슬래브 아래 지하 투시를 방해하지 않는다.
+ * 그라운드 베일 — 지상면(GL) 자체가 경계로 갈수록 페이지 배경(#fff)으로
+ * 소산되어 보이게 하는 오버레이. 대지 경계 안쪽 fadeWidth 구간에서 알파가
+ * 0→1로 올라가고, 경계 밖 ext 구간은 알파 1로 이어져 굴토 단면·하부 슬래브
+ * 돌출부까지 시야에서 가린다. 내부는 discard로 비워 지하 투시 비간섭.
  */
-export function groundApron(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth, hex) {
+export function groundVeil(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth) {
   const w = siteW + ext * 2, d = siteD + ext * 2
   const mat = new THREE.ShaderMaterial({
     uniforms: {
-      uColor: { value: new THREE.Color(hex) },
       uSize: { value: new THREE.Vector2(w, d) },
       uHalf: { value: new THREE.Vector2(siteW / 2, siteD / 2) },
       uFade: { value: fadeWidth },
     },
     vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
     fragmentShader:
-      'uniform vec3 uColor;uniform vec2 uSize;uniform vec2 uHalf;uniform float uFade;varying vec2 vUv;' +
-      'void main(){vec2 p=(vUv-0.5)*uSize;vec2 q=abs(p)-uHalf;float dOut=length(max(q,0.0));' +
-      'if(dOut<=0.001)discard;float a=1.0-smoothstep(0.0,uFade,dOut);if(a<0.003)discard;gl_FragColor=vec4(uColor,a);}',
+      'uniform vec2 uSize;uniform vec2 uHalf;uniform float uFade;varying vec2 vUv;' +
+      'void main(){vec2 p=(vUv-0.5)*uSize;vec2 q=abs(p)-uHalf;' +
+      'float sd=length(max(q,0.0))+min(max(q.x,q.y),0.0);' +
+      'float a=smoothstep(-uFade,0.0,sd);if(a<0.004)discard;gl_FragColor=vec4(1.0,1.0,1.0,a);}',
     transparent: true, depthWrite: false,
   })
   /* applyVisibility가 baseOp<1일 때만 transparent를 유지하므로 1 미만으로 등록 */
@@ -167,7 +167,7 @@ export function groundApron(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth, he
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat)
   m.rotation.x = -Math.PI / 2
   m.position.set(siteX + siteW / 2 - CX, z, siteY + siteD / 2 - CZ)
-  m.renderOrder = 40
+  m.renderOrder = 45
   m.userData.groundSurface = true
   g.add(m)
   return m
