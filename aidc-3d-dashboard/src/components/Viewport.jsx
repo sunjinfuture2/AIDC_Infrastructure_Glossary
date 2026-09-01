@@ -387,7 +387,8 @@ export default function Viewport() {
     function applyFocus(term) {
       restoreFocus()
       const keep = groupReg[term]
-      const grayTarget = new THREE.Color('#d2d4d6')
+      /* 선택 외 모델: 불투명도 50% 흰색 레이어를 올린 듯 밝게 (색을 흰색으로 50% 블렌드) */
+      const whiteTarget = new THREE.Color('#ffffff')
       scene.traverse((o) => {
         if (!o.material || !o.material.color || o.userData.selectionOutline) return
         for (let p = o; p; p = p.parent) if (p === keep) return
@@ -398,11 +399,10 @@ export default function Viewport() {
           entry.hadVC = true
           o.material.vertexColors = false
           o.material.needsUpdate = true
-          o.material.color.set('#c4c7ca')
+          o.material.color.set('#e9ebee')
         } else {
-          o.material.color.lerp(grayTarget, 0.78)
+          o.material.color.lerp(whiteTarget, 0.5)
         }
-        if (o.material.emissive) o.material.emissive.setHex(0x000000)
         focusSaved.push(entry)
       })
     }
