@@ -823,10 +823,12 @@ export default function Viewport() {
       for (let i = 0; i < wallsFade.length; i++) {
         const wf = wallsFade[i]
         // 지하 1층 뷰에서는 지형 볼륨 전체를 반투명 유리로 (천장처럼 덮이는 것 방지)
-        // 지형 볼륨은 카메라 방향 페이드에서 제외 — 각도에 따라 면이
-        // 나타났다 사라지는 현상 방지 (항상 은은한 고정 불투명도)
+        // 지형 볼륨: 카메라를 향한 면은 투명하게(지하 내부 클리어) —
+        // 임계값 스위치 대신 연속 페이드라 각도 회전 시 팝핑이 없고,
+        // 양면 렌더링 백드롭 덕에 관통 시 흰 쐐기도 생기지 않는다
+        const terrFace = THREE.MathUtils.clamp(wf.n.dot(camDirH) / 0.4, 0, 1)
         const tgt = wf.m.userData._dimmed ? 0.06
-          : wf.m.userData.terrain ? (isoFloorNow === 'b1' ? 0.2 : 0.45)
+          : wf.m.userData.terrain ? (isoFloorNow === 'b1' ? 0.12 : 0.5 - 0.42 * terrFace)
           : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
         wf.m.material.transparent = true
         wf.m.material.opacity += (tgt - wf.m.material.opacity) * 0.18
