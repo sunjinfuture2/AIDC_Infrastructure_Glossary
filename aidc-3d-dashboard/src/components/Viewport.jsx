@@ -22,6 +22,8 @@ import { useAppStore } from '../store/useAppStore.js'
 function V(x, y, z) { return new THREE.Vector3(x - CX, z, y - CZ) }
 
 const FLOOR_OF_Z = (z) => (z < 12 ? 'b1' : z < 25.5 ? 'f1' : z < 39 ? 'f2' : 'roof')
+/* 층별 z-대역 (도면 좌표) — 흐름 배관/도트의 층 아이솔레이션 판정용 */
+const FLOOR_BANDS = { b1: [-99, 12], f1: [12, 25.5], f2: [25.5, 39], roof: [39, 999] }
 
 export default function Viewport() {
   const hostRef = useRef(null)
@@ -366,10 +368,8 @@ export default function Viewport() {
     let hovered = null
     function setHover(term) {
       if (hovered === term) return
-      if (hovered) groupMats(hovered, (o) => { if (o.material.emissive && !o.userData.flowPart) o.material.emissive.setHex(0x000000) })
       hovered = term
-      if (hovered) groupMats(hovered, (o) => { if (o.material.emissive && !o.userData.flowPart) o.material.emissive.setHex(0x25476f) })
-      /* 호버 시 선택과 동일한 검은 라인 아웃라인 (선택된 장비에는 이미 표시 중이므로 생략) */
+      /* 호버 시 채도 틴트 없이 선택과 동일한 검은 라인 아웃라인만 표시 */
       clearHoverOutline()
       if (hovered && hovered !== useAppStore.getState().selected) buildOutlineEdges(hovered, hoverOutline)
     }
@@ -556,9 +556,23 @@ export default function Viewport() {
         }
         // 층 필터는 완전 숨김(반투명 누적 방지), 계통 필터는 레퍼런스처럼 잔상 유지
         // 사이트 디테일(주차장·도로·조경)은 전체 뷰와 "1층" 뷰에서만 표시
-        const floorHidden =
-          (floor !== 'all' && o.userData.floor && o.userData.floor !== floor) ||
-          (o.userData.siteDetail && floor !== 'f1' && floor !== 'all')
+        let floorHidden = false
+        if (floor !== 'all' && o.userData.flowPart && !o.userData.flowParticle) {
+          // 흐름 배관·조인트: 시공 컨텍스트 층 태그는 무시하고 세그먼트의 z-대역(도면
+          // 좌표)이 선택 층과 겹칠 때만 표시 — 층 관통 라이저는 모든 층에서 유지
+          if (o.userData._zBand === undefined) {
+            const wb = new THREE.Box3().setFromObject(o)
+            o.userData._zBand = [wb.min.y / FS.y, wb.max.y / FS.y]
+          }
+          const B = FLOOR_BANDS[floor]
+          floorHidden = !(o.userData._zBand[0] < B[1] - 0.3 && o.userData._zBand[1] > B[0] + 0.3)
+        } else if (!o.userData.flowParticle) {
+          floorHidden =
+            (floor !== 'all' && o.userData.floor && o.userData.floor !== floor) ||
+            (o.userData.siteDetail && floor !== 'f1' && floor !== 'all') ||
+            // 미태깅 사이트·지형·대지: 2층/옥상 아이솔레이션에서는 숨김 (전체·1층·B1 유지)
+            ((floor === 'f2' || floor === 'roof') && !o.userData.floor && !o.userData.selectionOutline)
+        }
         o.userData._dimmed = catDim || !!floorHidden
         o.userData._floorHidden = !!floorHidden
         o.visible = !floorHidden
@@ -826,6 +840,8 @@ export default function Viewport() {
           const a = F.vs[seg - 1], b = F.vs[Math.min(seg, F.vs.length - 1)]
           const t2 = (u - F.lens[seg - 1]) / Math.max(F.lens[seg] - F.lens[seg - 1], 0.001)
           F.dots[d].position.lerpVectors(a, b, Math.min(t2, 1))
+          // 층 아이솔레이션 중에는 현재 위치가 선택 층 대역 안일 때만 도트 표시
+          if (isoFloorNow !== 'all') F.dots[d].visible = FLOOR_OF_Z(F.dots[d].position.y) === isoFloorNow
         }
       }
       layoutLabels()

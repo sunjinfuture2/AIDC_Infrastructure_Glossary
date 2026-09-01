@@ -2196,4 +2196,50 @@ if (document.fonts && document.fonts.ready) {
   });
 })();
 </script>
+<script>
+/* 애드온: 호버 시 채도 틴트 대신 선택과 동일한 검은 라인 아웃라인만 표시
+   — 원본 코드 무수정, 전역 setHover/applySelectionOutline 런타임 오버라이드 */
+(function(){
+  if(typeof setHover!=='function'||typeof groupReg==='undefined')return;
+  var hoverEdges=[];
+  function clearHoverEdges(){
+    for(var i=0;i<hoverEdges.length;i++){var e=hoverEdges[i];if(e.parent)e.parent.remove(e);if(e.geometry)e.geometry.dispose();if(e.material)e.material.dispose();}
+    hoverEdges=[];
+  }
+  function buildHoverEdges(term){
+    var g=groupReg[term];if(!g)return;
+    var meshes=[],maxDiag=0,tmp=new THREE.Vector3();
+    g.traverse(function(o){
+      if(!o.isMesh||!o.geometry||o.userData.flowPart||o.userData.selectionOutline)return;
+      o.geometry.computeBoundingBox();if(!o.geometry.boundingBox)return;
+      var dg=o.geometry.boundingBox.getSize(tmp).length();maxDiag=Math.max(maxDiag,dg);meshes.push({mesh:o,diag:dg});
+    });
+    var radius=Math.max(.42,Math.min(.9,maxDiag*.0065));
+    var lineMat=new THREE.MeshBasicMaterial({color:0x000000,depthTest:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+    for(var m=0;m<meshes.length;m++){
+      var o=meshes[m].mesh,type=o.geometry.type||'';
+      if(meshes[m].diag<maxDiag*.26||(!/BoxGeometry|CylinderGeometry/.test(type)))continue;
+      var edges=new THREE.EdgesGeometry(o.geometry,24),pos=edges.attributes.position;
+      for(var i=0;i<pos.count;i+=2){
+        var a=new THREE.Vector3().fromBufferAttribute(pos,i),b=new THREE.Vector3().fromBufferAttribute(pos,i+1);
+        var dv=new THREE.Vector3().subVectors(b,a),len=dv.length();if(len<.01)continue;
+        var edge=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,len,6,1,false),lineMat.clone());
+        edge.position.copy(a).add(b).multiplyScalar(.5);
+        edge.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dv.normalize());
+        edge.userData.selectionOutline=true;edge.renderOrder=80;o.add(edge);hoverEdges.push(edge);
+      }
+      edges.dispose();
+    }
+    lineMat.dispose();
+  }
+  setHover=function(term){
+    if(hovered===term)return;
+    hovered=term;
+    clearHoverEdges();
+    if(term&&term!==selected)buildHoverEdges(term);
+  };
+  var origASO=applySelectionOutline;
+  applySelectionOutline=function(t){clearHoverEdges();origASO(t);};
+})();
+</script>
 </body></html>

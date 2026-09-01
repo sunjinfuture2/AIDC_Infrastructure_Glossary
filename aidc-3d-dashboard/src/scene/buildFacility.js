@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {
   ctx, resetCtx, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
-  topSurface, gradientGroundSurface, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
+  topSurface, gradientGroundSurface, groundApron, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
 } from './helpers.js'
 
 /**
@@ -126,6 +126,12 @@ function buildSite() {
   tree(88, 60); tree(98, 66, 1.2); tree(110, 62); tree(120, 72, 1.1)
   tree(92, 86, 1.2); tree(104, 92); tree(116, 88, 1.3); tree(126, 98)
   tree(84, 100, 1.1); tree(70, 110); tree(96, 108, 1.2); tree(124, 52)
+
+  /* 지상 1층 평지 가장자리 소산 — 대지 경계에서 바깥으로 퍼지며 투명해지는
+     그라운드 에이프런. 흙 단면도 링 뒤로 가려져 땅처럼 보인다.
+     전체·1층 뷰에서만 표시 (siteDetail 규칙 공유) */
+  const apron = groundApron(g, -14, -10, GL - 0.02, 152, 126, 46, 40, P.slabTop)
+  apron.userData.siteDetail = true
 
   /* 사이트 디테일은 "1층" 아이솔레이션에서만 표시 (Viewport 가시성 규칙) */
   sd.traverse((o) => { o.userData.siteDetail = true })
