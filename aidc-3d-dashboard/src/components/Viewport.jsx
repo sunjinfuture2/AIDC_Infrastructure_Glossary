@@ -575,16 +575,16 @@ export default function Viewport() {
         }
         o.userData._dimmed = catDim || !!floorHidden
         o.userData._floorHidden = !!floorHidden
-        /* 층 아이솔레이션: 타 층은 지우지 않고 윤곽선만 검은색 60% 고스트로 유지 */
+        /* 층 아이솔레이션: 타 층은 건물 구조(벽·슬래브) 윤곽선만 검은색 30% 고스트로 유지 */
         const ghost =
-          floorHidden && o.isLineSegments && o.userData.isEdge &&
+          floorHidden && o.isLineSegments && o.userData.isEdge && o.userData.structure &&
           floor !== 'all' && o.userData.floor && o.userData.floor !== floor
         if (ghost) {
           if (!o.userData._ghostSave) o.userData._ghostSave = o.material.color.getHex()
           o.material.color.setHex(0x000000)
           o.material.userData._ghost = true
           o.material.transparent = true
-          o.material.opacity = 0.6
+          o.material.opacity = 0.3
           o.visible = true
         } else {
           if (o.userData._ghostSave !== undefined) {
