@@ -457,6 +457,8 @@ button { background: none; border: 0; cursor: pointer; }
 .d-name { font-size: 18px; font-weight: 800; line-height: 1.08; letter-spacing: -0.045em; color: #090a0b; }
 .d-en { font-size: 13.2px; font-weight: 700; line-height: 1.05; letter-spacing: -0.025em; color: #090a0b; margin-top: 5px; }
 .d-desc { font-size: 11.2px; font-weight: 460; line-height: 1.68; letter-spacing: -0.035em; color: #17181a; word-break: keep-all; }
+/* 마지막 줄에 한두 글자만 남는 위도우 방지 */
+.d-name, .d-en, .d-desc, .d-facts .f { text-wrap: pretty; }
 .d-facts { margin-top: 10px; }
 .d-facts .f { display: flex; gap: 4px; font-size: 11px; font-weight: 430; line-height: 1.82; letter-spacing: -0.035em; color: #4f5155; }
 .d-facts .f::before { content: '▸'; color: #515358; flex: none; }

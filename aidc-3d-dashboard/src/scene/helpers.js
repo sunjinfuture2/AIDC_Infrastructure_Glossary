@@ -279,17 +279,18 @@ export function pipe(g, pts, hex, r, flow) {
   for (let q = 1; q < vs.length; q++) { tot += vs[q].distanceTo(vs[q - 1]); lens.push(tot) }
   const dots = []
   if (flow !== false || key === 'tcs') {
-    const packetCount = Math.max(4, Math.round(tot / 12))
-    const trailOpacity = [1, 0.62, 0.34, 0.14]
+    /* Flow 시인성: 패킷 밀도·크기·발광을 올려 흐름이 또렷하게 보이게 */
+    const packetCount = Math.max(5, Math.round(tot / 9))
+    const trailOpacity = [1, 0.68, 0.4, 0.18]
     for (let t = 0; t < packetCount; t++) {
       for (let h = 0; h < trailOpacity.length; h++) {
         const dotOp = trailOpacity[h]
         const dotMat = new THREE.MeshLambertMaterial({
-          color: new THREE.Color(hex), emissive: new THREE.Color(hex), emissiveIntensity: 0.55,
+          color: new THREE.Color(hex), emissive: new THREE.Color(hex), emissiveIntensity: 0.9,
           transparent: true, opacity: dotOp, depthWrite: false, depthTest: true,
         })
         dotMat.userData = { baseOp: dotOp, flowBaseColor: new THREE.Color(hex) }
-        const dotSize = Math.max(0.2, r * (0.92 - h * 0.08))
+        const dotSize = Math.max(0.3, r * (1.35 - h * 0.11))
         const dm = new THREE.Mesh(new THREE.SphereGeometry(dotSize, 10, 10), dotMat)
         dm.renderOrder = 30
         dm.userData.flowPart = true
