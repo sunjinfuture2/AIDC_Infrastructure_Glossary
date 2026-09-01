@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {
   ctx, resetCtx, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
-  topSurface, gradientGroundSurface, applySiteEdgeFade, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
+  topSurface, gradientGroundSurface, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
 } from './helpers.js'
 
 /**
@@ -38,9 +38,36 @@ export function buildFacility(scene) {
   buildF2()
   buildRoof()
   buildDetailPlus()
+  buildGhostShells()
   buildFlows()
 
   return ctx
+}
+
+/* ═══ 층 아이솔레이션 고스트 쉘 — 타 층은 건물 외곽 실루엣 라인만 표시 ═══
+   두께 없는 단일 외곽 박스 와이어프레임(층×동). 평소 숨김, Viewport의
+   applyVisibility가 아이솔레이션 시 해당 층 외의 쉘만 켠다. */
+function buildGhostShells() {
+  setFloor(null)
+  const g = G(null, null)
+  const bands = { b1: [0, 13.5], f1: [13.5, 27], f2: [27, 40.5], roof: [40.5, 41.7] }
+  for (const f in bands) {
+    const z0 = bands[f][0], z1 = bands[f][1]
+    for (const r of [MAIN, SUP]) {
+      const geo = new THREE.BoxGeometry(r.x1 - r.x0, z1 - z0, r.y1 - r.y0)
+      const ls = new THREE.LineSegments(
+        new THREE.EdgesGeometry(geo),
+        new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.15, depthTest: false, depthWrite: false }),
+      )
+      ls.material.userData = { baseOp: 0.15 }
+      ls.position.set(r.x0 + (r.x1 - r.x0) / 2 - CX, z0 + (z1 - z0) / 2, r.y0 + (r.y1 - r.y0) / 2 - CZ)
+      ls.renderOrder = 60
+      ls.userData.ghostShell = true
+      ls.userData.shellFloor = f
+      ls.visible = false
+      g.add(ls)
+    }
+  }
 }
 
 /* ═══════════════ 대지 · 지형 · 주차 · 외부 동선 ═══════════════ */
@@ -69,14 +96,12 @@ function buildSite() {
     wm.material.side = THREE.DoubleSide
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
-    applySiteEdgeFade(ts)
   }
   /* 지상 땅 외곽 연장 링 (~10%): 다른 요소는 그대로, GL 면만 바깥으로 확장.
      그라데이션 경계(SITE_FADE)도 연장된 외곽 기준으로 소산 */
   function groundExt(x, y, w, d) {
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
-    applySiteEdgeFade(ts)
   }
   groundExt(-21.6, -16.3, 167.2, 6.3)   // 북측
   groundExt(-21.6, 116, 167.2, 6.3)     // 남측
@@ -147,9 +172,6 @@ function buildSite() {
   tree(92, 86, 1.2); tree(104, 92); tree(116, 88, 1.3); tree(126, 98)
   tree(84, 100, 1.1); tree(70, 110); tree(96, 108, 1.2); tree(124, 52)
 
-  /* 지상 사이트 디테일(주차·도로·조경·수목)에만 경계 페이드 — 지하 요소 제외 */
-  sd.traverse((o) => { if (o.isMesh) applySiteEdgeFade(o) })
-
   /* 사이트 디테일은 "1층" 아이솔레이션에서만 표시 (Viewport 가시성 규칙) */
   sd.traverse((o) => { o.userData.siteDetail = true })
 
@@ -193,12 +215,12 @@ function buildB1() {
   wall(MAIN.x0, MAIN.y1 - 1.1, 0, MAIN.x1 - MAIN.x0, 1.1, XWH, 0, 1, false)
   wall(MAIN.x0, 1.1, 0, 1.1, MAIN.y1 - 2.2, XWH, -1, 0, false)
   wall(MAIN.x1 - 1.1, 1.1, 0, 1.1, MAIN.y1 - 2.2, XWH, 1, 0, false)
-  wall(7, 1.1, 0, 0.7, 36.4, XWH * 0.86, 0, 0, true)
-  wall(98.3, 1.1, 0, 0.7, 36.4, XWH * 0.86, 0, 0, true)
-  wall(47.2, 1.1, 0, 0.7, 28, XWH * 0.86, 0, 0, true)
-  wall(66.5, 1.1, 0, 0.7, 36.4, XWH * 0.86, 0, 0, true)
-  wall(48, 16.2, 0, 18, 0.7, XWH * 0.86, 0, 0, true)
-  wall(70, 16.2, 0, 28, 0.7, XWH * 0.86, 0, 0, true)
+  wall(7, 1.1, 0, 0.7, 36.4, XWH, 0, 0, true)
+  wall(98.3, 1.1, 0, 0.7, 36.4, XWH, 0, 0, true)
+  wall(47.2, 1.1, 0, 0.7, 28, XWH, 0, 0, true)
+  wall(66.5, 1.1, 0, 0.7, 36.4, XWH, 0, 0, true)
+  wall(48, 16.2, 0, 18, 0.7, XWH, 0, 0, true)
+  wall(70, 16.2, 0, 28, 0.7, XWH, 0, 0, true)
 
   /* 전기실-1 — 수배전반 열반 3열 */
   ;(function switchgearRoom() {
@@ -310,8 +332,8 @@ function buildB1() {
     wall(SUP.x0, SUP.y1 - 1.1, 0, SUP.x1 - SUP.x0, 1.1, XWH, 0, 1, false)
     wall(SUP.x0, SUP.y0 + 1.1, 0, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, -1, 0, false)
     wall(SUP.x1 - 1.1, SUP.y0 + 1.1, 0, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, 1, 0, false)
-    wall(40, SUP.y0 + 1.1, 0, 0.7, 44, XWH * 0.86, 0, 0, true)     // GIS | RCP·PIT
-    wall(9.4, SUP.y0 + 1.1, 0, 0.7, 44, XWH * 0.86, 0, 0, true)    // 유류펌프 | GIS
+    wall(40, SUP.y0 + 1.1, 0, 0.7, 44, XWH, 0, 0, true)     // GIS | RCP·PIT
+    wall(9.4, SUP.y0 + 1.1, 0, 0.7, 44, XWH, 0, 0, true)    // 유류펌프 | GIS
 
     // GIS — 가스절연개폐장치 3베이 (도면: 홀 안에 3조 종배열)
     const g = G('gis', 'power')
@@ -393,13 +415,13 @@ function buildF1() {
   wall(43, SUP.y1 - 1.1, z, SUP.x1 - 43, 1.1, XWH, 0, 1, false)
   wall(43, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, -1, 0, false)
   wall(SUP.x1 - 1.1, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, 1, 0, false)
-  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)   // 연결부 코리도 벽
-  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)
-  wall(7, 4.4, z, 91.3, 0.7, XWH * 0.86, 0, 0, true)
-  wall(10.8, 4.9, z, 0.7, 15, XWH * 0.86, 0, 0, true)
-  wall(41, 4.9, z, 0.7, 15, XWH * 0.86, 0, 0, true)
-  wall(58.8, 4.9, z, 0.7, 15, XWH * 0.86, 0, 0, true)
-  wall(12, 20.8, z, 82, 0.7, XWH * 0.86, 0, 0, true)
+  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH, 0, 0, true)   // 연결부 코리도 벽
+  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH, 0, 0, true)
+  wall(7, 4.4, z, 91.3, 0.7, XWH, 0, 0, true)
+  wall(10.8, 4.9, z, 0.7, 15, XWH, 0, 0, true)
+  wall(41, 4.9, z, 0.7, 15, XWH, 0, 0, true)
+  wall(58.8, 4.9, z, 0.7, 15, XWH, 0, 0, true)
+  wall(12, 20.8, z, 82, 0.7, XWH, 0, 0, true)
 
   /* 항온항습실 — 팬월 8기 */
   ;(function crahGallery() {
@@ -556,13 +578,13 @@ function buildF2() {
   wall(SUP.x0, SUP.y1 - 1.1, z, SUP.x1 - SUP.x0, 1.1, XWH, 0, 1, false)
   wall(SUP.x0, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, -1, 0, false)
   wall(SUP.x1 - 1.1, SUP.y0 + 1.1, z, 1.1, SUP.y1 - SUP.y0 - 2.2, XWH, 1, 0, false)
-  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)   // 소화가스실 벽
-  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH * 0.7, 0, 0, true)
-  wall(7, 4.4, z, 91.3, 0.7, XWH * 0.86, 0, 0, true)
-  wall(12, 22.4, z, 82, 0.7, XWH * 0.86, 0, 0, true)
-  wall(7, 1.8, z, 0.7, 35, XWH * 0.86, 0, 0, true)
-  wall(97.6, 1.8, z, 0.7, 35, XWH * 0.86, 0, 0, true)
-  wall(42.3, SUP.y0 + 1.1, z, 0.7, 48, XWH * 0.86, 0, 0, true)   // 발전기실 | 사무 윙
+  wall(32, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH, 0, 0, true)   // 소화가스실 벽
+  wall(37.9, MAIN.y1, z, 0.6, SUP.y0 - MAIN.y1, XWH, 0, 0, true)
+  wall(7, 4.4, z, 91.3, 0.7, XWH, 0, 0, true)
+  wall(12, 22.4, z, 82, 0.7, XWH, 0, 0, true)
+  wall(7, 1.8, z, 0.7, 35, XWH, 0, 0, true)
+  wall(97.6, 1.8, z, 0.7, 35, XWH, 0, 0, true)
+  wall(42.3, SUP.y0 + 1.1, z, 0.7, 48, XWH, 0, 0, true)   // 발전기실 | 사무 윙
 
   /* 항온항습실 — 팬월 10기 */
   ;(function crahF2() {

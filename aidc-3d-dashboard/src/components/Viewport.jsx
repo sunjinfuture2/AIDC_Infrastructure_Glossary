@@ -549,6 +549,11 @@ export default function Viewport() {
       // 계통 dim: term 그룹 단위 (레퍼런스 동일)
       scene.traverse((o) => {
         if (!o.material) return
+        /* 고스트 쉘: 아이솔레이션 시 타 층의 건물 외곽 실루엣 라인만 표시 */
+        if (o.userData.ghostShell) {
+          o.visible = floor !== 'all' && o.userData.shellFloor !== floor
+          return
+        }
         const base = (o.material.userData && o.material.userData.baseOp !== undefined) ? o.material.userData.baseOp : 1
         let catDim = false
         for (let p = o; p; p = p.parent) {
@@ -575,27 +580,10 @@ export default function Viewport() {
         }
         o.userData._dimmed = catDim || !!floorHidden
         o.userData._floorHidden = !!floorHidden
-        /* 층 아이솔레이션: 타 층은 건물 구조(벽·슬래브) 윤곽선만 검은색 30% 고스트로 유지 */
-        const ghost =
-          floorHidden && o.isLineSegments && o.userData.isEdge && o.userData.structure &&
-          floor !== 'all' && o.userData.floor && o.userData.floor !== floor
-        if (ghost) {
-          if (!o.userData._ghostSave) o.userData._ghostSave = o.material.color.getHex()
-          o.material.color.setHex(0x000000)
-          o.material.userData._ghost = true
-          o.material.transparent = true
-          o.material.opacity = 0.15
-          o.visible = true
-        } else {
-          if (o.userData._ghostSave !== undefined) {
-            o.material.color.setHex(o.userData._ghostSave)
-            delete o.userData._ghostSave
-            o.material.userData._ghost = false
-          }
-          o.visible = !floorHidden
-          o.material.transparent = catDim || base < 1
-          o.material.opacity = catDim ? (o.isLineSegments ? 0.03 : 0.06) : base
-        }
+        /* 층 아이솔레이션: 타 층 구조·장비는 숨김 — 외곽 실루엣은 고스트 쉘이 담당 */
+        o.visible = !floorHidden
+        o.material.transparent = catDim || base < 1
+        o.material.opacity = catDim ? (o.isLineSegments ? 0.03 : 0.06) : base
         // 지하 1층 뷰: 지형 상면을 반투명 유리처럼 (지하가 천장에 덮이지 않게)
         if (o.userData.terrain && o.userData.floorTop) {
           o.material.transparent = true

@@ -354,9 +354,9 @@ export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   const hex = hexOverride || '#FAFBFD'
   const geo = new THREE.BoxGeometry(w, h, d)
   const m = new THREE.Mesh(geo, lam(hex, interior ? 0.45 : 0.95))
-  /* 외벽 밝기 대폭 상향 — 램버트 음영으로 어두워지는 수직면을 에미시브로 들어올림
+  /* 벽 밝기 +50% — 램버트 음영으로 어두워지는 수직면을 에미시브로 들어올림
      (모서리 라인 컬러는 아래 edgeColor 그대로) */
-  if (!hexOverride) m.material.emissive = new THREE.Color('#55575a')
+  if (!hexOverride) m.material.emissive = new THREE.Color('#7f8184')
   m.material.depthWrite = !interior
   m.position.set(x + w / 2 - CX, z + h / 2, y + d / 2 - CZ)
   g.add(m)
@@ -385,7 +385,8 @@ export function slab(x, y, z, w, d, th, floorId, hexBody, hexTop, baseOp) {
   const op = baseOp === undefined ? 0.55 : baseOp
   const g = G(null, null)
   const geo = new THREE.BoxGeometry(w, th, d)
-  const m = new THREE.Mesh(geo, lam(hexBody || '#D3D8DC', op))
+  /* 슬래브 측면 밴드 밝기 +50% (#D3D8DC → 흰색 방향 50% 블렌드) */
+  const m = new THREE.Mesh(geo, lam(hexBody || '#E9EBED', op))
   m.material.depthWrite = false
   m.position.set(x + w / 2 - CX, z - th / 2, y + d / 2 - CZ)
   g.add(m)
