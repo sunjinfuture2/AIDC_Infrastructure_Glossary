@@ -147,7 +147,8 @@ export function gradientGroundSurface(g, x, y, z, w, d, hex) {
  * 건물이나 지하를 가리는 오버레이 아티팩트가 없다.
  * 대지 rect(도면): x -14~138 · y -10~116, 씬 루트 수평 스케일 1.8 반영.
  */
-const SITE_FADE = { cx: 62, cy: 53, hx: 76, hy: 63, fade: 13 }
+/* 지상 땅 연장 링(+7.6/+6.3)을 포함한 외곽 — 그라데이션은 연장된 경계에서 소산 */
+const SITE_FADE = { cx: 62, cy: 53, hx: 83.6, hy: 69.3, fade: 13 }
 export function applySiteEdgeFade(mesh) {
   const mat = mesh.material
   if (!mat || mat.isShaderMaterial || mesh.isLineSegments) return

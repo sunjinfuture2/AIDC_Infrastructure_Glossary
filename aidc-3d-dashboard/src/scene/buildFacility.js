@@ -49,8 +49,8 @@ function buildSite() {
   const EARTH = '#E9E2D2'
   const g = G(null, null)
 
-  /* 굴토 피트 바닥 — 외곽 라인 없이 경계 페이드로 소산 */
-  box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { noedge: true })
+  /* 굴토 피트 바닥 — 지하층은 그라데이션 없이 실선으로 */
+  box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { edge: '#969EA6' })
   gradientGroundSurface(g, -32, -26, -1.15, 190, 160, P.groundTop)
   topSurface(g, -14, -10, 0.04, 152, 126, '#E2E5E9')
 
@@ -60,14 +60,25 @@ function buildSite() {
      공동구 트렌치 슬롯: x 31~39 · y 40.1~52.5 (개방 → 지하 공동구 노출) */
   function terrain(x, y, w, d, nx, nz) {
     // terrain 플래그: 지하 1층 아이솔레이션에서 유리처럼 반투명 처리 (천장화 방지)
+    // 볼륨(지하 단면)은 그라데이션 없이 그대로 — 지상 땅 면(ts)에만 경계 페이드
     const wm = wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
     wm.userData.terrain = true
-    // 경계에서 소산되는 면과 어긋나는 외곽 윤곽선은 제거
-    wm.parent.children.filter((c) => c.isLineSegments).forEach((e) => wm.parent.remove(e))
-    applySiteEdgeFade(wm)
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
+    applySiteEdgeFade(ts)
   }
+  /* 지상 땅 외곽 연장 링 (~10%): 다른 요소는 그대로, GL 면만 바깥으로 확장.
+     그라데이션 경계(SITE_FADE)도 연장된 외곽 기준으로 소산 */
+  function groundExt(x, y, w, d) {
+    const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
+    ts.userData.terrain = true
+    applySiteEdgeFade(ts)
+  }
+  groundExt(-21.6, -16.3, 167.2, 6.3)   // 북측
+  groundExt(-21.6, 116, 167.2, 6.3)     // 남측
+  groundExt(-21.6, -10, 7.6, 126)       // 서측
+  groundExt(138, -10, 7.6, 126)         // 동측
+
   terrain(-14, -10, 152, 8.5, 0, -1)            // 북측
   terrain(-14, -1.5, 12.5, 41.6, -1, 0)         // 전산동 서측
   terrain(106.8, -1.5, 31.2, 41.6, 1, 0)        // 전산동 동측 (주차장부)
@@ -130,9 +141,7 @@ function buildSite() {
   tree(92, 86, 1.2); tree(104, 92); tree(116, 88, 1.3); tree(126, 98)
   tree(84, 100, 1.1); tree(70, 110); tree(96, 108, 1.2); tree(124, 52)
 
-  /* 대지 표면 경계 페이드 — 오버레이 없이 표면 재질 자체가 경계에서 소산
-     (피트 바닥·지표면·주차·조경·수목 포함, 각도 무관 일관 표현) */
-  g.traverse((o) => { if (o.isMesh) applySiteEdgeFade(o) })
+  /* 지상 사이트 디테일(주차·도로·조경·수목)에만 경계 페이드 — 지하 요소 제외 */
   sd.traverse((o) => { if (o.isMesh) applySiteEdgeFade(o) })
 
   /* 사이트 디테일은 "1층" 아이솔레이션에서만 표시 (Viewport 가시성 규칙) */
