@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {
   ctx, resetCtx, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
-  topSurface, gradientGroundSurface, groundVeil, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
+  topSurface, gradientGroundSurface, applySiteEdgeFade, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
 } from './helpers.js'
 
 /**
@@ -49,8 +49,8 @@ function buildSite() {
   const EARTH = '#E9E2D2'
   const g = G(null, null)
 
-  /* 굴토 피트 바닥 */
-  box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { edge: '#969EA6' })
+  /* 굴토 피트 바닥 — 외곽 라인 없이 경계 페이드로 소산 */
+  box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { noedge: true })
   gradientGroundSurface(g, -32, -26, -1.15, 190, 160, P.groundTop)
   topSurface(g, -14, -10, 0.04, 152, 126, '#E2E5E9')
 
@@ -62,6 +62,9 @@ function buildSite() {
     // terrain 플래그: 지하 1층 아이솔레이션에서 유리처럼 반투명 처리 (천장화 방지)
     const wm = wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
     wm.userData.terrain = true
+    // 경계에서 소산되는 면과 어긋나는 외곽 윤곽선은 제거
+    wm.parent.children.filter((c) => c.isLineSegments).forEach((e) => wm.parent.remove(e))
+    applySiteEdgeFade(wm)
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
   }
@@ -127,11 +130,10 @@ function buildSite() {
   tree(92, 86, 1.2); tree(104, 92); tree(116, 88, 1.3); tree(126, 98)
   tree(84, 100, 1.1); tree(70, 110); tree(96, 108, 1.2); tree(124, 52)
 
-  /* 지상면(GL) 가장자리 블러 — 경계 안 13m에서 퍼지고 경계 밖 14m에서
-     다시 사라지는 소프트 밴드. 흰 면으로 끝나지 않아 지하 시야를 막지 않는다.
-     전체·1층 뷰에서만 표시 (siteDetail 규칙 공유) */
-  const veil = groundVeil(g, -14, -10, GL + 0.12, 152, 126, 18, 13, 14)
-  veil.userData.siteDetail = true
+  /* 대지 표면 경계 페이드 — 오버레이 없이 표면 재질 자체가 경계에서 소산
+     (피트 바닥·지표면·주차·조경·수목 포함, 각도 무관 일관 표현) */
+  g.traverse((o) => { if (o.isMesh) applySiteEdgeFade(o) })
+  sd.traverse((o) => { if (o.isMesh) applySiteEdgeFade(o) })
 
   /* 사이트 디테일은 "1층" 아이솔레이션에서만 표시 (Viewport 가시성 규칙) */
   sd.traverse((o) => { o.userData.siteDetail = true })
