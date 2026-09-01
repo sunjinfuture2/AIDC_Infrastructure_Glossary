@@ -63,6 +63,9 @@ function buildSite() {
     // 볼륨(지하 단면)은 그라데이션 없이 그대로 — 지상 땅 면(ts)에만 경계 페이드
     const wm = wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
     wm.userData.terrain = true
+    // 반투명(0.3) 지형이 depthWrite를 켜고 있으면 각도에 따라 인접 블록
+    // 사이가 깨져 보인다 — 표준 반투명 규칙(depthWrite off)로 전환
+    wm.material.depthWrite = false
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
     applySiteEdgeFade(ts)

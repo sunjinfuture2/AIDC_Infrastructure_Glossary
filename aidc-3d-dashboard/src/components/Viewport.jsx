@@ -66,9 +66,9 @@ export default function Viewport() {
 
     // 고명도 파스텔 무드: 하이키 조명 (그림자 최소, 밝은 바닥 반사광)
     /* 전체 컬러톤 명도 상향 */
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.24))
-    const dir1 = new THREE.DirectionalLight(0xffffff, 0.46); dir1.position.set(120, 180, 80); scene.add(dir1)
-    const dir2 = new THREE.DirectionalLight(0xffffff, 0.22); dir2.position.set(-100, 80, -120); scene.add(dir2)
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xeef1f5, 1.4))
+    const dir1 = new THREE.DirectionalLight(0xffffff, 0.52); dir1.position.set(120, 180, 80); scene.add(dir1)
+    const dir2 = new THREE.DirectionalLight(0xffffff, 0.26); dir2.position.set(-100, 80, -120); scene.add(dir2)
 
     /* ── 시설 구축 (스케일 그룹) ── */
     const facilityRoot = new THREE.Group()
@@ -399,9 +399,9 @@ export default function Viewport() {
           entry.hadVC = true
           o.material.vertexColors = false
           o.material.needsUpdate = true
-          o.material.color.set('#eef0f2')
+          o.material.color.set('#f2f4f6')
         } else {
-          o.material.color.lerp(whiteTarget, 0.68)
+          o.material.color.lerp(whiteTarget, 0.8)
         }
         focusSaved.push(entry)
       })
@@ -624,16 +624,16 @@ export default function Viewport() {
           part.visible = !part.userData._floorHidden
           if (!mat.userData) mat.userData = {}
           if (!mat.userData.flowBaseColor) mat.userData.flowBaseColor = mat.color.clone()
+          /* Flow OFF: 배관은 색·불투명도 그대로 유지, 움직임(도트 애니메이션)만 정지 */
           mat.color.copy(mat.userData.flowBaseColor)
-          if (!enabled) mat.color.lerp(new THREE.Color('#c8cacc'), 0.74)
           if (part.userData._dimmed) continue  // 층/계통 필터가 우선
           const baseOp = mat.userData.baseOp === undefined ? 1 : mat.userData.baseOp
-          mat.transparent = !enabled || baseOp < 1
-          mat.opacity = enabled ? baseOp : Math.min(0.58, baseOp * 0.58)
+          mat.transparent = baseOp < 1
+          mat.opacity = baseOp
           mat.needsUpdate = true
         }
         for (let d = 0; d < flows[f].dots.length; d++) {
-          flows[f].dots[d].visible = enabled && !flows[f].dots[d].userData._floorHidden
+          flows[f].dots[d].visible = !flows[f].dots[d].userData._floorHidden
         }
       }
     }
