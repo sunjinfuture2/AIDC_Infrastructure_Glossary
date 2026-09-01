@@ -399,9 +399,9 @@ export default function Viewport() {
           entry.hadVC = true
           o.material.vertexColors = false
           o.material.needsUpdate = true
-          o.material.color.set('#e9ebee')
+          o.material.color.set('#eef0f2')
         } else {
-          o.material.color.lerp(whiteTarget, 0.5)
+          o.material.color.lerp(whiteTarget, 0.68)
         }
         focusSaved.push(entry)
       })
@@ -822,8 +822,10 @@ export default function Viewport() {
       for (let i = 0; i < wallsFade.length; i++) {
         const wf = wallsFade[i]
         // 지하 1층 뷰에서는 지형 볼륨 전체를 반투명 유리로 (천장처럼 덮이는 것 방지)
+        // 지형 볼륨은 카메라 방향 페이드에서 제외 — 각도에 따라 면이
+        // 나타났다 사라지는 현상 방지 (항상 은은한 고정 불투명도)
         const tgt = wf.m.userData._dimmed ? 0.06
-          : (wf.m.userData.terrain && isoFloorNow === 'b1') ? 0.12
+          : wf.m.userData.terrain ? (isoFloorNow === 'b1' ? 0.12 : 0.3)
           : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
         wf.m.material.transparent = true
         wf.m.material.opacity += (tgt - wf.m.material.opacity) * 0.18
