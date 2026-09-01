@@ -633,7 +633,8 @@ export default function Viewport() {
           mat.needsUpdate = true
         }
         for (let d = 0; d < flows[f].dots.length; d++) {
-          flows[f].dots[d].visible = !flows[f].dots[d].userData._floorHidden
+          // OFF: 도트(패킷)는 숨김 — 배관은 위에서 그대로 유지됨
+          flows[f].dots[d].visible = enabled && !flows[f].dots[d].userData._floorHidden
         }
       }
     }
@@ -825,7 +826,7 @@ export default function Viewport() {
         // 지형 볼륨은 카메라 방향 페이드에서 제외 — 각도에 따라 면이
         // 나타났다 사라지는 현상 방지 (항상 은은한 고정 불투명도)
         const tgt = wf.m.userData._dimmed ? 0.06
-          : wf.m.userData.terrain ? (isoFloorNow === 'b1' ? 0.12 : 0.3)
+          : wf.m.userData.terrain ? (isoFloorNow === 'b1' ? 0.2 : 0.45)
           : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
         wf.m.material.transparent = true
         wf.m.material.opacity += (tgt - wf.m.material.opacity) * 0.18
