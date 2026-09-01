@@ -141,38 +141,33 @@ export function gradientGroundSurface(g, x, y, z, w, d, hex) {
 }
 
 /**
- * 그라운드 베일 — 지상면(GL) 가장자리를 블러 처리한 것처럼 보이게 하는
- * 소프트 밴드. 대지 경계 안쪽 fadeWidth 구간에서 알파가 올라가 경계에서
- * 최대(0.92)가 된 뒤, 경계 밖 fadeOut 구간에서 다시 0으로 사라진다 —
- * 흰 면으로 끝나지 않아 낮은 앵글에서도 지하(B1)가 가려지지 않는다.
+ * 대지 경계 페이드 — 오버레이 플레인 대신 대지 표면 재질 자체에 월드좌표
+ * 기반 알파 페이드를 주입한다. 경계 안쪽 fadeWidth(도면 단위)에서 알파가
+ * 1→0으로 떨어져, 어느 카메라 각도에서도 일관되게 땅이 소산되어 보이고
+ * 건물이나 지하를 가리는 오버레이 아티팩트가 없다.
+ * 대지 rect(도면): x -14~138 · y -10~116, 씬 루트 수평 스케일 1.8 반영.
  */
-export function groundVeil(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth, fadeOut) {
-  const w = siteW + ext * 2, d = siteD + ext * 2
-  const mat = new THREE.ShaderMaterial({
-    uniforms: {
-      uSize: { value: new THREE.Vector2(w, d) },
-      uHalf: { value: new THREE.Vector2(siteW / 2, siteD / 2) },
-      uFade: { value: fadeWidth },
-      uOut: { value: fadeOut },
-    },
-    vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-    fragmentShader:
-      'uniform vec2 uSize;uniform vec2 uHalf;uniform float uFade;uniform float uOut;varying vec2 vUv;' +
-      'void main(){vec2 p=(vUv-0.5)*uSize;vec2 q=abs(p)-uHalf;' +
-      'float sd=length(max(q,0.0))+min(max(q.x,q.y),0.0);' +
-      'float a=0.92*smoothstep(-uFade,0.0,sd)*(1.0-smoothstep(0.0,uOut,sd));' +
-      'if(a<0.004)discard;gl_FragColor=vec4(0.9176,0.9176,0.9176,a);}', /* #eaeaea */
-    transparent: true, depthWrite: false,
-  })
-  /* applyVisibility가 baseOp<1일 때만 transparent를 유지하므로 1 미만으로 등록 */
-  mat.userData = { baseOp: 0.999 }
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat)
-  m.rotation.x = -Math.PI / 2
-  m.position.set(siteX + siteW / 2 - CX, z, siteY + siteD / 2 - CZ)
-  m.renderOrder = 45
-  m.userData.groundSurface = true
-  g.add(m)
-  return m
+const SITE_FADE = { cx: 62, cy: 53, hx: 76, hy: 63, fade: 13 }
+export function applySiteEdgeFade(mesh) {
+  const mat = mesh.material
+  if (!mat || mat.isShaderMaterial || mesh.isLineSegments) return
+  mat.transparent = true
+  /* applyVisibility가 baseOp<1일 때만 transparent를 유지하므로 1 미만으로 캡 */
+  const base = mat.userData && mat.userData.baseOp !== undefined ? mat.userData.baseOp : (mat.opacity !== undefined ? mat.opacity : 1)
+  mat.userData = { ...(mat.userData || {}), baseOp: Math.min(base, 0.999) }
+  const ccx = (SITE_FADE.cx - CX).toFixed(4), ccy = (SITE_FADE.cy - CZ).toFixed(4)
+  mat.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec2 vSiteP;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n{ vec4 sw4 = modelMatrix * vec4(position, 1.0); vSiteP = sw4.xz; }')
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec2 vSiteP;')
+      .replace('#include <opaque_fragment>',
+        '{ vec2 sdp = vSiteP / 1.8; vec2 sq = abs(sdp - vec2(' + ccx + ', ' + ccy + ')) - vec2(' + SITE_FADE.hx.toFixed(1) + ', ' + SITE_FADE.hy.toFixed(1) + ');' +
+        ' float ssd = length(max(sq, vec2(0.0))) + min(max(sq.x, sq.y), 0.0);' +
+        ' diffuseColor.a *= (1.0 - smoothstep(-' + SITE_FADE.fade.toFixed(1) + ', 0.0, ssd)); }\n#include <opaque_fragment>')
+  }
+  mat.needsUpdate = true
 }
 
 export function cylY(g, x, y, z, r, h, hex, opt) {
@@ -354,11 +349,12 @@ export function ladder(g, x, y, z, h, hex) {
  */
 export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   const g = G(null, null)
-  const hex = hexOverride || '#F3F5F8'
+  const hex = hexOverride || '#FAFBFD'
   const geo = new THREE.BoxGeometry(w, h, d)
   const m = new THREE.Mesh(geo, lam(hex, interior ? 0.45 : 0.95))
-  /* 외벽 밝기 상향 — 램버트 음영으로 어두워지는 수직면을 에미시브로 들어올림 */
-  if (!hexOverride) m.material.emissive = new THREE.Color('#3a3c3f')
+  /* 외벽 밝기 대폭 상향 — 램버트 음영으로 어두워지는 수직면을 에미시브로 들어올림
+     (모서리 라인 컬러는 아래 edgeColor 그대로) */
+  if (!hexOverride) m.material.emissive = new THREE.Color('#55575a')
   m.material.depthWrite = !interior
   m.position.set(x + w / 2 - CX, z + h / 2, y + d / 2 - CZ)
   g.add(m)
