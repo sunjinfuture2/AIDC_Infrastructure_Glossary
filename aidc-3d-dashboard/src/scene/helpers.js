@@ -141,25 +141,27 @@ export function gradientGroundSurface(g, x, y, z, w, d, hex) {
 }
 
 /**
- * 그라운드 베일 — 지상면(GL) 자체가 경계로 갈수록 페이지 배경(#fff)으로
- * 소산되어 보이게 하는 오버레이. 대지 경계 안쪽 fadeWidth 구간에서 알파가
- * 0→1로 올라가고, 경계 밖 ext 구간은 알파 1로 이어져 굴토 단면·하부 슬래브
- * 돌출부까지 시야에서 가린다. 내부는 discard로 비워 지하 투시 비간섭.
+ * 그라운드 베일 — 지상면(GL) 가장자리를 블러 처리한 것처럼 보이게 하는
+ * 소프트 밴드. 대지 경계 안쪽 fadeWidth 구간에서 알파가 올라가 경계에서
+ * 최대(0.92)가 된 뒤, 경계 밖 fadeOut 구간에서 다시 0으로 사라진다 —
+ * 흰 면으로 끝나지 않아 낮은 앵글에서도 지하(B1)가 가려지지 않는다.
  */
-export function groundVeil(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth) {
+export function groundVeil(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth, fadeOut) {
   const w = siteW + ext * 2, d = siteD + ext * 2
   const mat = new THREE.ShaderMaterial({
     uniforms: {
       uSize: { value: new THREE.Vector2(w, d) },
       uHalf: { value: new THREE.Vector2(siteW / 2, siteD / 2) },
       uFade: { value: fadeWidth },
+      uOut: { value: fadeOut },
     },
     vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
     fragmentShader:
-      'uniform vec2 uSize;uniform vec2 uHalf;uniform float uFade;varying vec2 vUv;' +
+      'uniform vec2 uSize;uniform vec2 uHalf;uniform float uFade;uniform float uOut;varying vec2 vUv;' +
       'void main(){vec2 p=(vUv-0.5)*uSize;vec2 q=abs(p)-uHalf;' +
       'float sd=length(max(q,0.0))+min(max(q.x,q.y),0.0);' +
-      'float a=smoothstep(-uFade,0.0,sd);if(a<0.004)discard;gl_FragColor=vec4(1.0,1.0,1.0,a);}',
+      'float a=0.92*smoothstep(-uFade,0.0,sd)*(1.0-smoothstep(0.0,uOut,sd));' +
+      'if(a<0.004)discard;gl_FragColor=vec4(1.0,1.0,1.0,a);}',
     transparent: true, depthWrite: false,
   })
   /* applyVisibility가 baseOp<1일 때만 transparent를 유지하므로 1 미만으로 등록 */
@@ -367,6 +369,7 @@ export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   e.material.userData = { baseOp: interior ? 0.58 : 0.78 }
   e.position.copy(m.position)
   e.userData.isEdge = true
+  e.userData.structure = true // 층 고스트: 건물 구조 라인만 유지
   g.add(e)
   registerFloor(e)
   if (!interior) ctx.wallsFade.push({ m, e, n: new THREE.Vector3(nx, 0, nz) })
@@ -388,6 +391,7 @@ export function slab(x, y, z, w, d, th, floorId, hexBody, hexTop, baseOp) {
   g.add(m)
   registerFloor(m)
   const e = addEdges(g, geo, m, '#969EA6')
+  e.userData.structure = true // 층 고스트: 건물 구조 라인만 유지
   const top = topSurface(g, x, y, z + 0.03, w, d, hexTop || '#E8EAEC', Math.min(0.6, op))
   ctx.slabs.push({ m, e, top, zTop: z, floor: floorId, baseOp: op })
   return m
