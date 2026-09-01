@@ -584,7 +584,7 @@ export default function Viewport() {
           o.material.color.setHex(0x000000)
           o.material.userData._ghost = true
           o.material.transparent = true
-          o.material.opacity = 0.3
+          o.material.opacity = 0.15
           o.visible = true
         } else {
           if (o.userData._ghostSave !== undefined) {

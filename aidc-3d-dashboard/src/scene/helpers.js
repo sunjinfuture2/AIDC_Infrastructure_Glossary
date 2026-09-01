@@ -161,7 +161,7 @@ export function groundVeil(g, siteX, siteY, z, siteW, siteD, ext, fadeWidth, fad
       'void main(){vec2 p=(vUv-0.5)*uSize;vec2 q=abs(p)-uHalf;' +
       'float sd=length(max(q,0.0))+min(max(q.x,q.y),0.0);' +
       'float a=0.92*smoothstep(-uFade,0.0,sd)*(1.0-smoothstep(0.0,uOut,sd));' +
-      'if(a<0.004)discard;gl_FragColor=vec4(1.0,1.0,1.0,a);}',
+      'if(a<0.004)discard;gl_FragColor=vec4(0.9176,0.9176,0.9176,a);}', /* #eaeaea */
     transparent: true, depthWrite: false,
   })
   /* applyVisibility가 baseOp<1일 때만 transparent를 유지하므로 1 미만으로 등록 */
@@ -354,9 +354,11 @@ export function ladder(g, x, y, z, h, hex) {
  */
 export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   const g = G(null, null)
-  const hex = hexOverride || '#EDEFF2'
+  const hex = hexOverride || '#F3F5F8'
   const geo = new THREE.BoxGeometry(w, h, d)
   const m = new THREE.Mesh(geo, lam(hex, interior ? 0.45 : 0.95))
+  /* 외벽 밝기 상향 — 램버트 음영으로 어두워지는 수직면을 에미시브로 들어올림 */
+  if (!hexOverride) m.material.emissive = new THREE.Color('#3a3c3f')
   m.material.depthWrite = !interior
   m.position.set(x + w / 2 - CX, z + h / 2, y + d / 2 - CZ)
   g.add(m)
