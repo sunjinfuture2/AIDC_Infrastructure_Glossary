@@ -575,9 +575,27 @@ export default function Viewport() {
         }
         o.userData._dimmed = catDim || !!floorHidden
         o.userData._floorHidden = !!floorHidden
-        o.visible = !floorHidden
-        o.material.transparent = catDim || base < 1
-        o.material.opacity = catDim ? (o.isLineSegments ? 0.03 : 0.06) : base
+        /* 층 아이솔레이션: 타 층은 지우지 않고 윤곽선만 검은색 60% 고스트로 유지 */
+        const ghost =
+          floorHidden && o.isLineSegments && o.userData.isEdge &&
+          floor !== 'all' && o.userData.floor && o.userData.floor !== floor
+        if (ghost) {
+          if (!o.userData._ghostSave) o.userData._ghostSave = o.material.color.getHex()
+          o.material.color.setHex(0x000000)
+          o.material.userData._ghost = true
+          o.material.transparent = true
+          o.material.opacity = 0.6
+          o.visible = true
+        } else {
+          if (o.userData._ghostSave !== undefined) {
+            o.material.color.setHex(o.userData._ghostSave)
+            delete o.userData._ghostSave
+            o.material.userData._ghost = false
+          }
+          o.visible = !floorHidden
+          o.material.transparent = catDim || base < 1
+          o.material.opacity = catDim ? (o.isLineSegments ? 0.03 : 0.06) : base
+        }
         // 지하 1층 뷰: 지형 상면을 반투명 유리처럼 (지하가 천장에 덮이지 않게)
         if (o.userData.terrain && o.userData.floorTop) {
           o.material.transparent = true
@@ -809,7 +827,8 @@ export default function Viewport() {
           : ((wf.n.dot(camDirH) > 0.18) ? 0.07 : (floorIso ? 0.26 : 0.95))
         wf.m.material.transparent = true
         wf.m.material.opacity += (tgt - wf.m.material.opacity) * 0.18
-        wf.e.material.opacity = wf.m.material.opacity > 0.4 ? wf.e.material.userData.baseOp : (floorIso && !wf.m.userData._dimmed ? 0.3 : 0)
+        if (!wf.e.material.userData._ghost)
+          wf.e.material.opacity = wf.m.material.opacity > 0.4 ? wf.e.material.userData.baseOp : (floorIso && !wf.m.userData._dimmed ? 0.3 : 0)
       }
       /* 상부 슬래브 페이드: 탑뷰 · 하부 장비 선택 · 층 필터 연동 */
       const selected = useAppStore.getState().selected
@@ -825,7 +844,8 @@ export default function Viewport() {
         s.m.material.transparent = true
         s.m.material.opacity += (tgt - s.m.material.opacity) * 0.15
         s.e.material.transparent = true
-        s.e.material.opacity = s.m.material.opacity > 0.4 ? 1 : 0
+        if (!s.e.material.userData || !s.e.material.userData._ghost)
+          s.e.material.opacity = s.m.material.opacity > 0.4 ? 1 : 0
         s.top.material.opacity = Math.min(s.top.material.userData.baseOp, s.m.material.opacity)
       }
       /* 유체 패킷 */
