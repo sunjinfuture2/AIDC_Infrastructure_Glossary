@@ -63,9 +63,10 @@ export default function Viewport() {
     }
 
     // 고명도 파스텔 무드: 하이키 조명 (그림자 최소, 밝은 바닥 반사광)
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.12))
-    const dir1 = new THREE.DirectionalLight(0xffffff, 0.42); dir1.position.set(120, 180, 80); scene.add(dir1)
-    const dir2 = new THREE.DirectionalLight(0xffffff, 0.2); dir2.position.set(-100, 80, -120); scene.add(dir2)
+    /* 전체 컬러톤 명도 상향 */
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xe9edf2, 1.24))
+    const dir1 = new THREE.DirectionalLight(0xffffff, 0.46); dir1.position.set(120, 180, 80); scene.add(dir1)
+    const dir2 = new THREE.DirectionalLight(0xffffff, 0.22); dir2.position.set(-100, 80, -120); scene.add(dir2)
 
     /* ── 시설 구축 (스케일 그룹) ── */
     const facilityRoot = new THREE.Group()
@@ -368,6 +369,9 @@ export default function Viewport() {
       if (hovered) groupMats(hovered, (o) => { if (o.material.emissive && !o.userData.flowPart) o.material.emissive.setHex(0x000000) })
       hovered = term
       if (hovered) groupMats(hovered, (o) => { if (o.material.emissive && !o.userData.flowPart) o.material.emissive.setHex(0x25476f) })
+      /* 호버 시 선택과 동일한 검은 라인 아웃라인 (선택된 장비에는 이미 표시 중이므로 생략) */
+      clearHoverOutline()
+      if (hovered && hovered !== useAppStore.getState().selected) buildOutlineEdges(hovered, hoverOutline)
     }
 
     let focusSaved = []
@@ -403,17 +407,20 @@ export default function Viewport() {
       })
     }
 
-    let selectionOutline = []
-    function clearSelectionOutline() {
-      for (let i = 0; i < selectionOutline.length; i++) {
-        const edge = selectionOutline[i]
+    const selectionOutline = []
+    const hoverOutline = []
+    function clearOutlineList(list) {
+      for (let i = 0; i < list.length; i++) {
+        const edge = list[i]
         if (edge.parent) edge.parent.remove(edge)
         if (edge.geometry) edge.geometry.dispose()
         if (edge.material) edge.material.dispose()
       }
-      selectionOutline = []
+      list.length = 0
     }
-    function makeThickEdge(parent, a, b, radius, material) {
+    function clearSelectionOutline() { clearOutlineList(selectionOutline) }
+    function clearHoverOutline() { clearOutlineList(hoverOutline) }
+    function makeThickEdge(parent, a, b, radius, material, bucket) {
       const d = new THREE.Vector3().subVectors(b, a), len = d.length()
       if (len < 0.01) return
       const edge = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, len, 6, 1, false), material.clone())
@@ -422,10 +429,14 @@ export default function Viewport() {
       edge.userData.selectionOutline = true
       edge.renderOrder = 80
       parent.add(edge)
-      selectionOutline.push(edge)
+      bucket.push(edge)
     }
     function applySelectionOutline(term) {
       clearSelectionOutline()
+      buildOutlineEdges(term, selectionOutline)
+    }
+    /* 검은 라인 아웃라인 — 선택·호버 공용 */
+    function buildOutlineEdges(term, bucket) {
       const g = groupReg[term]
       if (!g) return
       const meshes = []
@@ -445,7 +456,7 @@ export default function Viewport() {
         const o = meshes[m].mesh, type = o.geometry.type || ''
         if (meshes[m].diag < maxDiag * 0.26 || (!/BoxGeometry|CylinderGeometry/.test(type))) continue
         const edges = new THREE.EdgesGeometry(o.geometry, 24), pos = edges.attributes.position
-        for (let i = 0; i < pos.count; i += 2) makeThickEdge(o, new THREE.Vector3().fromBufferAttribute(pos, i), new THREE.Vector3().fromBufferAttribute(pos, i + 1), radius, lineMat)
+        for (let i = 0; i < pos.count; i += 2) makeThickEdge(o, new THREE.Vector3().fromBufferAttribute(pos, i), new THREE.Vector3().fromBufferAttribute(pos, i + 1), radius, lineMat, bucket)
         edges.dispose()
       }
       lineMat.dispose()
@@ -738,6 +749,7 @@ export default function Viewport() {
         if (state.selected) applyFocus(state.selected)
       }
       if (state.selected !== prev.selected) {
+        clearHoverOutline() // 선택 아웃라인과 중복 방지
         if (state.selected) {
           syncLabels()
           refreshSelectedLeader()
