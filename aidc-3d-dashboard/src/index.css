@@ -489,7 +489,7 @@ button { background: none; border: 0; cursor: pointer; }
   display: flex;
   align-items: center;
   gap: 5px;
-  margin: 15px 0 0;
+  margin: 18px 0 0;
   padding: 0 0 5px 6px;
   font-size: 14px;
   font-weight: 760;
@@ -500,9 +500,9 @@ button { background: none; border: 0; cursor: pointer; }
 }
 /* 각 그룹이 래퍼 div에 싸여 있어 :first-child로는 전부 걸림 —
    단층과 동일하게 실제 첫 그룹만 27px, 나머지는 18px */
-.list > div:first-child .group-lbl { margin-top: 29px; } /* 위 구분선과의 거리 +5px */
+.list > div:first-child .group-lbl { margin-top: 32px; } /* 위 구분선과의 거리 +5px */
 /* 단층(#list top:-10px)과 동일한 리스트 시작 위치 */
-.list { position: relative; top: -10px; }
+.list { position: relative; top: -13px; }
 /* 접기 화살표 위치 조정 (좌 3px 후 우 1px) */
 .group-lbl::after { content: '▲'; font-size: 6.8px; color: #303237; margin-left: 0; }
 .group-lbl.collapsed::after { content: '▼'; }
