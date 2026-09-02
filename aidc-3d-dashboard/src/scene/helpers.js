@@ -149,9 +149,12 @@ export function gradientGroundSurface(g, x, y, z, w, d, hex) {
  */
 /* 지상 땅 연장 링(+7.6/+6.3)을 포함한 외곽 — 그라데이션은 연장된 경계에서 소산 */
 const SITE_FADE = { cx: 62, cy: 53, hx: 83.6, hy: 69.3, fade: 13 }
-export function applySiteEdgeFade(mesh) {
+export function applySiteEdgeFade(mesh, hx, hy, fade) {
   const mat = mesh.material
   if (!mat || mat.isShaderMaterial || mesh.isLineSegments) return
+  const HX = hx !== undefined ? hx : SITE_FADE.hx
+  const HY = hy !== undefined ? hy : SITE_FADE.hy
+  const FD = fade !== undefined ? fade : SITE_FADE.fade
   mat.transparent = true
   /* applyVisibility가 baseOp<1일 때만 transparent를 유지하므로 1 미만으로 캡 */
   const base = mat.userData && mat.userData.baseOp !== undefined ? mat.userData.baseOp : (mat.opacity !== undefined ? mat.opacity : 1)
@@ -164,9 +167,9 @@ export function applySiteEdgeFade(mesh) {
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', '#include <common>\nvarying vec2 vSiteP;')
       .replace('#include <opaque_fragment>',
-        '{ vec2 sdp = vSiteP / 1.8; vec2 sq = abs(sdp - vec2(' + ccx + ', ' + ccy + ')) - vec2(' + SITE_FADE.hx.toFixed(1) + ', ' + SITE_FADE.hy.toFixed(1) + ');' +
+        '{ vec2 sdp = vSiteP / 1.8; vec2 sq = abs(sdp - vec2(' + ccx + ', ' + ccy + ')) - vec2(' + HX.toFixed(1) + ', ' + HY.toFixed(1) + ');' +
         ' float ssd = length(max(sq, vec2(0.0))) + min(max(sq.x, sq.y), 0.0);' +
-        ' diffuseColor.a *= (1.0 - smoothstep(-' + SITE_FADE.fade.toFixed(1) + ', 0.0, ssd)); }\n#include <opaque_fragment>')
+        ' diffuseColor.a *= (1.0 - smoothstep(-' + FD.toFixed(1) + ', 0.0, ssd)); }\n#include <opaque_fragment>')
   }
   mat.needsUpdate = true
 }

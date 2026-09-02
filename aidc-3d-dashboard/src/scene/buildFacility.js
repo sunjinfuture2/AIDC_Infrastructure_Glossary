@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {
   ctx, resetCtx, setFloor, tagFloor, G, V, lam, box, cylY, cylDir, pipe, wall, slab,
-  topSurface, gradientGroundSurface, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
+  topSurface, gradientGroundSurface, applySiteEdgeFade, fanTop, fanFront, ladder, addEdges, P, CX, CZ,
 } from './helpers.js'
 
 /**
@@ -68,6 +68,21 @@ function buildGhostShells() {
       g.add(ls)
     }
   }
+  /* 지상면 외곽선 — 층별 보기 중 항상 표시해 지면 기준을 잡아준다
+     (shellFloor 'ground'는 어떤 층과도 일치하지 않아 아이솔레이션 내내 켜짐) */
+  const EXT = { x0: -21.6, y0: -16.3, w: 167.2, d: 138.6 }
+  const gnd = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.PlaneGeometry(EXT.w, EXT.d)),
+    new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.15, depthTest: false, depthWrite: false }),
+  )
+  gnd.material.userData = { baseOp: 0.15 }
+  gnd.rotation.x = -Math.PI / 2
+  gnd.position.set(EXT.x0 + EXT.w / 2 - CX, GL + 0.05, EXT.y0 + EXT.d / 2 - CZ)
+  gnd.renderOrder = 60
+  gnd.userData.ghostShell = true
+  gnd.userData.shellFloor = 'ground'
+  gnd.visible = false
+  g.add(gnd)
 }
 
 /* ═══════════════ 대지 · 지형 · 주차 · 외부 동선 ═══════════════ */
@@ -94,6 +109,8 @@ function buildSite() {
     // 링을 관통해 배경(흰 쐐기)이 비쳐 보이던 현상을 내부 면이 받쳐준다
     wm.material.depthWrite = false
     wm.material.side = THREE.DoubleSide
+    // 땅 깊이 볼륨이 대지 경계에서 뚝 끊기지 않게 — 경계 안 16m 구간 소산
+    applySiteEdgeFade(wm, 76, 63, 16)
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
   }
