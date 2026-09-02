@@ -576,7 +576,9 @@ export default function Viewport() {
             (floor !== 'all' && o.userData.floor && o.userData.floor !== floor) ||
             (o.userData.siteDetail && floor !== 'f1' && floor !== 'all') ||
             // 미태깅 사이트·지형·대지: 2층/옥상 아이솔레이션에서는 숨김 (전체·1층·B1 유지)
-            ((floor === 'f2' || floor === 'roof') && !o.userData.floor && !o.userData.selectionOutline)
+            ((floor === 'f2' || floor === 'roof') && !o.userData.floor && !o.userData.selectionOutline) ||
+            // 지하 요소(지형 볼륨·굴토 피트)는 1층 아이솔레이션에서도 숨김
+            (floor === 'f1' && o.userData.underground)
         }
         o.userData._dimmed = catDim || !!floorHidden
         o.userData._floorHidden = !!floorHidden

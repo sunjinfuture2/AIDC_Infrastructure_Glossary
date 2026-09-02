@@ -359,7 +359,7 @@ export function wall(x, y, z, w, d, h, nx, nz, interior, hexOverride) {
   const m = new THREE.Mesh(geo, lam(hex, interior ? 0.45 : 0.95))
   /* 벽 밝기 +50% — 램버트 음영으로 어두워지는 수직면을 에미시브로 들어올림
      (모서리 라인 컬러는 아래 edgeColor 그대로) */
-  if (!hexOverride) m.material.emissive = new THREE.Color('#7f8184')
+  if (!hexOverride) m.material.emissive = new THREE.Color('#9a9ca0')
   m.material.depthWrite = !interior
   m.position.set(x + w / 2 - CX, z + h / 2, y + d / 2 - CZ)
   g.add(m)
