@@ -444,6 +444,7 @@ export default function Viewport() {
       const tmpSize = new THREE.Vector3()
       g.traverse((o) => {
         if (!o.isMesh || !o.geometry || o.userData.flowPart || o.userData.selectionOutline) return
+        if (!o.visible || o.userData._floorHidden) return // 아이솔레이션에서 숨겨진 부재 제외
         o.geometry.computeBoundingBox()
         if (!o.geometry.boundingBox) return
         const diag = o.geometry.boundingBox.getSize(tmpSize).length()
@@ -454,7 +455,8 @@ export default function Viewport() {
       const lineMat = new THREE.MeshBasicMaterial({ color: 0x000000, depthTest: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 })
       for (let m = 0; m < meshes.length; m++) {
         const o = meshes[m].mesh, type = o.geometry.type || ''
-        if (meshes[m].diag < maxDiag * 0.26 || (!/BoxGeometry|CylinderGeometry/.test(type))) continue
+        // 그룹 안의 긴 부속(트레이·덕트) 때문에 본체가 탈락하지 않게 절대 하한과 병행
+        if (meshes[m].diag < Math.min(2.2, maxDiag * 0.26) || (!/BoxGeometry|CylinderGeometry/.test(type))) continue
         const edges = new THREE.EdgesGeometry(o.geometry, 24), pos = edges.attributes.position
         for (let i = 0; i < pos.count; i += 2) makeThickEdge(o, new THREE.Vector3().fromBufferAttribute(pos, i), new THREE.Vector3().fromBufferAttribute(pos, i + 1), radius, lineMat, bucket)
         edges.dispose()
@@ -479,6 +481,7 @@ export default function Viewport() {
       g.updateMatrixWorld(true)
       g.traverse((o) => {
         if (!o.isMesh || !o.geometry || o.userData.selectionOutline || o.userData.flowPart) return
+        if (!o.visible || o.userData._floorHidden) return // 숨겨진 부재는 검은 점 계산에서 제외
         o.geometry.computeBoundingBox()
         const b = o.geometry.boundingBox
         if (!b) return
@@ -562,15 +565,9 @@ export default function Viewport() {
         // 층 필터는 완전 숨김(반투명 누적 방지), 계통 필터는 레퍼런스처럼 잔상 유지
         // 사이트 디테일(주차장·도로·조경)은 전체 뷰와 "1층" 뷰에서만 표시
         let floorHidden = false
-        if (floor !== 'all' && o.userData.flowPart && !o.userData.flowParticle) {
-          // 흐름 배관·조인트: 시공 컨텍스트 층 태그는 무시하고 세그먼트의 z-대역(도면
-          // 좌표)이 선택 층과 겹칠 때만 표시 — 층 관통 라이저는 모든 층에서 유지
-          if (o.userData._zBand === undefined) {
-            const wb = new THREE.Box3().setFromObject(o)
-            o.userData._zBand = [wb.min.y / FS.y, wb.max.y / FS.y]
-          }
-          const B = FLOOR_BANDS[floor]
-          floorHidden = !(o.userData._zBand[0] < B[1] - 0.3 && o.userData._zBand[1] > B[0] + 0.3)
+        if (floor !== 'all' && o.userData.flowPart) {
+          // 층 아이솔레이션 중에는 Flow 관련(배관·조인트·파티클) 전부 숨김
+          floorHidden = true
         } else if (!o.userData.flowParticle) {
           floorHidden =
             (floor !== 'all' && o.userData.floor && o.userData.floor !== floor) ||
@@ -855,8 +852,6 @@ export default function Viewport() {
           const a = F.vs[seg - 1], b = F.vs[Math.min(seg, F.vs.length - 1)]
           const t2 = (u - F.lens[seg - 1]) / Math.max(F.lens[seg] - F.lens[seg - 1], 0.001)
           F.dots[d].position.lerpVectors(a, b, Math.min(t2, 1))
-          // 층 아이솔레이션 중에는 현재 위치가 선택 층 대역 안일 때만 도트 표시
-          if (isoFloorNow !== 'all') F.dots[d].visible = FLOOR_OF_Z(F.dots[d].position.y) === isoFloorNow
         }
       }
       layoutLabels()
