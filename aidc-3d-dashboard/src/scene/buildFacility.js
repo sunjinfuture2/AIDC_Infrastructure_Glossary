@@ -70,7 +70,7 @@ function buildGhostShells() {
   }
   /* 지상면 외곽선 — 층별 보기 중 항상 표시해 지면 기준을 잡아준다
      (shellFloor 'ground'는 어떤 층과도 일치하지 않아 아이솔레이션 내내 켜짐) */
-  const EXT = { x0: -21.6, y0: -16.3, w: 167.2, d: 138.6 }
+  const EXT = { x0: -14, y0: -10, w: 152, d: 126 }
   const gnd = new THREE.LineSegments(
     new THREE.EdgesGeometry(new THREE.PlaneGeometry(EXT.w, EXT.d)),
     new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.15, depthTest: false, depthWrite: false }),
@@ -102,8 +102,9 @@ function buildSite() {
      공동구 트렌치 슬롯: x 31~39 · y 40.1~52.5 (개방 → 지하 공동구 노출) */
   function terrain(x, y, w, d, nx, nz) {
     // terrain 플래그: 지하 1층 아이솔레이션에서 유리처럼 반투명 처리 (천장화 방지)
-    // 볼륨(지하 단면)은 그라데이션 없이 그대로 — 지상 땅 면(ts)에만 경계 페이드
-    const wm = wall(x, y, -1, w, d, GL + 1, nx, nz, false, EARTH)
+    // 볼륨은 사방 0.08 인셋 — 건물 외벽·인접 블록과의 동일 평면 z-파이팅 방지
+    // (지상 땅 면 ts는 rect 그대로라 틈이 보이지 않는다)
+    const wm = wall(x + 0.08, y + 0.08, -1, w - 0.16, d - 0.16, GL + 1, nx, nz, false, EARTH)
     wm.userData.terrain = true
     // 반투명 지형: depthWrite off(그리기 순서 깨짐 방지) + 양면 렌더링 —
     // 링을 관통해 배경(흰 쐐기)이 비쳐 보이던 현상을 내부 면이 받쳐준다
@@ -114,27 +115,16 @@ function buildSite() {
     const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
     ts.userData.terrain = true
   }
-  /* 지상 땅 외곽 연장 링 (~10%): 다른 요소는 그대로, GL 면만 바깥으로 확장.
-     그라데이션 경계(SITE_FADE)도 연장된 외곽 기준으로 소산 */
-  function groundExt(x, y, w, d) {
-    const ts = topSurface(g, x, y, GL + 0.02, w, d, P.slabTop)
-    ts.userData.terrain = true
-  }
-  groundExt(-21.6, -16.3, 167.2, 6.3)   // 북측
-  groundExt(-21.6, 116, 167.2, 6.3)     // 남측
-  groundExt(-21.6, -10, 7.6, 126)       // 서측
-  groundExt(138, -10, 7.6, 126)         // 동측
-
-  /* 건물 외벽과의 이격(1.5m 슬릿)이 틈으로 보이던 문제 — 지상면이 외벽까지
-     (여유 0.2) 채우도록 각 블록 확장 */
-  terrain(-14, -10, 152, 9.8, 0, -1)            // 북측 (y -10 ~ -0.2)
-  terrain(-14, -0.2, 13.8, 40.3, -1, 0)         // 전산동 서측 (x -14 ~ -0.2)
-  terrain(105.5, -0.2, 32.5, 40.3, 1, 0)        // 전산동 동측 (주차장부)
-  terrain(-14, 38.8, 45, 15, 0, 1)              // 사이 마당 서측 (주차 밴드)
-  terrain(39, 38.8, 99, 15, 0, 1)               // 사이 마당 동측 (장애인주차·도로)
-  terrain(-14, 52.5, 3, 53, -1, 0)              // 공급동 서측 슬리버 (유류야드 개방 유지)
-  terrain(64.1, 53.8, 73.9, 50.2, 0.7, 0.7)     // 남동측 대지 (도로·조경, 마당·남측과 비중첩)
-  terrain(-14, 104.2, 152, 11.8, 0, 1)          // 남측
+  /* 지상면은 지하(굴토) 풋프린트와 동일 크기 — 블록 rect는 건물 외벽·이웃
+     블록과 빈틈 없이 정확히 맞물린다 (틈 슬릿 제거) */
+  terrain(-14, -10, 152, 10, 0, -1)             // 북측 (y -10 ~ 0)
+  terrain(-14, 0, 14, 38.6, -1, 0)              // 전산동 서측 (x -14 ~ 0)
+  terrain(105.3, 0, 32.7, 38.6, 1, 0)           // 전산동 동측 (주차장부)
+  terrain(-14, 38.6, 45, 15.4, 0, 1)            // 사이 마당 서측 (주차 밴드)
+  terrain(39, 38.6, 99, 15.4, 0, 1)             // 사이 마당 동측 (장애인주차·도로)
+  terrain(-14, 54, 3, 50, -1, 0)                // 공급동 서측 슬리버 (유류야드 개방 유지)
+  terrain(63.9, 54, 74.1, 50, 0.7, 0.7)         // 남동측 대지 (도로·조경)
+  terrain(-14, 104, 152, 12, 0, 1)              // 남측
 
   /* ── 사이트 디테일 (주차장·도로·조경) — "1층" 뷰에서만 표시 ──
      스톨 헬퍼: dir 'y' = 스톨 개구가 남북(줄무늬는 x 분할) */
