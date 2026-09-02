@@ -195,7 +195,7 @@ button { background: none; border: 0; cursor: pointer; }
   transition: color 0.16s ease;
 }
 .floor-btn:hover { color: #55585d; }
-.floor-btn.on { color: #0b0c0d; font-weight: 800; }
+.floor-btn.on { color: #0b0c0d; font-weight: 700; }
 .floor-sep { width: 1px; height: 7px; background: #e0e1e4; flex: none; transform: scaleX(0.6); }
 
 /* Flow 컨트롤 */
@@ -489,7 +489,7 @@ button { background: none; border: 0; cursor: pointer; }
   display: flex;
   align-items: center;
   gap: 5px;
-  margin: 18px 0 0;
+  margin: 15px 0 0;
   padding: 0 0 5px 6px;
   font-size: 14px;
   font-weight: 760;
@@ -500,7 +500,7 @@ button { background: none; border: 0; cursor: pointer; }
 }
 /* 각 그룹이 래퍼 div에 싸여 있어 :first-child로는 전부 걸림 —
    단층과 동일하게 실제 첫 그룹만 27px, 나머지는 18px */
-.list > div:first-child .group-lbl { margin-top: 32px; } /* 위 구분선과의 거리 +5px */
+.list > div:first-child .group-lbl { margin-top: 29px; } /* 위 구분선과의 거리 +5px */
 /* 단층(#list top:-10px)과 동일한 리스트 시작 위치 */
 .list { position: relative; top: -10px; }
 /* 접기 화살표 위치 조정 (좌 3px 후 우 1px) */
