@@ -91,10 +91,16 @@ function buildSite() {
   const EARTH = '#E9E2D2'
   const g = G(null, null)
 
-  /* 굴토 피트 바닥 — 지하층은 그라데이션 없이 실선으로 */
-  box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { edge: '#969EA6' })
-  gradientGroundSurface(g, -32, -26, -1.15, 190, 160, P.groundTop)
-  topSurface(g, -14, -10, 0.04, 152, 126, '#E2E5E9')
+  /* 굴토 피트 바닥 — 지하층은 그라데이션 없이 실선으로.
+     underground 플래그: 1층 아이솔레이션에서는 지하 요소를 숨긴다 */
+  const pit = box(g, -14, -10, -1.2, 152, 126, 1.2, P.slab, { noedge: true })
+  pit.userData.underground = true
+  const pitEdge = addEdges(g, pit.geometry, pit, '#969EA6')
+  pitEdge.userData.underground = true
+  const pitGrad = gradientGroundSurface(g, -32, -26, -1.15, 190, 160, P.groundTop)
+  pitGrad.userData.underground = true
+  const pitTop = topSurface(g, -14, -10, 0.04, 152, 126, '#E2E5E9')
+  pitTop.userData.underground = true
 
   /* 지형 블록 — 굴토 범위 밖을 GL까지 채움.
      E1(전산동) x -1.5~106.8 · y -1.5~40.1
@@ -106,6 +112,7 @@ function buildSite() {
     // (지상 땅 면 ts는 rect 그대로라 틈이 보이지 않는다)
     const wm = wall(x + 0.08, y + 0.08, -1, w - 0.16, d - 0.16, GL + 1, nx, nz, false, EARTH)
     wm.userData.terrain = true
+    wm.userData.underground = true // 1층 아이솔레이션에서 숨김
     // 반투명 지형: depthWrite off(그리기 순서 깨짐 방지) + 양면 렌더링 —
     // 링을 관통해 배경(흰 쐐기)이 비쳐 보이던 현상을 내부 면이 받쳐준다
     wm.material.depthWrite = false
